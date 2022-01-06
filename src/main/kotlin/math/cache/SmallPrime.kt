@@ -17,6 +17,7 @@ private val chunk = mutableListOf(1L, 5L)
 private var start = chunkWidth
 
 private fun searchOnce() {
+//    println("primes: ${primeCache.size}, last prime: ${primeCache.last()}")
     if (start == chunkWidth * primeCache[nextChunkLevel]) {
         val range = chunk.indices
         for (base in chunkWidth until start step chunkWidth) {

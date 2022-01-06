@@ -2,9 +2,8 @@ package math
 
 import kotlinx.coroutines.runBlocking
 import math.cache.primeOf
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 /**
  * Created by CowardlyLion at 2022/1/5 20:30
@@ -32,6 +31,20 @@ internal class AlgorithmKtTest {
             }
         }
     }
+
+    /**
+     * large number may take hours to compute and crashed by out-of-memory.
+     * OutOfMemoryError after next chunk at primeOf(11778517) = 213393179
+     * */
+    @Test
+    fun largePrimeFactorization() {
+        runBlocking {
+            for (i in Long.MAX_VALUE downTo Long.MAX_VALUE - 0L) {
+                println("$i = ${i.positivePrimeFactorization()}")
+            }
+        }
+    }
+
 
     @Test
     fun prime() {
