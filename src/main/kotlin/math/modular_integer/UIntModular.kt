@@ -9,19 +9,39 @@ import math.operations.modTimes
  */
 class UIntModular(val modulus: UInt, val residue: UInt) {
 
+    init {
+        require(residue in 0u until modulus)
+    }
+
     operator fun plus(y: UIntModular): UIntModular {
-        assert(this.modulus == y.modulus)
+        require(this.modulus == y.modulus)
         return UIntModular(modulus, modPlus(residue, y.residue, modulus))
     }
 
     operator fun minus(y: UIntModular): UIntModular {
-        assert(this.modulus == y.modulus)
+        require(this.modulus == y.modulus)
         return UIntModular(modulus, modMinus(residue, y.residue, modulus))
     }
 
     operator fun times(y: UIntModular): UIntModular {
-        assert(this.modulus == y.modulus)
+        require(this.modulus == y.modulus)
         return UIntModular(modulus, modTimes(residue, y.residue, modulus))
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is UIntModular) return false
+
+        if (modulus != other.modulus) return false
+        if (residue != other.residue) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = modulus.hashCode()
+        result = 31 * result + residue.hashCode()
+        return result
     }
 
 

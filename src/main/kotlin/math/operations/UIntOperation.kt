@@ -13,24 +13,27 @@ fun modTimes(x: UInt, y: UInt, modulus: UInt) = (x * y) % modulus
  * @param x assume x < modulus
  * @return x^power mod modulus, 0^0 = 1
  * */
-fun modPowerM(x: UInt, power: UInt, modulus: UInt): UInt = when (power) {
-    0u   -> 1u % modulus
-    1u   -> x
-    else -> {
-        var a = x
-        var b = modTimes(x, x, modulus)
-        var i = power.takeHighestOneBit() shr 1
-        while (i != 0u) {
-            if (power and i == 0u) {
-                b = modTimes(a, b, modulus)
-                a = modTimes(a, a, modulus)
-            } else {
-                a = modTimes(a, b, modulus)
-                b = modTimes(b, b, modulus)
+fun modPowerM(x: UInt, power: UInt, modulus: UInt): UInt {
+    require(x in 0u until modulus)
+    return when (power) {
+        0u   -> 1u % modulus
+        1u   -> x
+        else -> {
+            var a = x
+            var b = modTimes(x, x, modulus)
+            var i = power.takeHighestOneBit() shr 1
+            while (i != 0u) {
+                if (power and i == 0u) {
+                    b = modTimes(a, b, modulus)
+                    a = modTimes(a, a, modulus)
+                } else {
+                    a = modTimes(a, b, modulus)
+                    b = modTimes(b, b, modulus)
+                }
+                i = i shr 1
             }
-            i = i shr 1
+            a
         }
-        a
     }
 }
 
@@ -64,6 +67,7 @@ fun UInt.powerM(power: UInt): UInt = when (power) {
  * @param x assume x < modulus
  * */
 fun modPowerSq(x: UInt, power: UInt, modulus: UInt): UInt {
+    require(x in 0u until modulus)
     var x2 = x
     var y = 1u
     var pow = power
@@ -95,8 +99,6 @@ fun UInt.powerSq(power: UInt): UInt {
 }
 
 fun powerOfTwo(power: Int): UInt {
-    if (power < 0 || power > 31) {
-        error("wrong power of $power")
-    }
+    require(power in 0..31) { "wrong power of $power" }
     return 1u.shl(power)
 }
