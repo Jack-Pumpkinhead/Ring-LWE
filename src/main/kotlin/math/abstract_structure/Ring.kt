@@ -10,12 +10,12 @@ abstract class Ring<A>(val zero: A, val one: A) {
     abstract fun multiply(x: A, y: A): A
 
     fun toAdditiveGroup(): Group<A> = object : Group<A>(zero) {
-        override inline fun multiply(x: A, y: A): A = add(x, y)
-        override inline fun inverse(a: A): A = negate(a)
+        override fun multiply(x: A, y: A): A = add(x, y)
+        override fun inverse(a: A): A = negate(a)
     }
 
     fun toMultiplicativeMonoid(): Monoid<A> = object : Monoid<A>(one) {
-        override inline fun multiply(x: A, y: A): A = this@Ring.multiply(x, y)
+        override fun multiply(x: A, y: A): A = this@Ring.multiply(x, y)
     }
 
 }

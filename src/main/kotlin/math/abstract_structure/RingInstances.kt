@@ -11,9 +11,9 @@ import math.modular_integer.UIntModular
  * seen UInt as integer modulo 2^32
  * */
 val ringUInt: Ring<UInt> = object : Ring<UInt>(0u, 1u) {
-    override inline fun add(x: UInt, y: UInt): UInt = x + y
-    override inline fun negate(a: UInt): UInt = 0u - a
-    override inline fun multiply(x: UInt, y: UInt): UInt = x * y
+    override fun add(x: UInt, y: UInt): UInt = x + y
+    override fun negate(a: UInt): UInt = 0u - a
+    override fun multiply(x: UInt, y: UInt): UInt = x * y
 }
 
 /**
@@ -21,24 +21,28 @@ val ringUInt: Ring<UInt> = object : Ring<UInt>(0u, 1u) {
  * UInt modulo 0 is empty set thus cannot perform any operation.
  * */
 fun ringUIntModulo(modulus: UInt): Ring<UIntModular> = object : Ring<UIntModular>(UIntModular(modulus, 0u), UIntModular(modulus, 1u)) {
-    override inline fun add(x: UIntModular, y: UIntModular): UIntModular {
+    override fun add(x: UIntModular, y: UIntModular): UIntModular {
         require(x.modulus == modulus)
         return x + y
     }
 
-    override inline fun negate(a: UIntModular): UIntModular {
+    override fun negate(a: UIntModular): UIntModular {
         require(a.modulus == modulus)
         return UIntModular(a.modulus, 0u) - a
     }
 
-    override inline fun multiply(x: UIntModular, y: UIntModular): UIntModular {
+    override fun multiply(x: UIntModular, y: UIntModular): UIntModular {
         require(x.modulus == modulus)
         return x * y
     }
 }
 
+
+/**
+ * Strictly speaking the arithmetic of BigInteger is not a ring (it may overflow (and throwing an error)).
+ * */
 val ringBigInteger: Ring<BigInteger> = object : Ring<BigInteger>(BigInteger.ZERO, BigInteger.ONE) {
-    override inline fun add(x: BigInteger, y: BigInteger): BigInteger = x + y
-    override inline fun negate(a: BigInteger): BigInteger = -a
-    override inline fun multiply(x: BigInteger, y: BigInteger): BigInteger = x * y
+    override fun add(x: BigInteger, y: BigInteger): BigInteger = x + y
+    override fun negate(a: BigInteger): BigInteger = -a
+    override fun multiply(x: BigInteger, y: BigInteger): BigInteger = x * y
 }

@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test
  */
 internal class Test {
 
-    @Test
+    /*@Test
     fun testBigInteger() {
         for (i in 0..1234) {
             val x = BigInteger(i)
             println("$i.numberOfDecimalDigits() = ${x.numberOfDecimalDigits()}")
         }
-    }
+    }*/
+
 }
