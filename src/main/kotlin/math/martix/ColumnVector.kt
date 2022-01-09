@@ -1,41 +1,36 @@
 package math.martix
 
-import math.abstract_structure.Ring
+import math.abstract_structure.CRing
 
 /**
  * Created by CowardlyLion at 2022/1/8 14:00
  */
-class ColumnVector<A>(ring: Ring<A>, val vector: List<A>) : AbstractColumnVector<A>(ring, vector.size.toUInt()) {
+class ColumnVector<A>(ring: CRing<A>, val vector: List<A>) : AbstractColumnVector<A>(ring, vector.size.toUInt()) {
 
-    override fun elementAt(row: UInt, column: UInt): A = vector[row.toInt()]
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = vector[row.toInt()]
 
-    override fun timesImpl(matrix: Matrix<A>): Matrix<A> {  //a->1->b
-        return when (matrix) {
+    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = //a->1->b
+        when (matrix) {
             is Constant<A>       -> {  //a->1->1
                 ColumnVector(ring, vector.map { ring.multiply(it, matrix.value) })
             }
             is ColumnVector<A>   -> {  //a->1->1
                 ColumnVector(ring, vector.map { ring.multiply(it, matrix.vector[0]) })
             }
-            is RowVector<A>      -> {
+            is RowVector<A>      -> {   //a->1->b
                 ring.matrix(rows, matrix.columns) { i, j ->
                     ring.multiply(vector[i.toInt()], matrix.vector[j.toInt()])
                 }
             }
-            is OrdinaryMatrix<A> -> {
+            is OrdinaryMatrix<A> -> {   //a->1->b
                 ring.matrix(rows, matrix.columns) { i, j ->
                     ring.multiply(vector[i.toInt()], matrix.matrix[0][j.toInt()])
                 }
             }
-            else                 -> {
-                ring.matrix(rows, matrix.columns) { i, j ->
-                    ring.multiply(vector[i.toInt()], matrix.elementAtSafe(0u, j))
-                }
-            }
+            else                 -> super.timesImpl(matrix)
         }
-    }
 
-    override suspend fun timesRowParallelImpl(matrix: Matrix<A>): Matrix<A> {   //a->1->b
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {   //a->1->b
         return when (matrix) {
             is Constant<A>       -> { //a->1->1
                 ColumnVector(ring, listParallel(rows) { i ->
@@ -47,21 +42,17 @@ class ColumnVector<A>(ring: Ring<A>, val vector: List<A>) : AbstractColumnVector
                     ring.multiply(vector[i.toInt()], matrix.vector[0])
                 })
             }
-            is RowVector<A>      -> {
+            is RowVector<A>      -> {   //a->1->b
                 ring.matrixRowParallel(rows, matrix.columns) { i, j ->
                     ring.multiply(vector[i.toInt()], matrix.vector[j.toInt()])
                 }
             }
-            is OrdinaryMatrix<A> -> {
+            is OrdinaryMatrix<A> -> {   //a->1->b
                 ring.matrixRowParallel(rows, matrix.columns) { i, j ->
                     ring.multiply(vector[i.toInt()], matrix.matrix[0][j.toInt()])
                 }
             }
-            else                 -> {
-                ring.matrixRowParallel(rows, matrix.columns) { i, j ->
-                    ring.multiply(vector[i.toInt()], matrix.elementAtSafe(0u, j))
-                }
-            }
+            else                 -> super.timesRowParallelImpl(matrix)
         }
     }
 

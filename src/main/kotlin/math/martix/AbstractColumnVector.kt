@@ -1,11 +1,11 @@
 package math.martix
 
-import math.abstract_structure.Ring
+import math.abstract_structure.CRing
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:48
  */
-abstract class AbstractColumnVector<A>(ring: Ring<A>, rows: UInt) : Matrix<A>(ring, rows, 1u) {
+abstract class AbstractColumnVector<A>(ring: CRing<A>, rows: UInt) : AbstractMatrix<A>(ring, rows, 1u) {
 
 
 }

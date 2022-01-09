@@ -1,7 +1,7 @@
 package math.operations
 
-import math.abstract_structure.ringUInt
-import math.abstract_structure.ringUIntModulo
+import math.abstract_structure.instance.ringUInt
+import math.abstract_structure.instance.ringModularUInt
 import math.modular_integer.UIntModular
 import math.powerM
 import math.powerS
@@ -16,7 +16,7 @@ internal class UIntOperationKtTest {
     @Test
     fun modPower() {
         for (modulus in 10u..100u) {
-            val ringUIntModular = ringUIntModulo(modulus)
+            val ringUIntModular = ringModularUInt(modulus)
             val monoid = ringUIntModular.toMultiplicativeMonoid()
             for (x in 0u until modulus) {
                 for (power in 0u..100u) {

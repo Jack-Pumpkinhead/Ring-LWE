@@ -1,13 +1,13 @@
 package math.martix
 
-import math.abstract_structure.Ring
+import math.abstract_structure.CRing
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:43
  */
-class ColumnVectorView<A>(ring: Ring<A>, val matrix: Matrix<A>, val column: UInt) : AbstractColumnVector<A>(ring, matrix.rows) {
+class ColumnVectorView<A>(ring: CRing<A>, val matrix: AbstractMatrix<A>, val column: UInt) : AbstractColumnVector<A>(ring, matrix.rows) {
 
-    override fun elementAt(row: UInt, column: UInt): A = matrix.elementAtSafe(row, this.column)
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix.elementAt(row, this.column)
 
 
 }

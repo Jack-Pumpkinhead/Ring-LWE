@@ -5,7 +5,7 @@ package math.abstract_structure
  *
  * Element of A representing disjoint union of underlying set of objects in a concrete category.
  */
-abstract class ConcreteCategory<A, C0>() {  //C1 = (A) -> A, the abstract source/target function implemented by an arrow with predefined source and target.
+abstract class ConcreteCategory<A, C0>(val descriptions: MutableSet<String>) {  //C1 = (A) -> A, the abstract source/target function implemented by an arrow with predefined source and target.
 
     abstract fun c0(a: A): C0
 
@@ -60,11 +60,23 @@ abstract class ConcreteCategory<A, C0>() {  //C1 = (A) -> A, the abstract source
      * */
     fun identity(c0: C0): Arrow = Arrow(c0, c0) { x -> x }
 
-    fun toCategory(): Category<C0, ConcreteCategory<A,C0>.Arrow> = object : Category<C0, ConcreteCategory<A, C0>.Arrow>() {
-        override fun source(f: ConcreteCategory<A,C0>.Arrow): C0 = f.source
-        override fun target(f: ConcreteCategory<A,C0>.Arrow): C0 = f.target
-        override fun compositeImpl(f: ConcreteCategory<A,C0>.Arrow, g: ConcreteCategory<A,C0>.Arrow): ConcreteCategory<A,C0>.Arrow = f * g
-        override fun id(c0: C0): ConcreteCategory<A,C0>.Arrow = identity(c0)
+    fun toCategory(): Category<C0, ConcreteCategory<A, C0>.Arrow> = object : Category<C0, ConcreteCategory<A, C0>.Arrow>(descriptions) {
+        override fun source(f: ConcreteCategory<A, C0>.Arrow): C0 = f.source
+        override fun target(f: ConcreteCategory<A, C0>.Arrow): C0 = f.target
+        override fun composeUnsafe(f: ConcreteCategory<A, C0>.Arrow, g: ConcreteCategory<A, C0>.Arrow): ConcreteCategory<A, C0>.Arrow = f * g
+        override fun id(c0: C0): ConcreteCategory<A, C0>.Arrow = identity(c0)
+    }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Category<*, *>) return false
+
+        return other.descriptions.any { this.descriptions.contains(it) }
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
     }
 
 }
