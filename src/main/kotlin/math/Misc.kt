@@ -2,7 +2,7 @@ package math
 
 import math.abstract_structure.instance.ringUInt
 import math.martix.AbstractMatrix
-import math.martix.OrdinaryMatrix
+import math.martix.concrete.OrdinaryMatrix
 import math.martix.matrix
 import kotlin.random.Random
 import kotlin.random.nextUInt
@@ -24,12 +24,13 @@ fun <A> requireEqualSize(matrix: List<List<A>>) {
     }
 }
 
+/**
+ * delete this when kotlin stdlib have this method.
+ * */
 fun <R, T> List<T>.runningFoldRight(initial: R, operation: (acc: R, T) -> R): List<R> {
     if (isEmpty()) return listOf(initial)
     val result = ArrayList<R>(size + 1).apply { add(initial) }
     var accumulator = initial
-    this.reversed()
-    this.asReversed()
     for (i in this.indices.reversed()) {
         accumulator = operation(accumulator, this[i])
         result.add(accumulator)
@@ -45,10 +46,10 @@ inline fun <T> list(size: UInt, init: (index: UInt) -> T): List<T> {
     return list
 }
 
-fun <A> diagonalBlockSizeEquals(a: List<AbstractMatrix<A>>, b: List<AbstractMatrix<A>>): Boolean {
+fun <A> canMultiplyElementWise(a: List<AbstractMatrix<A>>, b: List<AbstractMatrix<A>>): Boolean {
     if (a.size != b.size) return false
     for (i in a.indices) {
-        if (a[i].rows != b[i].rows) {
+        if (a[i].columns != b[i].rows) {
             return false
         }
     }
@@ -57,7 +58,7 @@ fun <A> diagonalBlockSizeEquals(a: List<AbstractMatrix<A>>, b: List<AbstractMatr
 
 fun randomUIntMatrix(rows: UInt, columns: UInt, bound: UIntRange) = ringUInt.matrix(rows, columns) { _, _ -> Random.nextUInt(bound) }
 fun randomUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, bound: UIntRange) = ringUInt.matrix(Random.nextUInt(rowsRange), Random.nextUInt(columnsRange)) { _, _ -> Random.nextUInt(bound) }
-fun randomMultiplicableUIIntMatrix(matrices: UInt, size: UIntRange, bound: UIntRange): List<OrdinaryMatrix<UInt>> {
+fun randomMultiplicableUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange): List<OrdinaryMatrix<UInt>> {
     var a = Random.nextUInt(size)
     return List(matrices.toInt()) {
         val b = Random.nextUInt(size)
@@ -66,6 +67,13 @@ fun randomMultiplicableUIIntMatrix(matrices: UInt, size: UIntRange, bound: UIntR
         matrix
     }
 }
+
+fun randomUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange): List<OrdinaryMatrix<UInt>> {
+    return List(matrices.toInt()) {
+        randomUIntMatrix(Random.nextUInt(size), Random.nextUInt(size), bound)
+    }
+}
+
 
 val debug = false
 

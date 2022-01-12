@@ -1,6 +1,12 @@
 package math.martix
 
 import math.abstract_structure.CRing
+import math.martix.concrete.ColumnVector
+import math.martix.concrete.Constant
+import math.martix.concrete.OrdinaryMatrix
+import math.martix.concrete.RowVector
+import math.martix.concrete.view.ColumnVectorView
+import math.martix.concrete.view.RowVectorView
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.operations.multiplyToParallelUnsafe
@@ -47,29 +53,30 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
      * */
     protected open suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = this.ring.multiplyRowParallelUnsafe(this, matrix)
 
-    fun multiplyTo(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> {
+    fun multiplyTo(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         require(this.ring == matrix.ring)
         require(this.columns == matrix.rows)
         require(this.ring == dest.ring)
         require(this.rows == dest.rows)
         require(matrix.columns == dest.columns)
-        return multiplyToImpl(matrix, dest)
+        multiplyToImpl(matrix, dest)
     }
 
-    protected open fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> = this.ring.multiplyToUnsafe(this, matrix, dest)
+    protected open fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = this.ring.multiplyToUnsafe(this, matrix, dest)
 
-    suspend fun multiplyToParallel(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> {
+    suspend fun multiplyToParallel(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         require(this.ring == matrix.ring)
         require(this.columns == matrix.rows)
-        return multiplyToParallelImpl(matrix, dest)
+        multiplyToParallelImpl(matrix, dest)
     }
 
     /**
      * Should implement a parallel-by-row matrix multiplication.
      * */
-    protected open suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> = this.ring.multiplyToParallelUnsafe(this, matrix, dest)
+    protected open suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = this.ring.multiplyToParallelUnsafe(this, matrix, dest)
 
 
+//    TODO decide where to put downCast. (before/after multiplication)
     open fun downCast(): AbstractMatrix<A> {
         return when {
             this is AbstractMutableMatrix<A> -> this    //TODO mutable row/column vector
@@ -110,6 +117,14 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
         TODO()
     }
 
+    fun indexed(op: (UInt, UInt) -> Unit) {
+        for (i in 0u until rows) {
+            for (j in 0u until columns) {
+                op(i, j)
+            }
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is AbstractMatrix<*>) return false
@@ -146,7 +161,7 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
                 elementAtUnsafe(i.toUInt(), j.toUInt())
             }
         }.joinToString(",\n", "{\n", "}") { row ->
-            row.joinToString(", ","{","}") { it.toString() }
+            row.joinToString(", ", "{", "}") { it.toString() }
         }
     }
 

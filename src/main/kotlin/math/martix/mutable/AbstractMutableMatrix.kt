@@ -8,13 +8,27 @@ import math.martix.AbstractMatrix
  */
 abstract class AbstractMutableMatrix<A>(ring: CRing<A>, rows: UInt, columns: UInt) : AbstractMatrix<A>(ring, rows, columns) {
 
-    fun setElementAtSafe(row: UInt, column: UInt, a: A) {
+    fun setElementAt(row: UInt, column: UInt, a: A) {
         require(row in 0u until rows)
         require(column in 0u until columns)
-        setElementAt(row, column, a)
+        setElementAtUnsafe(row, column, a)
     }
 
-    protected abstract fun setElementAt(row: UInt, column: UInt, a: A)
+    abstract fun setElementAtUnsafe(row: UInt, column: UInt, a: A)
+
+    fun set(matrix: AbstractMatrix<A>) {
+        require(this.rows == matrix.rows)
+        require(this.columns == matrix.columns)
+        indexed { i, j ->
+            setElementAtUnsafe(i, j, matrix.elementAt(i, j))
+        }
+    }
+
+    fun setUnsafe(matrix: AbstractMatrix<A>) {
+        indexed { i, j ->
+            setElementAtUnsafe(i, j, matrix.elementAt(i, j))
+        }
+    }
 
 
 }

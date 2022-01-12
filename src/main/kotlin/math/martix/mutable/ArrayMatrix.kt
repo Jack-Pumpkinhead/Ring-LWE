@@ -15,7 +15,7 @@ class ArrayMatrix<A>(ring: CRing<A>, val matrix: List<Array<A>>) : AbstractMutab
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix[row.toInt()][column.toInt()]
 
-    override fun setElementAt(row: UInt, column: UInt, a: A) {
+    override fun setElementAtUnsafe(row: UInt, column: UInt, a: A) {
         matrix[row.toInt()][column.toInt()] = a
     }
 

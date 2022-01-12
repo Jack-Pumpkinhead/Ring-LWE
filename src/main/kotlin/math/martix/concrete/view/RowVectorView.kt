@@ -1,6 +1,8 @@
-package math.martix
+package math.martix.concrete.view
 
 import math.abstract_structure.CRing
+import math.martix.AbstractMatrix
+import math.martix.AbstractRowVector
 
 /**
  * Created by CowardlyLion at 2022/1/8 17:03

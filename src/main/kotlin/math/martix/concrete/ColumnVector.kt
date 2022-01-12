@@ -1,6 +1,7 @@
-package math.martix
+package math.martix.concrete
 
 import math.abstract_structure.CRing
+import math.martix.*
 
 /**
  * Created by CowardlyLion at 2022/1/8 14:00

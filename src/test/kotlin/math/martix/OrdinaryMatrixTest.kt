@@ -5,7 +5,7 @@ import math.abstract_structure.instance.categoryUIntMatrix
 import math.abstract_structure.instance.ringUInt
 import math.andPrint
 import math.operations.*
-import math.randomMultiplicableUIIntMatrix
+import math.randomMultiplicableUIntMatrices
 import math.randomUIntMatrix
 import org.junit.jupiter.api.Test
 
@@ -20,8 +20,8 @@ internal class OrdinaryMatrixTest {
     fun identityMatrix() {
         repeat(1000) {
             val m = randomUIntMatrix(1u..100u, 1u..100u, 0u..100u).andPrint()
-            val ml = ringUInt.identityMatrix(m.rows).andPrint()
-            val mr = ringUInt.identityMatrix(m.columns).andPrint()
+            val ml = ringUInt.identityOrdinaryMatrix(m.rows).andPrint()
+            val mr = ringUInt.identityOrdinaryMatrix(m.columns).andPrint()
             val m1 = categoryUIntMatrix.composeAllPrefixedWithIdentity(listOf(ml, m)).andPrint()
             val m2 = categoryUIntMatrix.composeAllPrefixedWithIdentity(listOf(m, mr)).andPrint()
 //            val m1 = (ml * m).andPrint()
@@ -35,7 +35,7 @@ internal class OrdinaryMatrixTest {
     fun timesImpl() {
         //make sure optimized-multiplication agree with standard multiplication
         repeat(1000) {
-            val m = randomMultiplicableUIIntMatrix(2u, 1u..100u, 0u..100u)
+            val m = randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
             m[0].andPrint()
             m[1].andPrint()
             val m1 = categoryUIntMatrix.composeAllPrefixedWithIdentity(m).andPrint()
@@ -48,7 +48,7 @@ internal class OrdinaryMatrixTest {
     fun timesRowParallelImpl() {
         runBlocking {
             repeat(1000) {
-                val m = randomMultiplicableUIIntMatrix(2u, 1u..100u, 0u..100u)
+                val m = randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
                 m[0].andPrint()
                 m[1].andPrint()
                 val m1 = (m[0].timesRowParallel(m[1])).andPrint()
@@ -62,16 +62,16 @@ internal class OrdinaryMatrixTest {
     @Test
     fun multiplyToImpl() {
         repeat(1000) {
-            val m = randomMultiplicableUIIntMatrix(2u, 1u..100u, 0u..100u)
+            val m = randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
             m[0].andPrint()
             m[1].andPrint()
             val m0 = (m[0] * m[1]).andPrint()
-            val m01 = m0.toMutableMatrix()
-            val m02 = m0.toMutableMatrix()
-            val m1 = m[0].multiplyTo(m[1], m01).andPrint()
-            val m2 = multiplyTo(m[0], m[1], m02).andPrint()
-            assertEquals(m0, m1)
-            assertEquals(m1, m2)
+            val m01 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+            val m02 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+            m[0].multiplyTo(m[1], m01)
+            multiplyTo(m[0], m[1], m02)
+            assertEquals(m0, m01)
+            assertEquals(m0, m02)
         }
     }
 
@@ -79,16 +79,16 @@ internal class OrdinaryMatrixTest {
     fun multiplyToParallelImpl() {
         runBlocking {
             repeat(1000) {
-                val m = randomMultiplicableUIIntMatrix(2u, 1u..100u, 0u..100u)
+                val m = randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
                 m[0].andPrint()
                 m[1].andPrint()
                 val m0 = (m[0] * m[1]).andPrint()
-                val m01 = m0.toMutableMatrix()
-                val m02 = m0.toMutableMatrix()
-                val m1 = m[0].multiplyToParallel(m[1], m01).andPrint()
-                val m2 = multiplyToParallel(m[0], m[1], m02).andPrint()
-                assertEquals(m0, m1)
-                assertEquals(m1, m2)
+                val m01 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+                val m02 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+                m[0].multiplyToParallel(m[1], m01)
+                multiplyToParallel(m[0], m[1], m02)
+                assertEquals(m0, m01)
+                assertEquals(m0, m02)
             }
         }
     }

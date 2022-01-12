@@ -1,8 +1,11 @@
-package math.martix
+package math.martix.concrete
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.CRing
+import math.martix.AbstractMatrix
+import math.martix.EmptyMatrix
+import math.martix.matrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.operations.innerProduct
@@ -52,43 +55,42 @@ class OrdinaryMatrix<A>(ring: CRing<A>, val matrix: List<List<A>>) : AbstractMat
     }
 
 
-    override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> {
+    override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
             is Constant<A>     -> { //n->1->1
                 for (i in 0u until rows) {
-                    dest.setElementAtSafe(i, 0u, ring.multiply(this.matrix[i.toInt()][0], matrix.value))
+                    dest.setElementAt(i, 0u, ring.multiply(this.matrix[i.toInt()][0], matrix.value))
                 }
             }
             is ColumnVector<A> -> { //a->b->1
                 for (i in 0u until rows) {
-                    dest.setElementAtSafe(i, 0u, ring.innerProduct(this.matrix[i.toInt()], matrix.vector))
+                    dest.setElementAt(i, 0u, ring.innerProduct(this.matrix[i.toInt()], matrix.vector))
                 }
             }
             is RowVector<A>    -> {  //a->1->b
                 for (i in 0u until rows) {
                     for (j in 0u until matrix.columns) {
-                        dest.setElementAtSafe(i, j, ring.multiply(this.matrix[i.toInt()][0], matrix.vector[j.toInt()]))
+                        dest.setElementAt(i, j, ring.multiply(this.matrix[i.toInt()][0], matrix.vector[j.toInt()]))
                     }
                 }
             }
             else               -> super.multiplyToImpl(matrix, dest)
         }
-        return dest
     }
 
-    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> = coroutineScope {
+    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
         when (matrix) {
             is Constant<A>     -> { //n->1->1
                 for (i in 0u until this@OrdinaryMatrix.rows) {
                     launch {
-                        dest.setElementAtSafe(i, 0u, ring.multiply(this@OrdinaryMatrix.matrix[i.toInt()][0], matrix.value))
+                        dest.setElementAt(i, 0u, ring.multiply(this@OrdinaryMatrix.matrix[i.toInt()][0], matrix.value))
                     }
                 }
             }
             is ColumnVector<A> -> { //a->b->1
                 for (i in 0u until this@OrdinaryMatrix.rows) {
                     launch {
-                        dest.setElementAtSafe(i, 0u, ring.innerProduct(this@OrdinaryMatrix.matrix[i.toInt()], matrix.vector))
+                        dest.setElementAt(i, 0u, ring.innerProduct(this@OrdinaryMatrix.matrix[i.toInt()], matrix.vector))
                     }
                 }
             }
@@ -96,14 +98,13 @@ class OrdinaryMatrix<A>(ring: CRing<A>, val matrix: List<List<A>>) : AbstractMat
                 for (i in 0u until this@OrdinaryMatrix.rows) {
                     launch {
                         for (j in 0u until matrix.columns) {
-                            dest.setElementAtSafe(i, j, ring.multiply(this@OrdinaryMatrix.matrix[i.toInt()][0], matrix.vector[j.toInt()]))
+                            dest.setElementAt(i, j, ring.multiply(this@OrdinaryMatrix.matrix[i.toInt()][0], matrix.vector[j.toInt()]))
                         }
                     }
                 }
             }
             else               -> super.multiplyToParallelImpl(matrix, dest)
         }
-        dest
     }
 
 

@@ -18,7 +18,7 @@ class MutableMatrix<A>(ring: CRing<A>, val matrix: List<MutableList<A>>) : Abstr
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix[row.toInt()][column.toInt()]
 
-    override fun setElementAt(row: UInt, column: UInt, a: A) {
+    override fun setElementAtUnsafe(row: UInt, column: UInt, a: A) {
         matrix[row.toInt()][column.toInt()] = a
     }
 

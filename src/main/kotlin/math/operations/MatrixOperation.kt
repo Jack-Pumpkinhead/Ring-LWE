@@ -31,26 +31,25 @@ fun <A> CRing<A>.multiplyUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): A
     }.downCast()
 }
 
-fun <A> multiplyTo(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> {
+fun <A> multiplyTo(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
     require(mA.ring == mB.ring)
     require(mA.ring == dest.ring)
     require(mA.columns == mB.rows)
     require(mA.rows == dest.rows)
     require(mB.columns == dest.columns)
-    return mA.ring.multiplyToUnsafe(mA, mB, dest)
+    mA.ring.multiplyToUnsafe(mA, mB, dest)
 }
 
-fun <A> CRing<A>.multiplyToUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> {
+fun <A> CRing<A>.multiplyToUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
     for (i in 0u until dest.rows) {
         for (k in 0u until dest.columns) {
             var sum = zero
             for (j in 0u until mA.columns) {
                 sum = add(sum, multiply(mA.elementAtUnsafe(i, j), mB.elementAtUnsafe(j, k)))
             }
-            dest.setElementAtSafe(i, k, sum)
+            dest.setElementAt(i, k, sum)
         }
     }
-    return dest.downCast()
 }
 
 suspend fun <A> multiplyRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMatrix<A> {
@@ -70,17 +69,17 @@ suspend fun <A> CRing<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: Ab
 }
 
 
-suspend fun <A> multiplyToParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> {
+suspend fun <A> multiplyToParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
     require(mA.ring == mB.ring)
     require(mA.columns == mB.rows)
-    return mA.ring.multiplyToParallelUnsafe(mA, mB, dest)
+    mA.ring.multiplyToParallelUnsafe(mA, mB, dest)
 }
 
 /**
  * By structural concurrency of coroutineScope, no need to joinAll() launched task.
  * Concurrently setting the value in an array would not throw ConcurrentModificationException
  * */
-suspend fun <A> CRing<A>.multiplyToParallelUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>): AbstractMatrix<A> = coroutineScope {
+suspend fun <A> CRing<A>.multiplyToParallelUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
     for (i in 0u until dest.rows) {
         launch {
             for (k in 0u until dest.columns) {
@@ -88,9 +87,8 @@ suspend fun <A> CRing<A>.multiplyToParallelUnsafe(mA: AbstractMatrix<A>, mB: Abs
                 for (j in 0u until mA.columns) {
                     sum = add(sum, multiply(mA.elementAtUnsafe(i, j), mB.elementAtUnsafe(j, k)))
                 }
-                dest.setElementAtSafe(i, k, sum)
+                dest.setElementAt(i, k, sum)
             }
         }
     }
-    dest
-}.downCast()
+}

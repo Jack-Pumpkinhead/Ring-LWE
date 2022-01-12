@@ -1,6 +1,8 @@
-package math.martix
+package math.martix.concrete
 
 import math.abstract_structure.CRing
+import math.martix.AbstractMatrix
+import math.martix.AbstractRowVector
 import math.operations.innerProduct
 
 /**
