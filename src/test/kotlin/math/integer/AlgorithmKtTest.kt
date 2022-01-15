@@ -1,8 +1,9 @@
-package math
+package math.integer
 
 import kotlinx.coroutines.runBlocking
 import math.cache.primeOf
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 /**
@@ -54,4 +55,36 @@ internal class AlgorithmKtTest {
             }
         }
     }
+
+    @Test
+    fun extendedGCDTest() {
+        for (a in 1u..100u) {
+            for (b in 1u..100u) {
+                val (r, s, gcd) = extendedGCD(a, b)
+                assertEquals(a.mod(gcd), 0u)
+                assertEquals(b.mod(gcd), 0u)
+                assertEquals(r * a.toLong() + s * b.toLong(), gcd.toLong())
+                println("$r*$a + $s*$b = $gcd")
+            }
+        }
+    }
+
+    @Test
+    fun modInverse() {
+        for (a in 1u..100u) {
+            for (b in 2u..100u) {
+                val aInv = a.modInverseOrNull(b)
+                if (aInv == null) {
+                    val (r, s, gcd) = extendedGCD(a, b)
+                    assertNotEquals(gcd, 1u)
+                    println("\t\t\t\t$r*$a + $s*$b = $gcd")
+                } else {
+                    assertEquals((a * aInv).mod(b), 1u)
+                    println("$a*$aInv = 1 mod $b")
+                }
+            }
+        }
+    }
+
+
 }

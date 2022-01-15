@@ -10,6 +10,7 @@ import math.martix.mutable.ArrayMatrix
 import math.martix.mutable.MutableMatrix
 import math.martix.mutable.MutableSizeMatrix
 import math.martix.tensor.FormalKroneckerProduct
+import math.martix.tensor.WhiskeredKroneckerProduct
 
 /**
  * Created by CowardlyLion at 2022/1/8 13:31
@@ -93,4 +94,25 @@ inline fun <reified A> AbstractMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> 
 
 inline fun <reified A> OrdinaryMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> {
     return ArrayMatrix(ring, matrix.map { row -> row.toTypedArray() })
+}
+
+//    there are (matrices.size)! ways (permutations) of decomposition, use one that compute m0 first.
+fun <A> CRing<A>.decomposeFormalKroneckerProduct(matrices: List<AbstractMatrix<A>>): List<AbstractMatrix<A>> = when (matrices.size) {
+    0    -> listOf(identityMatrix(1u))
+    1    -> matrices
+    else -> {
+        var l = 1u
+        for (m in matrices) {
+            l *= m.rows
+        }
+        var r = 1u
+
+        val result = mutableListOf<AbstractMatrix<A>>()
+        for (i in matrices.size - 1 downTo 0) {
+            l /= matrices[i].rows
+            result += WhiskeredKroneckerProduct(this, l, matrices[i], r)
+            r *= matrices[i].columns
+        }
+        result
+    }
 }

@@ -1,11 +1,17 @@
 package math
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.abstract_structure.instance.ringUInt
+import math.integer.gcd
 import math.martix.AbstractMatrix
 import math.martix.concrete.OrdinaryMatrix
 import math.martix.matrix
 import kotlin.random.Random
 import kotlin.random.nextUInt
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 /**
  * Created by CowardlyLion at 2022/1/8 20:56
@@ -82,4 +88,44 @@ fun <A> AbstractMatrix<A>.andPrint(): AbstractMatrix<A> {
         println("$this\n\n")
     }
     return this
+}
+
+@OptIn(ExperimentalTime::class)
+inline fun measureTimeAndPrint(name: String, block: () -> Unit) {
+    val time = measureTime(block)
+
+    println("$name: ${time.toString(DurationUnit.MILLISECONDS, 5)}")
+}
+
+/**
+ * possibly contain 1
+ * if list contain 0, then it consisted of 0, 1 only.
+ * */
+fun List<UInt>.isPairwiseCoprimeUInt(): Boolean {
+    if (isEmpty() || size == 1) return true
+    for (i in 0..size - 2) {
+        for (j in i + 1 until size) {
+            if (gcd(this[i], this[j]) != 1u) return false
+        }
+    }
+    return true
+}
+/**
+ * possibly contain ±1
+ * if list contain 0, then it consisted of 0, 1 only.
+ * */
+fun List<BigInteger>.isPairwiseCoprimeBigInteger(): Boolean {
+    if (isEmpty() || size == 1) return true
+    for (i in 0..size - 2) {
+        for (j in i + 1 until size) {
+            if (this[i].gcd(this[j]) != BigInteger.ONE) return false
+        }
+    }
+    return true
+}
+
+
+fun nonNegMin(a: BigInteger, b: ULong): ULong {
+    require(!a.isNegative)
+    return if (a > b.toBigInteger()) b else a.ulongValue()
 }

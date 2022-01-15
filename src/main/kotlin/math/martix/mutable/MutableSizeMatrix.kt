@@ -2,7 +2,6 @@ package math.martix.mutable
 
 import math.abstract_structure.CRing
 import math.operations.expand
-import math.operations.expandOrShrinkToNewList
 import math.operations.shrink
 
 /**
@@ -55,19 +54,6 @@ class MutableSizeMatrix<A>(ring: CRing<A>, rows: UInt, columns: UInt, val matrix
      * */
     fun shrinkRow(rows: UInt): MutableSizeMatrix<A> {
         val m = matrix.shrink(rows)
-        return MutableSizeMatrix(ring, rows, columns, m)
-    }
-
-
-    /**
-     * shrinking matrix would make a copy of the matrix to prevent affecting other MutableSizeMatrix that hold the same matrix instance.
-     * @return matrix that have same underlying data as this, with size changed (possibly filled with a given data)
-     * */
-    fun expandOrShrink(rows: UInt, columns: UInt, defaultElement: A = ring.zero): MutableSizeMatrix<A> {
-        val m = matrix.expandOrShrinkToNewList(rows, MutableList(columns.toInt()) { defaultElement })
-        for (i in m.indices) {
-            m[i] = m[i].expandOrShrinkToNewList(columns, defaultElement)
-        }
         return MutableSizeMatrix(ring, rows, columns, m)
     }
 

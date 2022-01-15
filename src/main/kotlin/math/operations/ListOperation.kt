@@ -90,19 +90,6 @@ fun <A> Monoid<A>.product(range: UIntRange, x: (UInt) -> A): A {
 }
 
 /**
- * make list's size equal to a given number. (list.size = size)
- * */
-fun <A> MutableList<A>.expandOrShrink(size: UInt, defaultElement: A): MutableList<A> {
-    while (size > this.size.toUInt()) {
-        this.add(defaultElement)
-    }
-    while (size < this.size.toUInt()) {
-        removeAt(lastIndex)
-    }
-    return this
-}
-
-/**
  * make list's size not less than a given number. (list.size >= size)
  * */
 fun <A> MutableList<A>.expand(size: UInt, defaultElement: A): MutableList<A> {
@@ -115,22 +102,6 @@ fun <A> MutableList<A>.expand(size: UInt, defaultElement: A): MutableList<A> {
 fun <A> MutableList<A>.shrink(size: UInt): MutableList<A> {
     require(size <= this.size.toUInt())
     return subList(0, size.toInt()).toMutableList()
-}
-
-
-/**
- * make list's size equal to a given number. (list.size = size)
- * @return original list if list.size <= size, otherwise a new list with given size.
- * */
-fun <A> MutableList<A>.expandOrShrinkToNewList(size: UInt, defaultElement: A): MutableList<A> {
-    return if (size < this.size.toUInt()) {
-        MutableList(size.toInt()) { i -> this[i] }
-    } else {
-        while (size > this.size.toUInt()) {
-            this.add(defaultElement)
-        }
-        this
-    }
 }
 
 

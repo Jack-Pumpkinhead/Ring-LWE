@@ -20,7 +20,7 @@ import math.operations.multiplyRowParallelUnsafe
 abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns: UInt) {
 
     init {
-        require(rows.toInt() >= 0)
+        require(rows.toInt() >= 0)  //require actural value is a non-negative integer
         require(columns.toInt() >= 0)
     }
 
@@ -34,13 +34,14 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
     //    no need to be protected, use this to improve performance.
     abstract fun elementAtUnsafe(row: UInt, column: UInt): A  //Kotlin haven't support UInt-indexed array/list yet.
 
+
     operator fun times(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
         require(this.ring == matrix.ring)
         require(this.columns == matrix.rows)
         return timesImpl(matrix)
     }
 
-    protected open fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = this.ring.multiplyUnsafe(this, matrix)
+    open fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = this.ring.multiplyUnsafe(this, matrix)
 
     suspend fun timesRowParallel(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
         require(this.ring == matrix.ring)
@@ -51,7 +52,7 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
     /**
      * Should implement a parallel-by-row matrix multiplication.
      * */
-    protected open suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = this.ring.multiplyRowParallelUnsafe(this, matrix)
+    open suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = this.ring.multiplyRowParallelUnsafe(this, matrix)
 
     fun multiplyTo(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         require(this.ring == matrix.ring)
@@ -74,6 +75,8 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
      * Should implement a parallel-by-row matrix multiplication.
      * */
     protected open suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = this.ring.multiplyToParallelUnsafe(this, matrix, dest)
+
+
 
 
 //    TODO decide where to put downCast. (before/after multiplication)
