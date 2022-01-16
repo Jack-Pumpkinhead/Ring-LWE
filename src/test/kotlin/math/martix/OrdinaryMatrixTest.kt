@@ -85,7 +85,7 @@ internal class OrdinaryMatrixTest {
                 val m0 = (m[0] * m[1]).andPrint()
                 val m01 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
                 val m02 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-                m[0].multiplyToParallel(m[1], m01)
+                m[0].multiplyToRowParallel(m[1], m01)
                 multiplyToParallel(m[0], m[1], m02)
                 assertEquals(m0, m01)
                 assertEquals(m0, m02)

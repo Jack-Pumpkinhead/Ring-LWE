@@ -17,7 +17,7 @@ internal class UIntOperationKtTest {
     fun modPower() {
         for (modulus in 10u..100u) {
             val ringUIntModular = ringModularUInt(modulus)
-            val monoid = ringUIntModular.toMultiplicativeMonoid()
+            val monoid = ringUIntModular.multiplicativeMonoid
             for (x in 0u until modulus) {
                 for (power in 0u..100u) {
                     val modPowerM = modPowerM(x, power, modulus)
@@ -35,7 +35,7 @@ internal class UIntOperationKtTest {
 
     @Test
     fun power() {
-        val monoid = ringUInt.toMultiplicativeMonoid()
+        val monoid = ringUInt.multiplicativeMonoid
         for (x in 0u..100u) {
             for (power in 0u..100u) {
                 val powerM = x.powerM(power)

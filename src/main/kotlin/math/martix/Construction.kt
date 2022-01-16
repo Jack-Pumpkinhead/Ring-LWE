@@ -4,8 +4,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import math.abstract_structure.CRing
+import math.martix.concrete.ColumnVector
 import math.martix.concrete.Constant
 import math.martix.concrete.OrdinaryMatrix
+import math.martix.concrete.RowVector
 import math.martix.mutable.ArrayMatrix
 import math.martix.mutable.MutableMatrix
 import math.martix.mutable.MutableSizeMatrix
@@ -66,6 +68,11 @@ suspend fun <A> nestedLLRP(rows: UInt, columns: UInt, generator: (UInt, UInt) ->
 suspend fun <A> nestedLMLRP(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A): List<MutableList<A>> = listParallel(rows) { row -> MutableList(columns.toInt()) { column -> generator(row, column.toUInt()) } }
 suspend inline fun <reified A> nestedLARP(rows: UInt, columns: UInt, crossinline generator: (UInt, UInt) -> A): List<Array<A>> = listParallel(rows) { row -> Array(columns.toInt()) { column -> generator(row, column.toUInt()) } }
 
+
+fun <A> CRing<A>.rowVector(columns: UInt, generator: (UInt) -> A) = RowVector(this, List(columns.toInt()) { i -> generator(i.toUInt()) })
+suspend fun <A> CRing<A>.rowVectorParallel(columns: UInt, generator: (UInt) -> A) = RowVector(this, listParallel(columns, generator))
+fun <A> CRing<A>.columnVector(rows: UInt, generator: (UInt) -> A) = ColumnVector(this, List(rows.toInt()) { i -> generator(i.toUInt()) })
+suspend fun <A> CRing<A>.columnVectorParallel(rows: UInt, generator: (UInt) -> A) = ColumnVector(this, listParallel(rows, generator))
 
 fun <A> CRing<A>.matrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = OrdinaryMatrix(this, nestedLL(rows, columns, generator))
 fun <A> CRing<A>.mutableMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableMatrix(this, nestedLML(rows, columns, generator))

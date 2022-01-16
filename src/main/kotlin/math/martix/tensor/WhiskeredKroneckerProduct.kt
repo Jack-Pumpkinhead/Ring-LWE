@@ -41,7 +41,7 @@ class WhiskeredKroneckerProduct<A>(ring: CRing<A>, val l: UInt, val mA: Abstract
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
         val dest = ring.zeroMutableMatrix(this.rows, matrix.columns)
-        multiplyToParallelImpl(matrix, dest)
+        multiplyToRowParallelImpl(matrix, dest)
         return dest.downCast()
     }
 
@@ -55,7 +55,7 @@ class WhiskeredKroneckerProduct<A>(ring: CRing<A>, val l: UInt, val mA: Abstract
         }
     }
 
-    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
         for (il in 0u until l) {
             launch {    //reduce O(n^2) coroutine to O(n) coroutine improves performance, but still cannot outperform one thread algorithm.
                 for (ir in 0u until r) {

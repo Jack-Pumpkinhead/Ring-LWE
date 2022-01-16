@@ -10,19 +10,19 @@ import math.operations.product
  *
  * require bound to be pair-wise coprime and >1
  */
-class RuritanianIndex(bound: List<BigInteger>) : BoundedMultiIndex(bound) {
+class RuritanianIndex(bounds: List<BigInteger>) : BoundedMultiIndex(bounds) {
 
     init {
-        require(bound.isNotEmpty())
-        for (b in bound) {
+        require(bounds.isNotEmpty())
+        for (b in bounds) {
             require(b >= 2u)
         }
     }
 
-    override val indexBound: BigInteger = ringBigInteger.product(bound)
+    override val indexBound: BigInteger = ringBigInteger.product(bounds)
 
 
-    val indexBase: List<ModularBigInteger> = List(bound.size) { (indexBound / bound[it]).toModularBigInteger(indexBound) }
+    val indexBase: List<ModularBigInteger> = List(bounds.size) { (indexBound / bounds[it]).toModularBigInteger(indexBound) }
 
     override fun encode(indices: List<BigInteger>): BigInteger {
         require(indexBase.size == indices.size)
@@ -34,7 +34,7 @@ class RuritanianIndex(bound: List<BigInteger>) : BoundedMultiIndex(bound) {
     }
 
 
-    val indexBaseInv: List<BigInteger> = List(bound.size) { i -> indexBase[i].residue.modInverse(bound[i]) }
+    val indexBaseInv: List<BigInteger> = List(bounds.size) { i -> indexBase[i].residue.modInverse(bounds[i]) }
 
     override fun decode(index: BigInteger): List<BigInteger> = List(bounds.size) { i -> (index.mod(bounds[i]) * indexBaseInv[i]).mod(bounds[i]) }
 

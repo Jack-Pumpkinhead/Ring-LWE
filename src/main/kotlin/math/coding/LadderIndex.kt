@@ -8,18 +8,18 @@ import math.runningFoldRight
  *
  * give a bijection between (multi-index {a_i}_i with bound {b_i}_i) to (0 until Π_i b_i)
  */
-class LadderIndex(bound: List<BigInteger>) : BoundedMultiIndex(bound) {
+class LadderIndex(bounds: List<BigInteger>) : BoundedMultiIndex(bounds) {
 
     val indexBase: List<BigInteger>
     override val indexBound: BigInteger
 
     init {
-        require(bound.isNotEmpty())
-        for (b in bound) {
+        require(bounds.isNotEmpty())
+        for (b in bounds) {
             require(b >= BigInteger.ONE)
         }
 
-        val accumulation = bound.runningFoldRight(BigInteger.ONE) { acc, b -> acc * b }
+        val accumulation = bounds.runningFoldRight(BigInteger.ONE) { acc, b -> acc * b }
         indexBound = accumulation[0]
         indexBase = accumulation.drop(1)
     }

@@ -1,5 +1,7 @@
 package math.martix.mutable
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import math.abstract_structure.CRing
 import math.martix.AbstractMatrix
 
@@ -27,6 +29,31 @@ abstract class AbstractMutableMatrix<A>(ring: CRing<A>, rows: UInt, columns: UIn
     fun setUnsafe(matrix: AbstractMatrix<A>) {
         indexed { i, j ->
             setElementAtUnsafe(i, j, matrix.elementAt(i, j))
+        }
+    }
+
+    suspend fun setUnsafeRowParallel(matrix: AbstractMatrix<A>) {
+        indexedRowParallel { i, j ->
+            setElementAtUnsafe(i, j, matrix.elementAt(i, j))
+        }
+    }
+
+
+    fun indexedSet(op: (UInt, UInt) -> A) {
+        for (i in 0u until rows) {
+            for (j in 0u until columns) {
+                setElementAtUnsafe(i, j, op(i, j))
+            }
+        }
+    }
+
+    suspend fun indexedSetRowParallel(op: (UInt, UInt) -> A) = coroutineScope {
+        for (i in 0u until rows) {
+            launch {
+                for (j in 0u until columns) {
+                    setElementAtUnsafe(i, j, op(i, j))
+                }
+            }
         }
     }
 

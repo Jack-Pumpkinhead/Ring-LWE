@@ -18,7 +18,7 @@ class IdentityMatrix<A>(ring: CRing<A>, size: UInt) : AbstractMatrix<A>(ring, si
         dest.setUnsafe(matrix)
     }
 
-    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         dest.setUnsafe(matrix)
     }
 }

@@ -47,13 +47,13 @@ open class FormalProduct<A>(ring: CRing<A>, val matrices: List<AbstractMatrix<A>
     }
 
 
-//    TODO move (and correct) memory-saving code in (History)FormalKroneckerProduct to here.
+    //    TODO move (and correct) memory-saving code in (History)FormalKroneckerProduct to here.
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         dest.setUnsafe(timesImpl(matrix))
     }
 
-    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        dest.setUnsafe(timesRowParallelImpl(matrix))
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        dest.setUnsafeRowParallel(timesRowParallelImpl(matrix))
     }
 
     override fun downCast(): AbstractMatrix<A> {

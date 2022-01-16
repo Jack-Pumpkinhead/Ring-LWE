@@ -78,7 +78,7 @@ class OrdinaryMatrix<A>(ring: CRing<A>, val matrix: List<List<A>>) : AbstractMat
         }
     }
 
-    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
         when (matrix) {
             is Constant<A>     -> { //n->1->1
                 for (i in 0u until this@OrdinaryMatrix.rows) {
@@ -103,7 +103,7 @@ class OrdinaryMatrix<A>(ring: CRing<A>, val matrix: List<List<A>>) : AbstractMat
                     }
                 }
             }
-            else               -> super.multiplyToParallelImpl(matrix, dest)
+            else               -> super.multiplyToRowParallelImpl(matrix, dest)
         }
     }
 

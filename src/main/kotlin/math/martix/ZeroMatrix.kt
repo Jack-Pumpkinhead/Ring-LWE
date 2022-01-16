@@ -18,7 +18,7 @@ class ZeroMatrix<A>(ring: CRing<A>, rows: UInt, columns: UInt) : AbstractMatrix<
         dest.setUnsafe(ZeroMatrix(ring, this.rows, matrix.columns))
     }
 
-    override suspend fun multiplyToParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         dest.setUnsafe(ZeroMatrix(ring, this.rows, matrix.columns))
     }
 }

@@ -110,6 +110,7 @@ fun List<UInt>.isPairwiseCoprimeUInt(): Boolean {
     }
     return true
 }
+
 /**
  * possibly contain ±1
  * if list contain 0, then it consisted of 0, 1 only.
@@ -128,4 +129,18 @@ fun List<BigInteger>.isPairwiseCoprimeBigInteger(): Boolean {
 fun nonNegMin(a: BigInteger, b: ULong): ULong {
     require(!a.isNegative)
     return if (a > b.toBigInteger()) b else a.ulongValue()
+}
+
+fun ULong.bitAt(i: UInt): Boolean {
+    require(i < 64u)
+    return this.shr(i.toInt()).and(1uL) == 1uL
+}
+
+fun ULong.setBitAt(i: UInt, bit: Boolean): ULong {
+    require(i < 64u)
+    return if (bit) {
+        this.or(1uL.shl(i.toInt()))
+    } else {
+        this.inv().or(1uL.shl(i.toInt())).inv()
+    }
 }

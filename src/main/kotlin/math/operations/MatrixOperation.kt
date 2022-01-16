@@ -72,14 +72,14 @@ suspend fun <A> CRing<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: Ab
 suspend fun <A> multiplyToParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
     require(mA.ring == mB.ring)
     require(mA.columns == mB.rows)
-    mA.ring.multiplyToParallelUnsafe(mA, mB, dest)
+    mA.ring.multiplyToRowParallelUnsafe(mA, mB, dest)
 }
 
 /**
  * By structural concurrency of coroutineScope, no need to joinAll() launched task.
  * Concurrently setting the value in an array would not throw ConcurrentModificationException
  * */
-suspend fun <A> CRing<A>.multiplyToParallelUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
+suspend fun <A> CRing<A>.multiplyToRowParallelUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
     for (i in 0u until dest.rows) {
         launch {
             for (k in 0u until dest.columns) {

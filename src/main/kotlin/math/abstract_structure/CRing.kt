@@ -9,7 +9,7 @@ abstract class CRing<A>(descriptions: MutableSet<String>, zero: A, val one: A) :
 
     abstract fun multiply(x: A, y: A): A
 
-    fun toMultiplicativeMonoid(): Monoid<A> = object : Monoid<A>(descriptions.mapTo(mutableSetOf()) { "multiplicative monoid of $it" }, one) {
+    val multiplicativeMonoid: Monoid<A> = object : Monoid<A>(descriptions.mapTo(mutableSetOf()) { "multiplicative monoid of $it" }, one) {
         override fun multiply(x: A, y: A): A = this@CRing.multiply(x, y)
     }
 
