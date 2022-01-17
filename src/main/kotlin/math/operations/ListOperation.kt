@@ -66,7 +66,7 @@ fun <A> CRing<A>.product(range: UIntRange, x: (UInt) -> A): A {
 
 
 fun <A> Monoid<A>.product(x: List<A>): A {
-    var prod = identity
+    var prod = one
     for (a in x) {
         prod = multiply(prod, a)
     }
@@ -74,7 +74,7 @@ fun <A> Monoid<A>.product(x: List<A>): A {
 }
 
 fun <A> Monoid<A>.product(range: UIntRange, x: List<A>): A {
-    var sum = identity
+    var sum = one
     for (i in range) {
         sum = multiply(sum, x[i.toInt()])
     }
@@ -82,7 +82,7 @@ fun <A> Monoid<A>.product(range: UIntRange, x: List<A>): A {
 }
 
 fun <A> Monoid<A>.product(range: UIntRange, x: (UInt) -> A): A {
-    var sum = identity
+    var sum = one
     for (i in range) {
         sum = multiply(sum, x(i))
     }

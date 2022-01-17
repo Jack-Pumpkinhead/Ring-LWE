@@ -3,11 +3,13 @@ package math.abstract_structure
 /**
  * Created by CowardlyLion at 2022/1/8 13:00
  */
-abstract class Category<C0, C1>(val descriptions: MutableSet<String>) {
+interface Category<C0, C1> {
 
-    abstract fun source(f: C1): C0
-    abstract fun target(f: C1): C0
+    val descriptions: MutableSet<String>
 
+    fun source(f: C1): C0
+    fun target(f: C1): C0
+    fun id(c0: C0): C1
 
     fun compose(f: C1, g: C1): C1 {
         require(target(f) == source(g))
@@ -17,21 +19,15 @@ abstract class Category<C0, C1>(val descriptions: MutableSet<String>) {
         return result
     }
 
-    protected abstract fun composeUnsafe(f: C1, g: C1): C1
-
-    abstract fun id(c0: C0): C1
+    fun composeUnsafe(f: C1, g: C1): C1
 
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Category<*, *>) return false
-
-        return other.descriptions.any { this.descriptions.contains(it) }
+    fun toOppositeCategory(): Category<C0, C1> = object : Category<C0, C1> {
+        override val descriptions: MutableSet<String> = this@Category.descriptions.mapTo(mutableSetOf()) { "opposite category of ($it)" }
+        override fun source(f: C1): C0 = this@Category.target(f)
+        override fun target(f: C1): C0 = this@Category.source(f)
+        override fun id(c0: C0): C1 = this@Category.id(c0)
+        override fun composeUnsafe(f: C1, g: C1): C1 = this@Category.composeUnsafe(g, f)
     }
-
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
-    }
-
 
 }

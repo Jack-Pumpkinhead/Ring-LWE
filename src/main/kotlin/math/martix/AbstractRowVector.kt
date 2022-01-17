@@ -5,7 +5,16 @@ import math.abstract_structure.CRing
 /**
  * Created by CowardlyLion at 2022/1/8 17:03
  */
-abstract class AbstractRowVector<A>(ring: CRing<A>, columns: UInt) : AbstractMatrix<A>(ring, 1u, columns) {
+abstract class AbstractRowVector<A>(ring: CRing<A>, columns: UInt) : AbstractMatrix<A>(ring, 1u, columns), VectorLike<A> {
+
+    override fun vectorElementAt(index: UInt): A {
+        return elementAt(0u, index)
+    }
+
+    override fun vectorElementAtUnsafe(index: UInt): A {
+        return elementAtUnsafe(0u, index)
+    }
+
 
     fun innerProduct(vector: AbstractColumnVector<A>): A {
         require(this.columns == vector.rows)

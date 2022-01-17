@@ -3,20 +3,15 @@ package math.abstract_structure
 /**
  * Created by CowardlyLion at 2022/1/9 13:15
  */
-abstract class AddMonoid<A>(val descriptions: MutableSet<String>, val zero: A) {
+interface AddMonoid<A> {
 
-    abstract fun add(x: A, y: A): A
+    val descriptions: MutableSet<String>        //let instance of abstract structure parametrized by string, so need not implement equals() and hashcode()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is AddMonoid<*>) return false
+    val zero: A
+    fun add(x: A, y: A): A
 
-        if (zero != other.zero) return false
-        return other.descriptions.any { this.descriptions.contains(it) }
-    }
+    fun hasNegation(a: A): Boolean
+    fun negate(a: A): A
 
-    override fun hashCode(): Int {
-        return zero?.hashCode() ?: 0
-    }
 
 }

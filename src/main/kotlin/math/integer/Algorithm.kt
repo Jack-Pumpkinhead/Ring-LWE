@@ -1,5 +1,7 @@
 package math.integer
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.cache.primeOf
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
@@ -138,8 +140,6 @@ suspend fun Long.eulerTotient(): Long {
     }
 }
 
-data class ExtendedGCDResult(val r: Long, val s: Long, val gcd: UInt)
-
 fun gcd(a: UInt, b: UInt): UInt {
     var a0 = a
     var a1 = b
@@ -152,10 +152,12 @@ fun gcd(a: UInt, b: UInt): UInt {
     return a0
 }
 
+data class ExtendedGCDResultUInt(val r: Long, val s: Long, val gcd: UInt)
+
 /**
  * r*a + s*b = gcd(a,b)
  * */
-fun extendedGCD(a: UInt, b: UInt): ExtendedGCDResult {
+fun extendedGCD(a: UInt, b: UInt): ExtendedGCDResultUInt {
     var a0 = a
     var a1 = b
     var a00 = 1L
@@ -174,7 +176,7 @@ fun extendedGCD(a: UInt, b: UInt): ExtendedGCDResult {
         a10 = ta00 - q.toLong() * a10
         a11 = ta01 - q.toLong() * a11
     }
-    return ExtendedGCDResult(a00, a01, a0)
+    return ExtendedGCDResultUInt(a00, a01, a0)
 }
 
 fun UInt.modInverseOrNull(modulus: UInt): UInt? {
@@ -194,3 +196,98 @@ fun UInt.modInverseOrNull(modulus: UInt): UInt? {
     }
     return if (a0 == 1u) b0.mod(modulus.toLong()).toUInt() else null
 }
+
+fun UInt.modInverse(modulus: UInt): UInt {
+    require(modulus > 1u)
+    var a0 = this
+    var a1 = modulus
+    var b0 = 1L
+    var b1 = 0L
+    while (a1 != 0u) {
+        val q = a0 / a1
+        val ta0 = a0
+        a0 = a1
+        a1 = ta0 - q * a1
+        val tb0 = b0
+        b0 = b1
+        b1 = tb0 - q.toLong() * b1
+    }
+    return if (a0 == 1u) b0.mod(modulus.toLong()).toUInt() else error("UInt $this has no inverse modulo $modulus")
+}
+
+
+fun gcd(a: ULong, b: ULong): ULong {
+    var a0 = a
+    var a1 = b
+    while (a1 != 0uL) {
+        val q = a0 / a1
+        val ta0 = a0
+        a0 = a1
+        a1 = ta0 - q * a1
+    }
+    return a0
+}
+
+data class ExtendedGCDResultULong(val r: BigInteger, val s: BigInteger, val gcd: ULong)
+
+/**
+ * r*a + s*b = gcd(a,b)
+ * */
+fun extendedGCD(a: ULong, b: ULong): ExtendedGCDResultULong {
+    var a0 = a
+    var a1 = b
+    var a00 = BigInteger.ONE
+    var a01 = BigInteger.ZERO
+    var a10 = BigInteger.ZERO
+    var a11 = BigInteger.ONE
+    while (a1 != 0uL) {
+        val q = a0 / a1
+        val ta0 = a0
+        a0 = a1
+        a1 = ta0 - q * a1
+        val ta00 = a00
+        val ta01 = a01
+        a00 = a10
+        a01 = a11
+        a10 = ta00 - q.toBigInteger() * a10
+        a11 = ta01 - q.toBigInteger() * a11
+    }
+    return ExtendedGCDResultULong(a00, a01, a0)
+}
+
+fun ULong.modInverseOrNull(modulus: ULong): ULong? {
+    require(modulus > 1u)
+    var a0 = this
+    var a1 = modulus
+    var b0 = BigInteger.ONE
+    var b1 = BigInteger.ZERO
+    while (a1 != 0uL) {
+        val q = a0 / a1
+        val ta0 = a0
+        a0 = a1
+        a1 = ta0 - q * a1
+        val tb0 = b0
+        b0 = b1
+        b1 = tb0 - q.toBigInteger() * b1
+    }
+    return if (a0 == 1uL) b0.mod(modulus.toBigInteger()).ulongValue() else null
+}
+
+fun ULong.modInverse(modulus: ULong): ULong {
+    require(modulus > 1u)
+    var a0 = this
+    var a1 = modulus
+    var b0 = BigInteger.ONE
+    var b1 = BigInteger.ZERO
+    while (a1 != 0uL) {
+        val q = a0 / a1
+        val ta0 = a0
+        a0 = a1
+        a1 = ta0 - q * a1
+        val tb0 = b0
+        b0 = b1
+        b1 = tb0 - q.toBigInteger() * b1
+    }
+    return if (a0 == 1uL) b0.mod(modulus.toBigInteger()).ulongValue() else error("ULong $this has no inverse modulo $modulus")
+}
+

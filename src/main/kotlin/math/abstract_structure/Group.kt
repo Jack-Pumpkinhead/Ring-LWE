@@ -3,8 +3,14 @@ package math.abstract_structure
 /**
  * Created by CowardlyLion at 2022/1/7 19:57
  */
-abstract class Group<A>(descriptions: MutableSet<String>, identity: A) : Monoid<A>(descriptions, identity) {
+interface Group<A> : Monoid<A> {
 
-    abstract fun inverse(a: A): A
+    override fun hasInverse(a: A): Boolean = true
+
+    //    x^-1 y^-1 x y
+    fun commutator(x: A, y: A): A = multiply(multiply(inverse(x), inverse(y)), multiply(x, y))
+
+    //    x^y := y^-1 x y
+    fun actedBy(x: A, y: A): A = multiply(multiply(inverse(y), x), y)
 
 }

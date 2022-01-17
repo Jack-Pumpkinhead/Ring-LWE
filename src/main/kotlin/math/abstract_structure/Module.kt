@@ -5,8 +5,10 @@ package math.abstract_structure
  *
  * TODO add description of all mathematical object (definition, etc)
  */
-abstract class Module<R, A>(descriptions: MutableSet<String>, ring: CRing<R>, zero: A) : AddGroup<A>(descriptions.mapTo(mutableSetOf()) { "additive group of ($it)" }, zero) {
+interface Module<R, A> : AddGroup<A> {
 
-    abstract fun action(r: R, a: A): A
+//    val ring: CRing<R>    //should acted by a ring
+
+    fun action(r: R, a: A): A
 
 }

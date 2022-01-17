@@ -131,6 +131,20 @@ fun nonNegMin(a: BigInteger, b: ULong): ULong {
     return if (a > b.toBigInteger()) b else a.ulongValue()
 }
 
+fun UInt.bitAt(i: UInt): Boolean {
+    require(i < 32u)
+    return this.shr(i.toInt()).and(1u) == 1u
+}
+
+fun UInt.setBitAt(i: UInt, bit: Boolean): UInt {
+    require(i < 32u)
+    return if (bit) {
+        this.or(1u.shl(i.toInt()))
+    } else {
+        this.inv().or(1u.shl(i.toInt())).inv()
+    }
+}
+
 fun ULong.bitAt(i: UInt): Boolean {
     require(i < 64u)
     return this.shr(i.toInt()).and(1uL) == 1uL

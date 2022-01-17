@@ -14,7 +14,7 @@ import math.operations.maxIndexOfOne
  * @return x^power mod modulus, 0^0 = 1
  * */
 fun <A> Monoid<A>.powerM(x: A, power: UInt): A = when (power) {
-    0u   -> identity
+    0u   -> one
     1u   -> x
     else -> {
         var a = x
@@ -42,7 +42,7 @@ fun <A> Monoid<A>.powerM(x: A, power: UInt): A = when (power) {
 fun <A> Monoid<A>.powerM(x: A, power: BigInteger): A {
     require(power >= BigInteger.ZERO)
     return when (power) {
-        BigInteger.ZERO -> identity
+        BigInteger.ZERO -> one
         BigInteger.ONE  -> x
         else            -> {
             var a = x
@@ -69,7 +69,7 @@ fun <A> Monoid<A>.powerM(x: A, power: BigInteger): A {
  * */
 fun <A> Monoid<A>.powerS(x: A, power: UInt): A {
     var xPow = x
-    var y = identity
+    var y = one
     var pow = power
     while (pow != 0u) {
         if (pow % 2u == 1u) {
@@ -87,7 +87,7 @@ fun <A> Monoid<A>.powerS(x: A, power: UInt): A {
  * */
 fun <A> Monoid<A>.powerS(x: A, power: BigInteger): A {
     var xPow = x
-    var y = identity
+    var y = one
     var pow = power
     while (pow != BigInteger.ZERO) {
         if (pow % BigInteger.TWO == BigInteger.ONE) {

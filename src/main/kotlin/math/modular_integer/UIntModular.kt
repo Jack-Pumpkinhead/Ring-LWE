@@ -1,5 +1,7 @@
 package math.modular_integer
 
+import math.integer.gcd
+import math.integer.modInverse
 import math.operations.modMinus
 import math.operations.modPlus
 import math.operations.modTimes
@@ -27,6 +29,10 @@ class UIntModular(val modulus: UInt, val residue: UInt) {
         require(this.modulus == y.modulus)
         return UIntModular(modulus, modTimes(residue, y.residue, modulus))
     }
+
+    fun hasInverse(): Boolean = gcd(modulus, residue) == 1u
+
+    fun inverse(): UIntModular = UIntModular(modulus, residue.modInverse(modulus))
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

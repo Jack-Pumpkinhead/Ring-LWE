@@ -17,13 +17,12 @@ internal class UIntOperationKtTest {
     fun modPower() {
         for (modulus in 10u..100u) {
             val ringUIntModular = ringModularUInt(modulus)
-            val monoid = ringUIntModular.multiplicativeMonoid
             for (x in 0u until modulus) {
                 for (power in 0u..100u) {
                     val modPowerM = modPowerM(x, power, modulus)
                     val modPowerS = modPowerSq(x, power, modulus)
-                    val modPowerRM = monoid.powerM(UIntModular(modulus, x), power)
-                    val modPowerRS = monoid.powerS(UIntModular(modulus, x), power)
+                    val modPowerRM = ringUIntModular.powerM(UIntModular(modulus, x), power)
+                    val modPowerRS = ringUIntModular.powerS(UIntModular(modulus, x), power)
 //                    println("$x^$power = $modpowerM, $modpowerS \t mod $modulus")
                     assertEquals(modPowerM, modPowerS)
                     assertEquals(modPowerRM, modPowerRS)
@@ -35,13 +34,12 @@ internal class UIntOperationKtTest {
 
     @Test
     fun power() {
-        val monoid = ringUInt.multiplicativeMonoid
         for (x in 0u..100u) {
             for (power in 0u..100u) {
                 val powerM = x.powerM(power)
                 val powerS = x.powerSq(power)
-                val powerRM = monoid.powerM(x, power)
-                val powerRS = monoid.powerS(x, power)
+                val powerRM = ringUInt.powerM(x, power)
+                val powerRS = ringUInt.powerS(x, power)
 //                println("$x^$power = $powerM, $powerS")
                 assertEquals(powerM, powerS)
                 assertEquals(powerRM, powerRS)
