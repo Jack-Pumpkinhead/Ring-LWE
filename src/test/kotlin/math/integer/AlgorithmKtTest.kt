@@ -1,7 +1,8 @@
 package math.integer
 
 import kotlinx.coroutines.runBlocking
-import math.cache.primeOf
+import math.abstract_structure.instance.ringULong
+import math.operation.product
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -36,7 +37,9 @@ internal class AlgorithmKtTest {
     fun primeFactorization() {
         runBlocking {
             for (i in 1uL..10000uL) {
-                println("$i = ${i.positivePrimeFactorization()}")
+                val factorization = i.primeFactorization()
+                assertEquals(i, ringULong.product(factorization.map { it.primePower }))
+                println("$i = $factorization")
             }
         }
     }
@@ -49,7 +52,7 @@ internal class AlgorithmKtTest {
     fun largePrimeFactorization() {
         runBlocking {
             for (i in ULong.MAX_VALUE downTo ULong.MAX_VALUE - 0uL) {
-                println("$i = ${i.positivePrimeFactorization()}")
+                println("$i = ${i.primeFactorization()}")
             }
         }
     }
@@ -59,7 +62,7 @@ internal class AlgorithmKtTest {
     fun prime() {
         runBlocking {
             for (i in 1uL..10000uL) {
-                println("$i:  ${i.eulerTotient()}, \t ${i.radical()}, \t ${i.positivePrimeFactorization()}")
+                println("$i:  ${i.eulerTotient()}, \t ${i.radical()}, \t ${i.primeFactorization()}")
             }
         }
     }
@@ -90,6 +93,32 @@ internal class AlgorithmKtTest {
                     assertEquals((a * aInv).mod(b), 1u)
                     println("$a*$aInv = 1 mod $b")
                 }
+            }
+        }
+    }
+
+    /**
+     * almost all generator are small
+     */
+    @Test
+    fun primeFieldGenerators() {
+        runBlocking {
+            for (i in 0..1000) {
+                val prime = primeOf(i)
+                val generators = allMultiplicativeGeneratorOfPrimeFieldUnsafe(prime)
+                println("generators of $prime are $generators")
+                assertEquals((prime - 1u).eulerTotient(), generators.size.toULong())
+            }
+        }
+    }
+
+    @Test
+    fun primeFieldGeneratorFirst() {
+        runBlocking {
+            for (i in 0..1000) {
+                val prime = primeOf(i)
+                val generator = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime)
+                println("first generator of $prime is $generator")
             }
         }
     }

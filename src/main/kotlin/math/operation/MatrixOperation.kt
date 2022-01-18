@@ -1,4 +1,4 @@
-package math.operations
+package math.operation
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

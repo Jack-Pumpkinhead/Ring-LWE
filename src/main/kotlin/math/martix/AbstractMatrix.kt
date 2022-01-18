@@ -12,10 +12,10 @@ import math.martix.concrete.view.ColumnVectorView
 import math.martix.concrete.view.RowVectorView
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
-import math.operations.multiplyToRowParallelUnsafe
-import math.operations.multiplyToUnsafe
-import math.operations.multiplyUnsafe
-import math.operations.multiplyRowParallelUnsafe
+import math.operation.multiplyToRowParallelUnsafe
+import math.operation.multiplyToUnsafe
+import math.operation.multiplyUnsafe
+import math.operation.multiplyRowParallelUnsafe
 
 /**
  * Created by CowardlyLion at 2022/1/7 21:22

@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.categoryUIntMatrix
 import math.abstract_structure.instance.ringUInt
 import math.andPrint
-import math.operations.*
+import math.operation.*
 import math.randomMultiplicableUIntMatrices
 import math.randomUIntMatrix
 import org.junit.jupiter.api.Test

@@ -7,7 +7,7 @@ import math.coding.LadderIndex
 import math.martix.AbstractMatrix
 import math.martix.FormalProduct
 import math.martix.decomposeFormalKroneckerProduct
-import math.operations.product
+import math.operation.product
 
 /**
  * Created by CowardlyLion at 2022/1/8 20:27

@@ -1,4 +1,4 @@
-package math.operations
+package math.integer.operation
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 

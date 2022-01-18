@@ -3,7 +3,7 @@ package math.martix.concrete
 import math.abstract_structure.Ring
 import math.martix.AbstractMatrix
 import math.martix.AbstractRowVector
-import math.operations.innerProduct
+import math.operation.innerProduct
 
 /**
  * Created by CowardlyLion at 2022/1/8 14:05

@@ -6,8 +6,8 @@ import math.abstract_structure.instance.ringUInt
 import math.andPrint
 import math.coding.*
 import math.isPairwiseCoprimeBigInteger
-import math.operations.multiply
-import math.operations.product
+import math.operation.multiply
+import math.operation.product
 import math.randomUIntMatrix
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

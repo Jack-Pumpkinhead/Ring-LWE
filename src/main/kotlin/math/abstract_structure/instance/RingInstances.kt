@@ -1,6 +1,7 @@
 package math.abstract_structure.instance
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import com.ionspin.kotlin.bignum.modular.ModularBigInteger
 import math.abstract_structure.Ring
 import math.bitAt
@@ -8,12 +9,14 @@ import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
 import math.integer.modInverse
 import math.integer.modular.UIntModular
+import math.integer.modular.ULongModular
 
 /**
  * Created by CowardlyLion at 2022/1/7 20:09
  */
 
 val twoPower32 = 1uL.shl(32)
+val twoPower64 = BigInteger.ONE.shl(64)
 
 //integer modulo 2^32
 val ringUInt: Ring<UInt> = object : Ring<UInt> {
@@ -29,6 +32,58 @@ val ringUInt: Ring<UInt> = object : Ring<UInt> {
     override fun hasInverse(a: UInt): Boolean = a.bitAt(0u)
     override fun inverse(a: UInt): UInt = a.toULong().modInverse(twoPower32).toUInt()
 }
+
+//integer modulo 2^64
+val ringULong: Ring<ULong> = object : Ring<ULong> {
+    override val descriptions: MutableSet<String> = mutableSetOf("ring of ULong", "ring of integer modulo 18446744073709551616")
+    override val zero: ULong = 0u
+    override val one: ULong = 1u
+
+    override fun add(x: ULong, y: ULong): ULong = x + y
+    override fun negate(a: ULong): ULong = 0uL - a
+    override fun subtract(x: ULong, y: ULong): ULong = x - y
+    override fun multiply(x: ULong, y: ULong): ULong = x * y
+
+    override fun hasInverse(a: ULong): Boolean = a.bitAt(0u)
+    override fun inverse(a: ULong): ULong = a.toBigInteger().modInverse(twoPower64).ulongValue()
+}
+
+fun ringModularULong(modulus: ULong): Ring<ULongModular> = object : Ring<ULongModular> {
+    override val descriptions: MutableSet<String> = mutableSetOf("ring of integer modulo $modulus")
+    override val zero: ULongModular = ULongModular(modulus, 0uL)
+    override val one: ULongModular = ULongModular(modulus, 1uL)
+
+    override fun add(x: ULongModular, y: ULongModular): ULongModular {
+        require(x.modulus == modulus)
+        return x + y    //already checking modulus of x and y equal
+    }
+
+    override fun negate(a: ULongModular): ULongModular {
+        require(a.modulus == modulus)
+        return -a
+    }
+
+    override fun subtract(x: ULongModular, y: ULongModular): ULongModular {
+        require(x.modulus == modulus)
+        return x - y
+    }
+
+    override fun multiply(x: ULongModular, y: ULongModular): ULongModular {
+        require(x.modulus == modulus)
+        return x * y
+    }
+
+    override fun hasInverse(a: ULongModular): Boolean {
+        require(a.modulus == modulus)
+        return a.hasInverse()
+    }
+
+    override fun inverse(a: ULongModular): ULongModular {
+        require(a.modulus == modulus)
+        return a.inverse()
+    }
+}
+
 
 /**
  * Not optimal for computation, but safe.

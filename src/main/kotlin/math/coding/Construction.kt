@@ -2,7 +2,7 @@ package math.coding
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import math.abstract_structure.instance.ringBigInteger
-import math.operations.product
+import math.operation.product
 
 /**
  * Created by CowardlyLion at 2022/1/16 20:12

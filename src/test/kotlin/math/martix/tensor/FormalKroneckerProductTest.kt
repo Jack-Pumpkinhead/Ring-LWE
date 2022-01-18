@@ -8,8 +8,8 @@ import math.martix.concrete.OrdinaryMatrix
 import math.martix.constantMatrix
 import math.martix.formalKroneckerProduct
 import math.measureTimeAndPrint
-import math.operations.multiply
-import math.operations.multiplyRowParallel
+import math.operation.multiply
+import math.operation.multiplyRowParallel
 import math.randomUIntMatrices
 import math.randomUIntMatrix
 import org.junit.jupiter.api.Assertions.assertEquals

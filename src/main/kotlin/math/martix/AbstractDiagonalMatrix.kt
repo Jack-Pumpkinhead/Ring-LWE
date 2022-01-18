@@ -3,7 +3,7 @@ package math.martix
 import math.abstract_structure.Ring
 import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
-import math.operations.product
+import math.operation.product
 
 /**
  * Created by CowardlyLion at 2022/1/17 11:54

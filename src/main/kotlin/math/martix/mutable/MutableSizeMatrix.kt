@@ -1,8 +1,8 @@
 package math.martix.mutable
 
 import math.abstract_structure.Ring
-import math.operations.expand
-import math.operations.shrink
+import math.operation.expand
+import math.operation.shrink
 
 /**
  * Created by CowardlyLion at 2022/1/10 10:52

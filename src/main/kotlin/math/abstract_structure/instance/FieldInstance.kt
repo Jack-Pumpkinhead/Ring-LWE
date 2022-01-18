@@ -2,6 +2,7 @@ package math.abstract_structure.instance
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import math.abstract_structure.Field
+import math.integer.modular.ULongModular
 
 /**
  * Created by CowardlyLion at 2022/1/9 13:00
@@ -41,3 +42,36 @@ val fieldBigDecimal: Field<BigDecimal> = object : Field<BigDecimal> {
     override fun inverse(a: BigDecimal): BigDecimal = BigDecimal.ONE / a
 }
 
+/**
+ * make sure [prime] is prime.
+ */
+fun primeFieldUnsafe(prime: ULong): Field<ULongModular> = object : Field<ULongModular> {
+    override val descriptions: MutableSet<String> = mutableSetOf("field of integer modulo $prime")
+    override val zero: ULongModular = ULongModular(prime, 0uL)
+    override val one: ULongModular = ULongModular(prime, 1uL)
+
+    override fun add(x: ULongModular, y: ULongModular): ULongModular {
+        require(x.modulus == prime)
+        return x + y    //already checking modulus of x and y equal
+    }
+
+    override fun negate(a: ULongModular): ULongModular {
+        require(a.modulus == prime)
+        return -a
+    }
+
+    override fun subtract(x: ULongModular, y: ULongModular): ULongModular {
+        require(x.modulus == prime)
+        return x - y
+    }
+
+    override fun multiply(x: ULongModular, y: ULongModular): ULongModular {
+        require(x.modulus == prime)
+        return x * y
+    }
+
+    override fun inverse(a: ULongModular): ULongModular {
+        require(a.modulus == prime)
+        return a.inverse()
+    }
+}

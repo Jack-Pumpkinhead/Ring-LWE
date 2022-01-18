@@ -1,4 +1,4 @@
-package math.operations
+package math.integer.operation
 
 /**
  * Created by CowardlyLion at 2022/1/4 15:34
@@ -32,6 +32,15 @@ fun modMinus(x: UInt, y: UInt, modulus: UInt): UInt {
 fun modTimes(x: UInt, y: UInt, modulus: UInt): UInt {
     return (x.mod(modulus).toULong() * y.mod(modulus).toULong()).mod(modulus)
 }
+
+/**
+ * assume [x], [y] in [0, modulus)
+ */
+fun modPlusUnsafe(x: UInt, y: UInt, modulus: UInt): UInt = (x + y).mod(modulus)
+fun modUnaryMinusUnsafe(a: UInt, modulus: UInt): UInt = if (a == 0u) 0u else modulus - a
+fun modMinusUnsafe(x: UInt, y: UInt, modulus: UInt): UInt = if (x >= y) x - y else modulus - (y - x)
+fun modTimesUnsafe(x: UInt, y: UInt, modulus: UInt): UInt = (x.toULong() * y.toULong()).mod(modulus)
+
 
 /**
  * Montgomery's ladder.
@@ -90,13 +99,13 @@ fun UInt.powerM(power: UInt): UInt = when (power) {
  * square version of fast power
  * @return [x]^[power] mod [modulus]
  */
-fun modPowerSq(x: UInt, power: UInt, modulus: UInt): UInt {
+fun modPowerS(x: UInt, power: UInt, modulus: UInt): UInt {
     require(modulus > 0u)
     var x2 = x
     var y = 1u
     var pow = power
     while (pow != 0u) {
-        if (pow.mod(2u) == 1u) {
+        if (pow.and(1u) == 1u) {
             y = modTimes(y, x2, modulus)
         }
         x2 = modTimes(x2, x2, modulus)
@@ -109,12 +118,12 @@ fun modPowerSq(x: UInt, power: UInt, modulus: UInt): UInt {
  * square version of fast power
  * @return [this]^[power]
  */
-fun UInt.powerSq(power: UInt): UInt {
+fun UInt.powerS(power: UInt): UInt {
     var x2 = this
     var y = 1u
     var pow = power
     while (pow != 0u) {
-        if (pow.mod(2u) == 1u) {
+        if (pow.and(1u) == 1u) {
             y *= x2
         }
         x2 *= x2

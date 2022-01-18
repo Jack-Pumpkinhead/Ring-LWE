@@ -8,7 +8,7 @@ import math.martix.EmptyMatrix
 import math.martix.matrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
-import math.operations.innerProduct
+import math.operation.innerProduct
 import math.requireEqualSize
 import math.sizeOfFirstRowOrZero
 

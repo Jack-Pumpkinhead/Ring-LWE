@@ -2,7 +2,9 @@ package math.integer
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.cache.primeOf
+import math.abstract_structure.instance.ringULong
+import math.integer.operation.modPowerS
+import math.operation.product
 import kotlin.math.sqrt
 
 /**
@@ -11,10 +13,10 @@ import kotlin.math.sqrt
 
 suspend fun ULong.isPrime(): Boolean {
     return when (this) {
-        0uL   -> false
-        1uL   -> false
-        2uL   -> true
-        3uL   -> true
+        0uL  -> false
+        1uL  -> false
+        2uL  -> true
+        3uL  -> true
         else -> {
             val sqrt = sqrt(toDouble()).toULong()
             var i = 0
@@ -31,7 +33,7 @@ suspend fun ULong.isPrime(): Boolean {
     }
 }
 
-class PrimePowerULong(val prime: ULong, val power: UInt) {
+data class PrimePowerULong(val prime: ULong, val power: UInt, val primePower: ULong) {
     override fun toString(): String {
         return "$prime^$power"
     }
@@ -44,12 +46,12 @@ class PrimePowerULong(val prime: ULong, val power: UInt) {
  * A correct implementation should clear out divisor within small primes, then x must be a large prime (otherwise it would have a small prime divisor).
  * Realistically one may not calculate prime factorization of large ULong number in a reasonably short time by this method.
  * */
-suspend fun ULong.positivePrimeFactorization(): List<PrimePowerULong> {
+suspend fun ULong.primeFactorization(): List<PrimePowerULong> {
     require(this > 0uL) { "Not a positive number" }
     return when (this) {
-        1uL   -> emptyList()
-        2uL   -> listOf(PrimePowerULong(2uL, 1u))
-        3uL   -> listOf(PrimePowerULong(3uL, 1u))
+        1uL  -> emptyList()
+        2uL  -> listOf(PrimePowerULong(2uL, 1u, 2uL))
+        3uL  -> listOf(PrimePowerULong(3uL, 1u, 3uL))
         else -> {
             val list = mutableListOf<PrimePowerULong>()
             var x = this
@@ -57,20 +59,22 @@ suspend fun ULong.positivePrimeFactorization(): List<PrimePowerULong> {
             var i = 0
             var prime = primeOf(i)
             while (prime <= sqrt) {
-                if (x.mod( prime) == 0uL) {
+                if (x.mod(prime) == 0uL) {
                     var power = 1u
+                    var primePower = prime
                     x /= prime
                     while (x.mod(prime) == 0uL) {
                         power++
+                        primePower *= prime
                         x /= prime
                     }
-                    list += PrimePowerULong(prime, power)
+                    list += PrimePowerULong(prime, power, primePower)
                     if (x == 1uL) return list
                 }
                 i++
                 prime = primeOf(i)
             }
-            list += PrimePowerULong(x, 1u)
+            list += PrimePowerULong(x, 1u, x)
             list
         }
     }
@@ -79,9 +83,9 @@ suspend fun ULong.positivePrimeFactorization(): List<PrimePowerULong> {
 suspend fun ULong.radical(): ULong {
     require(this > 0uL) { "Not a positive number" }
     return when (this) {
-        1uL   -> 1uL
-        2uL   -> 1uL
-        3uL   -> 2uL
+        1uL  -> 1uL
+        2uL  -> 1uL
+        3uL  -> 2uL
         else -> {
             var radical = 1uL
             var x = this
@@ -109,9 +113,9 @@ suspend fun ULong.radical(): ULong {
 suspend fun ULong.eulerTotient(): ULong {
     require(this > 0uL) { "Not a positive number" }
     return when (this) {
-        1uL   -> 1uL
-        2uL   -> 1uL
-        3uL   -> 2uL
+        1uL  -> 1uL
+        2uL  -> 1uL
+        3uL  -> 2uL
         else -> {
             var eulerTotient = this
             var x = this
@@ -287,3 +291,77 @@ fun ULong.modInverse(modulus: ULong): ULong {
     return if (a0 == 1uL) b0.mod(modulus.toBigInteger()).ulongValue() else error("ULong $this has no inverse modulo $modulus")
 }
 
+/**
+ * generator of (ℤ/([prime]))^*
+ * [prime] needs to be prime
+ */
+suspend fun allMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: ULong): MutableList<ULong> {
+    return when (prime) {
+        2uL  -> mutableListOf(1uL)
+        3uL  -> mutableListOf(2uL)
+        else -> {
+            val a = prime - 1uL
+            val factorization = a.primeFactorization()
+            val radical = ringULong.product(factorization.map { it.prime })
+            val generators = mutableListOf<ULong>()
+            if (radical == a) {
+                nextNumber@ for (i in 2uL until prime) {
+                    for (factor in factorization) {
+                        val exp1 = modPowerS(i, radical / factor.prime, prime)
+                        if (exp1 == 1uL) continue@nextNumber
+                    }
+                    generators += i
+                }
+            } else {
+                val radicalComplement = a / radical
+                nextNumber@ for (i in 2uL until prime) {
+                    val exp = modPowerS(i, radicalComplement, prime)
+                    if (exp == 1uL) continue
+                    for (factor in factorization) {
+                        val exp1 = modPowerS(exp, radical / factor.prime, prime)
+                        if (exp1 == 1uL) continue@nextNumber
+                    }
+                    generators += i
+                }
+            }
+            generators
+        }
+    }
+}
+
+/**
+ * first generator of (ℤ/([prime]))^*
+ * [prime] needs to be prime
+ */
+suspend fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: ULong): ULong {
+    return when (prime) {
+        2uL  -> 1uL
+        3uL  -> 2uL
+        else -> {
+            val a = prime - 1uL
+            val factorization = a.primeFactorization()
+            val radical = ringULong.product(factorization.map { it.prime })
+            if (radical == a) {
+                nextNumber@ for (i in 2uL until prime) {
+                    for (factor in factorization) {
+                        val exp1 = modPowerS(i, radical / factor.prime, prime)
+                        if (exp1 == 1uL) continue@nextNumber
+                    }
+                    return i
+                }
+            } else {
+                val radicalComplement = a / radical
+                nextNumber@ for (i in 2uL until prime) {
+                    val exp = modPowerS(i, radicalComplement, prime)
+                    if (exp == 1uL) continue
+                    for (factor in factorization) {
+                        val exp1 = modPowerS(exp, radical / factor.prime, prime)
+                        if (exp1 == 1uL) continue@nextNumber
+                    }
+                    return i
+                }
+            }
+            error("unknown error, make sure input $prime is prime")
+        }
+    }
+}

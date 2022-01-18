@@ -2,10 +2,7 @@ package math.integer.modular
 
 import math.integer.gcd
 import math.integer.modInverse
-import math.operations.modMinus
-import math.operations.modPlus
-import math.operations.modTimes
-import math.operations.modUnaryMinus
+import math.integer.operation.*
 
 /**
  * Created by CowardlyLion at 2022/1/4 15:20
@@ -18,19 +15,19 @@ class UIntModular(val modulus: UInt, val residue: UInt) {
 
     operator fun plus(y: UIntModular): UIntModular {
         require(this.modulus == y.modulus)
-        return UIntModular(modulus, modPlus(residue, y.residue, modulus))
+        return UIntModular(modulus, modPlusUnsafe(residue, y.residue, modulus))
     }
 
-    operator fun unaryMinus() = UIntModular(modulus, modUnaryMinus(residue, modulus))
+    operator fun unaryMinus() = UIntModular(modulus, modUnaryMinusUnsafe(residue, modulus))
 
     operator fun minus(y: UIntModular): UIntModular {
         require(this.modulus == y.modulus)
-        return UIntModular(modulus, modMinus(residue, y.residue, modulus))
+        return UIntModular(modulus, modMinusUnsafe(residue, y.residue, modulus))
     }
 
     operator fun times(y: UIntModular): UIntModular {
         require(this.modulus == y.modulus)
-        return UIntModular(modulus, modTimes(residue, y.residue, modulus))
+        return UIntModular(modulus, modTimesUnsafe(residue, y.residue, modulus))
     }
 
     fun hasInverse(): Boolean = gcd(modulus, residue) == 1u

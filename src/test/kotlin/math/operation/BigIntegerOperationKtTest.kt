@@ -1,6 +1,8 @@
-package math.operations
+package math.operation
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import math.integer.operation.maxIndexOfOne
+import math.integer.operation.modPowerM
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

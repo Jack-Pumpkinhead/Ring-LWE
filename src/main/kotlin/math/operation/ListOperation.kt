@@ -1,4 +1,4 @@
-package math.operations
+package math.operation
 
 import math.abstract_structure.Monoid
 import math.abstract_structure.Ring

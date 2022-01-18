@@ -1,4 +1,4 @@
-package math.cache
+package math.integer
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -118,9 +118,9 @@ private fun searchOnce() {
 }
 
 /**
- * thread safe.
- * @return [n]-th prime number
- * */
+ * fast prime-generating algorithm based on wheel factorization and euler sieve.
+ * thread safe
+ */
 suspend fun primeOf(n: Int): ULong {
     return mutex.withLock {
         while (n >= primeCache.size) {
