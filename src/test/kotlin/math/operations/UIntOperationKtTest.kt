@@ -2,7 +2,7 @@ package math.operations
 
 import math.abstract_structure.instance.ringUInt
 import math.abstract_structure.instance.ringModularUInt
-import math.modular_integer.UIntModular
+import math.integer.modular.UIntModular
 import math.powerM
 import math.powerS
 import org.junit.jupiter.api.Assertions.*

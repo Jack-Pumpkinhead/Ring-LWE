@@ -1,6 +1,5 @@
 matrix
     scalar
-    diagonal
-    function / permutation
+    function
     replace elementAt by operator[]
-decide if use BigInteger for matrix index or not.
+decide if using BigInteger for matrix index or not.

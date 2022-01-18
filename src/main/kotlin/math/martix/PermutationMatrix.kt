@@ -2,7 +2,7 @@ package math.martix
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.coding.Permutation
 import math.martix.concrete.ColumnVector
 import math.martix.concrete.Constant
@@ -15,7 +15,7 @@ import math.martix.mutable.AbstractMutableMatrix
  * define matrix F of permutation f satisfying A^i = (FA)^f(i)
  * i.e. F^f(i)_i = 1 and other entry has value 0
  */
-class PermutationMatrix<A>(ring: CRing<A>, val f: Permutation) : AbstractMatrix<A>(ring, f.size.uintValue(true), f.size.uintValue(true)) {
+class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractMatrix<A>(ring, f.size.uintValue(true), f.size.uintValue(true)) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (f(column.toBigInteger()) == row.toBigInteger()) ring.one else ring.zero
 

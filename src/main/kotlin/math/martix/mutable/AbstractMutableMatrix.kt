@@ -2,13 +2,13 @@ package math.martix.mutable
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.AbstractMatrix
 
 /**
  * Created by CowardlyLion at 2022/1/8 22:21
  */
-abstract class AbstractMutableMatrix<A>(ring: CRing<A>, rows: UInt, columns: UInt) : AbstractMatrix<A>(ring, rows, columns) {
+abstract class AbstractMutableMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt) : AbstractMatrix<A>(ring, rows, columns) {
 
     fun setElementAt(row: UInt, column: UInt, a: A) {
         require(row in 0u until rows)

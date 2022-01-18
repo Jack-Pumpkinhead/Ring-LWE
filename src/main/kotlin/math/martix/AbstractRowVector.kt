@@ -1,11 +1,11 @@
 package math.martix
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 
 /**
  * Created by CowardlyLion at 2022/1/8 17:03
  */
-abstract class AbstractRowVector<A>(ring: CRing<A>, columns: UInt) : AbstractMatrix<A>(ring, 1u, columns), VectorLike<A> {
+abstract class AbstractRowVector<A>(ring: Ring<A>, columns: UInt) : AbstractMatrix<A>(ring, 1u, columns), VectorLike<A> {
 
     override fun vectorElementAt(index: UInt): A {
         return elementAt(0u, index)

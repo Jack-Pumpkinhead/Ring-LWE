@@ -1,14 +1,16 @@
 package math.martix.concrete
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.*
 
 /**
  * Created by CowardlyLion at 2022/1/8 14:00
  */
-class ColumnVector<A>(ring: CRing<A>, val vector: List<A>) : AbstractColumnVector<A>(ring, vector.size.toUInt()) {
+class ColumnVector<A>(ring: Ring<A>, val vector: List<A>) : AbstractColumnVector<A>(ring, vector.size.toUInt()) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = vector[row.toInt()]
+    override fun vectorElementAt(index: UInt): A = vector[index.toInt()]
+    override fun vectorElementAtUnsafe(index: UInt): A = vector[index.toInt()]
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = //a->1->b
         when (matrix) {

@@ -1,6 +1,6 @@
 package math.martix.mutable
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.operations.expand
 import math.operations.shrink
 
@@ -9,7 +9,7 @@ import math.operations.shrink
  *
  * Can dynamically expand/shrink to a suitable size.
  */
-class MutableSizeMatrix<A>(ring: CRing<A>, rows: UInt, columns: UInt, val matrix: MutableList<MutableList<A>>) : AbstractMutableMatrix<A>(ring, rows, columns) {
+class MutableSizeMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt, val matrix: MutableList<MutableList<A>>) : AbstractMutableMatrix<A>(ring, rows, columns) {
 
     init {
         checkSize()

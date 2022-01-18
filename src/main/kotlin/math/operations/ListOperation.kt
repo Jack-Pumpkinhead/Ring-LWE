@@ -1,13 +1,13 @@
 package math.operations
 
 import math.abstract_structure.Monoid
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:33
  */
 
-fun <A> CRing<A>.innerProduct(x: List<A>, y: List<A>): A {
+fun <A> Ring<A>.innerProduct(x: List<A>, y: List<A>): A {
     require(x.size == y.size)
     var sum = zero
     for (i in x.indices) {
@@ -16,7 +16,7 @@ fun <A> CRing<A>.innerProduct(x: List<A>, y: List<A>): A {
     return sum
 }
 
-fun <A> CRing<A>.sum(x: List<A>): A {
+fun <A> Ring<A>.sum(x: List<A>): A {
     var sum = zero
     for (a in x) {
         sum = add(sum, a)
@@ -24,7 +24,7 @@ fun <A> CRing<A>.sum(x: List<A>): A {
     return sum
 }
 
-fun <A> CRing<A>.sum(range: UIntRange, x: List<A>): A {
+fun <A> Ring<A>.sum(range: UIntRange, x: List<A>): A {
     var sum = zero
     for (i in range) {
         sum = add(sum, x[i.toInt()])
@@ -32,7 +32,7 @@ fun <A> CRing<A>.sum(range: UIntRange, x: List<A>): A {
     return sum
 }
 
-fun <A> CRing<A>.sum(range: UIntRange, x: (UInt) -> A): A {
+fun <A> Ring<A>.sum(range: UIntRange, x: (UInt) -> A): A {
     var sum = zero
     for (i in range) {
         sum = add(sum, x(i))
@@ -40,30 +40,44 @@ fun <A> CRing<A>.sum(range: UIntRange, x: (UInt) -> A): A {
     return sum
 }
 
-fun <A> CRing<A>.product(x: List<A>): A {
+//if there are any situation that needs fix-time operation (try to prevent timing-attack), create one then.
+fun <A> Ring<A>.product(x: List<A>): A {
     var prod = one
     for (a in x) {
-        prod = multiply(prod, a)
+        if (a == zero) {
+            return zero
+        } else {
+            prod = multiply(prod, a)
+        }
     }
     return prod
 }
 
-fun <A> CRing<A>.product(range: UIntRange, x: List<A>): A {
+fun <A> Ring<A>.product(range: UIntRange, x: List<A>): A {
     var prod = one
     for (i in range) {
-        prod = multiply(prod, x[i.toInt()])
+        val a = x[i.toInt()]
+        if (a == zero) {
+            return zero
+        } else {
+            prod = multiply(prod, a)
+        }
     }
     return prod
 }
 
-fun <A> CRing<A>.product(range: UIntRange, x: (UInt) -> A): A {
+fun <A> Ring<A>.product(range: UIntRange, x: (UInt) -> A): A {
     var sum = one
     for (i in range) {
-        sum = multiply(sum, x(i))
+        val a = x(i)
+        if (a == zero) {
+            return zero
+        } else {
+            sum = multiply(sum, a)
+        }
     }
     return sum
 }
-
 
 fun <A> Monoid<A>.product(x: List<A>): A {
     var prod = one

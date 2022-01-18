@@ -11,23 +11,31 @@ import org.junit.jupiter.api.Test
  */
 internal class AlgorithmKtTest {
 
+    /**
+     * total 664579 primes in 1..10000000
+     * BUILD SUCCESSFUL in 1m 38s
+     */
     @Test
     fun isPrime() {
         runBlocking {
+            val bound = 10000000uL
             var index = 0
-            for (i in -1L..100000L) {
+            var count = 0
+            for (i in 1uL..bound) {
                 if (i.isPrime()) {
                     assertEquals(primeOf(index++), i)
 //                    println("$i is prime")
+                    count++
                 }
             }
+            println("total $count primes in 1..$bound")
         }
     }
 
     @Test
     fun primeFactorization() {
         runBlocking {
-            for (i in 1L..10000L) {
+            for (i in 1uL..10000uL) {
                 println("$i = ${i.positivePrimeFactorization()}")
             }
         }
@@ -40,7 +48,7 @@ internal class AlgorithmKtTest {
     @Test
     fun largePrimeFactorization() {
         runBlocking {
-            for (i in Long.MAX_VALUE downTo Long.MAX_VALUE - 0L) {
+            for (i in ULong.MAX_VALUE downTo ULong.MAX_VALUE - 0uL) {
                 println("$i = ${i.positivePrimeFactorization()}")
             }
         }
@@ -50,7 +58,7 @@ internal class AlgorithmKtTest {
     @Test
     fun prime() {
         runBlocking {
-            for (i in 1L..10000L) {
+            for (i in 1uL..10000uL) {
                 println("$i:  ${i.eulerTotient()}, \t ${i.radical()}, \t ${i.positivePrimeFactorization()}")
             }
         }

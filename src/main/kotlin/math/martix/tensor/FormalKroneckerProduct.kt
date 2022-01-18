@@ -1,7 +1,7 @@
 package math.martix.tensor
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.canMultiplyElementWise
 import math.coding.LadderIndex
 import math.martix.AbstractMatrix
@@ -12,7 +12,7 @@ import math.operations.product
 /**
  * Created by CowardlyLion at 2022/1/8 20:27
  */
-class FormalKroneckerProduct<A>(ring: CRing<A>, val elements: List<AbstractMatrix<A>>) : FormalProduct<A>(ring, ring.decomposeFormalKroneckerProduct(elements)) {
+class FormalKroneckerProduct<A>(ring: Ring<A>, val elements: List<AbstractMatrix<A>>) : FormalProduct<A>(ring, ring.decomposeFormalKroneckerProduct(elements)) {
 
     val rowIndex = LadderIndex(elements.map { it.rows.toBigInteger() })
     val columnIndex = LadderIndex(elements.map { it.columns.toBigInteger() })

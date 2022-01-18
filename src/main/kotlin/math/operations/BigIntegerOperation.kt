@@ -20,25 +20,25 @@ val BigInteger.maxIndexOfOne: Long
 
 /**
  * Montgomery's ladder.
- * @param x assume x < modulus
- * @return x^power mod modulus, 0^0 = 1
+ * @return [x]^[power] mod [modulus], 0^0 = 1
  * */
 fun modPowerM(x: BigInteger, power: BigInteger, modulus: BigInteger): BigInteger {
     require(power >= BigInteger.ZERO)
+    require(modulus >= BigInteger.ONE)
     return when (power) {
-        BigInteger.ZERO -> BigInteger.ONE % modulus
-        BigInteger.ONE  -> x
+        BigInteger.ZERO -> BigInteger.ONE.mod(modulus)
+        BigInteger.ONE  -> x.mod(modulus)
         else            -> {
-            var a = x
-            var b = (x * x) % modulus
+            var a = x.mod(modulus)
+            var b = (a * a).mod(modulus)
             var index = power.maxIndexOfOne - 1
             while (index >= 0) {
                 if (power.bitAt(index)) {
-                    a = (a * b) % modulus
-                    b = (b * b) % modulus
+                    a = (a * b).mod(modulus)
+                    b = (b * b).mod(modulus)
                 } else {
-                    b = (a * b) % modulus
-                    a = (a * a) % modulus
+                    b = (a * b).mod(modulus)
+                    a = (a * a).mod(modulus)
                 }
                 index--
             }
@@ -50,9 +50,8 @@ fun modPowerM(x: BigInteger, power: BigInteger, modulus: BigInteger): BigInteger
 
 /**
  * Montgomery's ladder.
- * @return x^power mod (BigInteger.MAX_VALUE+1), 0^0 = 1
+ * @return [this]^[power], 0^0 = 1
  * */
-
 fun BigInteger.powerM(power: BigInteger): BigInteger {
     require(power >= BigInteger.ZERO)
     return when (power) {

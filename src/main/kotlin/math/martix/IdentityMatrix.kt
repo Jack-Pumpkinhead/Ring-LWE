@@ -1,12 +1,12 @@
 package math.martix
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.mutable.AbstractMutableMatrix
 
 /**
  * Created by CowardlyLion at 2022/1/9 22:51
  */
-class IdentityMatrix<A>(ring: CRing<A>, size: UInt) : AbstractMatrix<A>(ring, size, size) {
+class IdentityMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMatrix<A>(ring, size, size) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (row == column) ring.one else ring.zero
 

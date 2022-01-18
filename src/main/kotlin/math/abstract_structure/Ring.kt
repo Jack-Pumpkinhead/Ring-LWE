@@ -5,7 +5,7 @@ package math.abstract_structure
  *
  * assuming commutativity of multiplication for convenience
  */
-interface CRing<A> : AddGroup<A>, Monoid<A> {
+interface Ring<A> : AddGroup<A>, Monoid<A> {
 
 
 
