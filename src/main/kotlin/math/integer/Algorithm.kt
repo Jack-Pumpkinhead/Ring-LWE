@@ -3,28 +3,24 @@ package math.integer
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.cache.primeOf
-import kotlin.math.absoluteValue
 import kotlin.math.sqrt
 
 /**
  * Created by CowardlyLion at 2022/1/14 20:35
  */
-/***
- *  may throw error if input is Long.MIN_VALUE
- * */
 
-suspend fun Long.isPrime(): Boolean {
-    return when (absoluteValue) {
-        0L   -> false
-        1L   -> false
-        2L   -> true
-        3L   -> true
+suspend fun ULong.isPrime(): Boolean {
+    return when (this) {
+        0uL   -> false
+        1uL   -> false
+        2uL   -> true
+        3uL   -> true
         else -> {
-            val sqrt = sqrt(absoluteValue.toDouble()).toLong() + 1
+            val sqrt = sqrt(toDouble()).toULong()
             var i = 0
             var prime = primeOf(i)
-            while (prime < sqrt) {  //p*p may overflow.
-                if (this % prime == 0L) {
+            while (prime <= sqrt) {  //p*p may overflow.
+                if (this % prime == 0uL) {
                     return false
                 }
                 i++
@@ -35,71 +31,71 @@ suspend fun Long.isPrime(): Boolean {
     }
 }
 
-class PrimePower(val prime: Long, val power: Int) {
+class PrimePowerULong(val prime: ULong, val power: UInt) {
     override fun toString(): String {
         return "$prime^$power"
     }
 }
 
 /**
- * since primeOf(Int.MAX_VALUE)^2 - Long.MAX_VALUE = 50685770167^2 - 9223372036854775807 = 2559823925385092432082 > 0,
+ * since primeOf(Int.MAX_VALUE)^2 - ULong.MAX_VALUE = 50685770167^2 - 2^64 - 1 = 2569047297421947207889 - 18446744073709551615 > 0
  * it's ok to test primality of x by testing prime divisor less than sqrt(x).
- * But direct factorization by searching divisor within ("small" primes) primeOf(0...Int.MAX_VALUE) may not complete due to inaccessibility of large prime numbers.
- * A correct implementation should clear out divisor within small primes, then x must be a large prime otherwise it would have a small prime divisor.
- * Realistically one may not calculate prime factorization of large Long number in a reasonably short time by this method.
+ * But direct factorization by searching divisor within "small" primes (i.e. primeOf(0...Int.MAX_VALUE)) may not complete due to inaccessibility of large prime numbers.
+ * A correct implementation should clear out divisor within small primes, then x must be a large prime (otherwise it would have a small prime divisor).
+ * Realistically one may not calculate prime factorization of large ULong number in a reasonably short time by this method.
  * */
-suspend fun Long.positivePrimeFactorization(): List<PrimePower> {
-    require(this > 0L) { "Not a positive number" }
+suspend fun ULong.positivePrimeFactorization(): List<PrimePowerULong> {
+    require(this > 0uL) { "Not a positive number" }
     return when (this) {
-        1L   -> emptyList()
-        2L   -> listOf(PrimePower(2L, 1))
-        3L   -> listOf(PrimePower(3L, 1))
+        1uL   -> emptyList()
+        2uL   -> listOf(PrimePowerULong(2uL, 1u))
+        3uL   -> listOf(PrimePowerULong(3uL, 1u))
         else -> {
-            val list = mutableListOf<PrimePower>()
+            val list = mutableListOf<PrimePowerULong>()
             var x = this
-            val sqrt = sqrt(absoluteValue.toDouble()).toLong() + 1
+            val sqrt = sqrt(x.toDouble()).toULong()
             var i = 0
             var prime = primeOf(i)
-            while (prime < sqrt) {
-                if (this % prime == 0L) {
-                    var power = 1
+            while (prime <= sqrt) {
+                if (x.mod( prime) == 0uL) {
+                    var power = 1u
                     x /= prime
-                    while (x % prime == 0L) {
+                    while (x.mod(prime) == 0uL) {
                         power++
                         x /= prime
                     }
-                    list += PrimePower(prime, power)
-                    if (x == 1L) return list
+                    list += PrimePowerULong(prime, power)
+                    if (x == 1uL) return list
                 }
                 i++
                 prime = primeOf(i)
             }
-            list += PrimePower(x, 1)
+            list += PrimePowerULong(x, 1u)
             list
         }
     }
 }
 
-suspend fun Long.radical(): Long {
-    require(this > 0L) { "Not a positive number" }
+suspend fun ULong.radical(): ULong {
+    require(this > 0uL) { "Not a positive number" }
     return when (this) {
-        1L   -> 1L
-        2L   -> 1L
-        3L   -> 2L
+        1uL   -> 1uL
+        2uL   -> 1uL
+        3uL   -> 2uL
         else -> {
-            var radical = 1L
+            var radical = 1uL
             var x = this
-            val sqrt = sqrt(absoluteValue.toDouble()).toLong() + 1
+            val sqrt = sqrt(x.toDouble()).toULong()
             var i = 0
             var prime = primeOf(i)
-            while (prime < sqrt) {
-                if (this % prime == 0L) {
+            while (prime <= sqrt) {
+                if (x.mod(prime) == 0uL) {
                     x /= prime
-                    while (x % prime == 0L) {
+                    while (x.mod(prime) == 0uL) {       //cannot calculate radical by testing all prime divisor (it's impossible because there are large primes that out of prime cache), need to manually factorize number.
                         x /= prime
                     }
                     radical *= prime
-                    if (x == 1L) return radical
+                    if (x == 1uL) return radical
                 }
                 i++
                 prime = primeOf(i)
@@ -110,31 +106,31 @@ suspend fun Long.radical(): Long {
     }
 }
 
-suspend fun Long.eulerTotient(): Long {
-    require(this > 0L) { "Not a positive number" }
+suspend fun ULong.eulerTotient(): ULong {
+    require(this > 0uL) { "Not a positive number" }
     return when (this) {
-        1L   -> 1L
-        2L   -> 1L
-        3L   -> 2L
+        1uL   -> 1uL
+        2uL   -> 1uL
+        3uL   -> 2uL
         else -> {
             var eulerTotient = this
             var x = this
-            val sqrt = sqrt(absoluteValue.toDouble()).toLong() + 1
+            val sqrt = sqrt(x.toDouble()).toULong()
             var i = 0
             var prime = primeOf(i)
-            while (prime < sqrt) {
-                if (this % prime == 0L) {
+            while (prime <= sqrt) {
+                if (x.mod(prime) == 0uL) {
                     x /= prime
-                    while (x % prime == 0L) {
+                    while (x.mod(prime) == 0uL) {
                         x /= prime
                     }
-                    eulerTotient = (eulerTotient / prime) * (prime - 1)
-                    if (x == 1L) return eulerTotient
+                    eulerTotient = (eulerTotient / prime) * (prime - 1uL)
+                    if (x == 1uL) return eulerTotient
                 }
                 i++
                 prime = primeOf(i)
             }
-            eulerTotient = (eulerTotient / x) * (x - 1)     //see comment at positivePrimeFactorization()
+            eulerTotient = (eulerTotient / x) * (x - 1uL)     //see comment at positivePrimeFactorization()
             eulerTotient
         }
     }

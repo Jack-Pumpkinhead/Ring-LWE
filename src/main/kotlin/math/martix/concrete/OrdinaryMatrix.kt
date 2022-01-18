@@ -2,7 +2,7 @@ package math.martix.concrete
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.AbstractMatrix
 import math.martix.EmptyMatrix
 import math.martix.matrix
@@ -15,7 +15,7 @@ import math.sizeOfFirstRowOrZero
 /**
  * Created by CowardlyLion at 2022/1/7 21:35
  */
-class OrdinaryMatrix<A>(ring: CRing<A>, val matrix: List<List<A>>) : AbstractMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
+class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
 
     init {
         requireEqualSize(matrix)

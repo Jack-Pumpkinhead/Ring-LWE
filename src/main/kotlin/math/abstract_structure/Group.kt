@@ -7,6 +7,8 @@ interface Group<A> : Monoid<A> {
 
     override fun hasInverse(a: A): Boolean = true
 
+    fun divide(x: A, y: A) = multiply(x, inverse(y))
+
     //    x^-1 y^-1 x y
     fun commutator(x: A, y: A): A = multiply(multiply(inverse(x), inverse(y)), multiply(x, y))
 

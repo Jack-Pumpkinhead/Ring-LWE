@@ -1,12 +1,12 @@
 package math.martix
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.mutable.AbstractMutableMatrix
 
 /**
  * Created by CowardlyLion at 2022/1/11 18:20
  */
-class ZeroMatrix<A>(ring: CRing<A>, rows: UInt, columns: UInt) : AbstractMatrix<A>(ring, rows, columns) {
+class ZeroMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt) : AbstractMatrix<A>(ring, rows, columns) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.zero
 

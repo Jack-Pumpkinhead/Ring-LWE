@@ -9,7 +9,7 @@ import kotlin.random.Random
 
 
 /**
- * @return representative of ℝ-coset a+ℤ in [-0.5, 0.5)
+ * return representative of ℝ-coset [a]+ℤ in [-0.5, 0.5)
  * */
 fun centeredRounding(a: Double): Double {
     var r = a.mod(1.0)
@@ -22,7 +22,7 @@ fun centeredRounding(a: Double): Double {
 fun centeredRounding(a: List<Double>) = a.map { centeredRounding(it) }
 
 /**
- * @return representative of ℤ-coset a+mℤ in [-m/2, m/2)
+ * return representative of ℤ-coset [a]+mℤ in [-m/2, m/2)
  * */
 fun integerCenteredRounding(a: Int, modulus: UInt): Int {
     require(modulus.toInt() > 0)

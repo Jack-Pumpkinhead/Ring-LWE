@@ -9,9 +9,7 @@ import math.operations.maxIndexOfOne
  */
 
 /**
- * Montgomery's ladder for computing power of x in a monoid A.
- * @param x assume x < modulus
- * @return x^power mod modulus, 0^0 = 1
+ * Montgomery's ladder for computing power of [x] in a monoid A.
  * */
 fun <A> Monoid<A>.powerM(x: A, power: UInt): A = when (power) {
     0u   -> one
@@ -35,9 +33,7 @@ fun <A> Monoid<A>.powerM(x: A, power: UInt): A = when (power) {
 }
 
 /**
- * Montgomery's ladder for computing power of x in a monoid A.
- * @param x assume x < modulus
- * @return x^power mod modulus, 0^0 = 1
+ * Montgomery's ladder for computing power of [x] in a monoid [A].
  * */
 fun <A> Monoid<A>.powerM(x: A, power: BigInteger): A {
     require(power >= BigInteger.ZERO)
@@ -64,8 +60,8 @@ fun <A> Monoid<A>.powerM(x: A, power: BigInteger): A {
 }
 
 /**
- * square version of fast power
- * @param x assume x < modulus
+ * square version of fast power,
+ * @return [x]^[power]
  * */
 fun <A> Monoid<A>.powerS(x: A, power: UInt): A {
     var xPow = x
@@ -83,7 +79,7 @@ fun <A> Monoid<A>.powerS(x: A, power: UInt): A {
 
 /**
  * square version of fast power
- * @param x assume x < modulus
+ * @return [x]^[power]
  * */
 fun <A> Monoid<A>.powerS(x: A, power: BigInteger): A {
     var xPow = x

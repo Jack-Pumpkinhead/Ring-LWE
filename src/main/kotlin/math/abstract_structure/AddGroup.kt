@@ -7,4 +7,6 @@ interface AddGroup<A> : AddMonoid<A> {
 
     override fun hasNegation(a: A): Boolean = true
 
+    fun subtract(x: A, y: A): A = add(x, negate(y))
+
 }

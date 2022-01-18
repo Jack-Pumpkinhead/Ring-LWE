@@ -1,13 +1,13 @@
 package math.martix.tensor
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.mutable.AbstractMutableMatrix
 
 /**
  * Created by CowardlyLion at 2022/1/9 13:52
  * represent a view of matrix at rows {rowBase + rowSpacing * i, i < rows}
  */
-class MutableSparseSubmatrixView<A>(ring: CRing<A>, val matrix: AbstractMutableMatrix<A>, val rowBase: UInt, val rowSpacing: UInt, rows: UInt) : AbstractMutableMatrix<A>(ring, rows, matrix.columns) {
+class MutableSparseSubmatrixView<A>(ring: Ring<A>, val matrix: AbstractMutableMatrix<A>, val rowBase: UInt, val rowSpacing: UInt, rows: UInt) : AbstractMutableMatrix<A>(ring, rows, matrix.columns) {
 
     init {
         if (rows != 0u) {

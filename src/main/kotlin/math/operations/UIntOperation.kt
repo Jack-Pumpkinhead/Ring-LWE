@@ -4,23 +4,47 @@ package math.operations
  * Created by CowardlyLion at 2022/1/4 15:34
  */
 
-fun modPlus(x: UInt, y: UInt, modulus: UInt) = (x + y) % modulus
-fun modMinus(x: UInt, y: UInt, modulus: UInt) = (x - y) % modulus
-fun modTimes(x: UInt, y: UInt, modulus: UInt) = (x * y) % modulus
+/**
+ * cannot use ([x] + [y]).mod([modulus]) because sometimes it may overflow, 下同
+ */
+fun modPlus(x: UInt, y: UInt, modulus: UInt): UInt {
+    return (x.mod(modulus).toULong() + y.mod(modulus).toULong()).mod(modulus)
+}
+
+fun modUnaryMinus(a: UInt, modulus: UInt): UInt {
+    val a1 = a.mod(modulus)
+    return if (a1 == 0u) 0u else modulus - a1
+}
+
+/**
+ * cannot use ([x]-[y]).mod([modulus]) because rounding by 2^32 change residue modulo [modulus]
+ * see {UProgressionUtil.differenceModulo} at kotlin stdlib
+ */
+fun modMinus(x: UInt, y: UInt, modulus: UInt): UInt {
+    val x1 = x.mod(modulus)
+    val y1 = y.mod(modulus)
+    return if (x1 >= y1) x1 - y1 else modulus - (y1 - x1)    //avoid rounding even if x1-y1+modulus is correct
+}
+
+/**
+ * calculation in ULong is correct
+ */
+fun modTimes(x: UInt, y: UInt, modulus: UInt): UInt {
+    return (x.mod(modulus).toULong() * y.mod(modulus).toULong()).mod(modulus)
+}
 
 /**
  * Montgomery's ladder.
- * @param x assume x < modulus
- * @return x^power mod modulus, 0^0 = 1
- * */
+ * @return [x]^[power] mod [modulus], 0^0 = 1
+ */
 fun modPowerM(x: UInt, power: UInt, modulus: UInt): UInt {
-    require(x in 0u until modulus)
+    require(modulus > 0u)
     return when (power) {
-        0u   -> 1u % modulus
-        1u   -> x
+        0u   -> 1u.mod(modulus)
+        1u   -> x.mod(modulus)
         else -> {
-            var a = x
-            var b = modTimes(x, x, modulus)
+            var a = x.mod(modulus)
+            var b = modTimes(a, a, modulus)
             var i = power.takeHighestOneBit() shr 1
             while (i != 0u) {
                 if (power and i == 0u) {
@@ -39,8 +63,8 @@ fun modPowerM(x: UInt, power: UInt, modulus: UInt): UInt {
 
 /**
  * Montgomery's ladder.
- * @return x^power mod (UInt.MAX_VALUE+1), 0^0 = 1
- * */
+ * @return [this]^[power] mod 2^32, 0^0 = 1
+ */
 fun UInt.powerM(power: UInt): UInt = when (power) {
     0u   -> 1u
     1u   -> this
@@ -64,15 +88,15 @@ fun UInt.powerM(power: UInt): UInt = when (power) {
 
 /**
  * square version of fast power
- * @param x assume x < modulus
- * */
+ * @return [x]^[power] mod [modulus]
+ */
 fun modPowerSq(x: UInt, power: UInt, modulus: UInt): UInt {
-    require(x in 0u until modulus)
+    require(modulus > 0u)
     var x2 = x
     var y = 1u
     var pow = power
     while (pow != 0u) {
-        if (pow % 2u == 1u) {
+        if (pow.mod(2u) == 1u) {
             y = modTimes(y, x2, modulus)
         }
         x2 = modTimes(x2, x2, modulus)
@@ -83,13 +107,14 @@ fun modPowerSq(x: UInt, power: UInt, modulus: UInt): UInt {
 
 /**
  * square version of fast power
- * */
+ * @return [this]^[power]
+ */
 fun UInt.powerSq(power: UInt): UInt {
     var x2 = this
     var y = 1u
     var pow = power
     while (pow != 0u) {
-        if (pow % 2u == 1u) {
+        if (pow.mod(2u) == 1u) {
             y *= x2
         }
         x2 *= x2
@@ -98,7 +123,7 @@ fun UInt.powerSq(power: UInt): UInt {
     return y
 }
 
-fun powerOfTwo(power: Int): UInt {
+fun powerOfTwoUInt(power: Int): UInt {
     require(power in 0..31) { "wrong power of $power" }
     return 1u.shl(power)
 }

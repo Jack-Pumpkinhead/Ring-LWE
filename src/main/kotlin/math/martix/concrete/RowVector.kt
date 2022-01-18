@@ -1,6 +1,6 @@
 package math.martix.concrete
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.AbstractMatrix
 import math.martix.AbstractRowVector
 import math.operations.innerProduct
@@ -8,9 +8,11 @@ import math.operations.innerProduct
 /**
  * Created by CowardlyLion at 2022/1/8 14:05
  */
-class RowVector<A>(ring: CRing<A>, val vector: List<A>) : AbstractRowVector<A>(ring, vector.size.toUInt()) {
+class RowVector<A>(ring: Ring<A>, val vector: List<A>) : AbstractRowVector<A>(ring, vector.size.toUInt()) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = vector[column.toInt()]
+    override fun vectorElementAt(index: UInt): A = vector[index.toInt()]
+    override fun vectorElementAtUnsafe(index: UInt): A = vector[index.toInt()]
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> =
         when (matrix) {  //1->a->b

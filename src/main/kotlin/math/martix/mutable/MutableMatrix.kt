@@ -1,6 +1,6 @@
 package math.martix.mutable
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.requireEqualSize
 import math.sizeOfFirstRowOrZero
 
@@ -9,7 +9,7 @@ import math.sizeOfFirstRowOrZero
  *
  * Migrate to MutableMatrix due to bad behaviour of ArrayMatrix (cannot create Array without reified type)
  */
-class MutableMatrix<A>(ring: CRing<A>, val matrix: List<MutableList<A>>) : AbstractMutableMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
+class MutableMatrix<A>(ring: Ring<A>, val matrix: List<MutableList<A>>) : AbstractMutableMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
 
     init {
         requireEqualSize(matrix)

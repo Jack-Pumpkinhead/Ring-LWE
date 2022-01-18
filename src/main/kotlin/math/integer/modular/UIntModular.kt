@@ -1,10 +1,11 @@
-package math.modular_integer
+package math.integer.modular
 
 import math.integer.gcd
 import math.integer.modInverse
 import math.operations.modMinus
 import math.operations.modPlus
 import math.operations.modTimes
+import math.operations.modUnaryMinus
 
 /**
  * Created by CowardlyLion at 2022/1/4 15:20
@@ -19,6 +20,8 @@ class UIntModular(val modulus: UInt, val residue: UInt) {
         require(this.modulus == y.modulus)
         return UIntModular(modulus, modPlus(residue, y.residue, modulus))
     }
+
+    operator fun unaryMinus() = UIntModular(modulus, modUnaryMinus(residue, modulus))
 
     operator fun minus(y: UIntModular): UIntModular {
         require(this.modulus == y.modulus)

@@ -1,7 +1,7 @@
 package math.abstract_structure.instance
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.abstract_structure.Category
 import math.martix.AbstractMatrix
 import math.martix.identityMatrix
@@ -11,7 +11,7 @@ import math.martix.identityMatrix
  */
 
 
-fun <A> CRing<A>.categoryMatrix(): Category<UInt, AbstractMatrix<A>> = object : Category<UInt, AbstractMatrix<A>> {
+fun <A> Ring<A>.categoryMatrix(): Category<UInt, AbstractMatrix<A>> = object : Category<UInt, AbstractMatrix<A>> {
     override val descriptions: MutableSet<String> = this@categoryMatrix.descriptions.mapTo(mutableSetOf()) { "category of matrix over ($it)" }
     override fun source(f: AbstractMatrix<A>): UInt = f.rows
     override fun target(f: AbstractMatrix<A>): UInt = f.columns
@@ -25,7 +25,7 @@ val categoryBigIntegerMatrix = ringBigInteger.categoryMatrix()
 fun categoryModularBigIntegerMatrix(modulus: BigInteger) = ringModularBigInteger(modulus).categoryMatrix()
 
 //used in common notation (multiply on the left, act on column vector)
-fun <A> CRing<A>.categoryMatrixOpposite(): Category<UInt, AbstractMatrix<A>> = object : Category<UInt, AbstractMatrix<A>> {
+fun <A> Ring<A>.categoryMatrixOpposite(): Category<UInt, AbstractMatrix<A>> = object : Category<UInt, AbstractMatrix<A>> {
     override val descriptions: MutableSet<String> = this@categoryMatrixOpposite.descriptions.mapTo(mutableSetOf()) { "opposite category of (category of matrix over ($it))" }
     override fun source(f: AbstractMatrix<A>): UInt = f.columns
     override fun target(f: AbstractMatrix<A>): UInt = f.rows

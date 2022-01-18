@@ -1,13 +1,13 @@
 package math.martix
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
 
 /**
  * Created by CowardlyLion at 2022/1/14 18:06
  */
-open class FormalProduct<A>(ring: CRing<A>, val matrices: List<AbstractMatrix<A>>) : AbstractMatrix<A>(ring, matrices.first().rows, matrices.last().columns) {
+open class FormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractMatrix<A>>) : AbstractMatrix<A>(ring, matrices.first().rows, matrices.last().columns) {
 
     init {
         require(matrices.isNotEmpty())

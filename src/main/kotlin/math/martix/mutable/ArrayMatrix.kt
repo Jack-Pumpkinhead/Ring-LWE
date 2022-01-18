@@ -1,11 +1,11 @@
 package math.martix.mutable
 
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 
 /**
  * Created by CowardlyLion at 2022/1/8 22:29
  */
-class ArrayMatrix<A>(ring: CRing<A>, val matrix: List<Array<A>>) : AbstractMutableMatrix<A>(ring, matrix.size.toUInt(), if (matrix.isEmpty()) 0u else matrix[0].size.toUInt()) {
+class ArrayMatrix<A>(ring: Ring<A>, val matrix: List<Array<A>>) : AbstractMutableMatrix<A>(ring, matrix.size.toUInt(), if (matrix.isEmpty()) 0u else matrix[0].size.toUInt()) {
 
     init {
         for (row in matrix) {

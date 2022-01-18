@@ -3,7 +3,7 @@ package math.martix
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.martix.concrete.ColumnVector
 import math.martix.concrete.Constant
 import math.martix.concrete.OrdinaryMatrix
@@ -20,7 +20,7 @@ import math.operations.multiplyRowParallelUnsafe
 /**
  * Created by CowardlyLion at 2022/1/7 21:22
  */
-abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns: UInt) {
+abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns: UInt) {
 
     init {
         require(rows.toInt() >= 0)  //require actural value is a non-negative integer
@@ -45,13 +45,14 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
     }
 
     open fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
-        is Constant<A>             -> ring.columnVector(rows) { i -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
-        is AbstractRowVector<A>    -> ring.matrix(this.rows, matrix.columns) { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
-        is AbstractColumnVector<A> -> ring.columnVector(matrix.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
-        is IdentityMatrix<A>       -> this
-        is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
-        is PermutationMatrix<A>    -> ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
-        else                       -> ring.multiplyUnsafe(this, matrix)
+        is Constant<A>               -> ring.columnVector(rows) { i -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
+        is AbstractRowVector<A>      -> ring.matrix(this.rows, matrix.columns) { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
+        is AbstractColumnVector<A>   -> ring.columnVector(matrix.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
+        is IdentityMatrix<A>         -> this
+        is ZeroMatrix<A>             -> ZeroMatrix(ring, this.rows, matrix.columns)
+        is PermutationMatrix<A>      -> ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+        is AbstractDiagonalMatrix<A> -> ring.matrix(rows, columns) { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
+        else                         -> ring.multiplyUnsafe(this, matrix)
     }
 
     suspend fun timesRowParallel(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
@@ -64,13 +65,14 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
      * Should implement a parallel-by-row matrix multiplication.
      * */
     open suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
-        is Constant<A>             -> ring.columnVectorParallel(rows) { i -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
-        is AbstractRowVector<A>    -> ring.matrixRowParallel(this.rows, matrix.columns) { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
-        is AbstractColumnVector<A> -> ring.columnVectorParallel(matrix.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
-        is IdentityMatrix<A>       -> this
-        is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
-        is PermutationMatrix<A>    -> ring.matrixRowParallel(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
-        else                       -> ring.multiplyRowParallelUnsafe(this, matrix)
+        is Constant<A>               -> ring.columnVectorParallel(rows) { i -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
+        is AbstractRowVector<A>      -> ring.matrixRowParallel(this.rows, matrix.columns) { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
+        is AbstractColumnVector<A>   -> ring.columnVectorParallel(matrix.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
+        is IdentityMatrix<A>         -> this
+        is ZeroMatrix<A>             -> ZeroMatrix(ring, this.rows, matrix.columns)
+        is PermutationMatrix<A>      -> ring.matrixRowParallel(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+        is AbstractDiagonalMatrix<A> -> ring.matrixRowParallel(rows, columns) { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
+        else                         -> ring.multiplyRowParallelUnsafe(this, matrix)
     }
 
     fun multiplyTo(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
@@ -84,13 +86,14 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
 
     protected open fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
-            is Constant<A>             -> dest.indexedSet { i, _ -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
-            is AbstractRowVector<A>    -> dest.indexedSet { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
-            is AbstractColumnVector<A> -> dest.indexedSet { i, _ -> this.rowVectorViewAt(i).innerProduct(matrix) }
-            is IdentityMatrix<A>       -> dest.setUnsafe(this)
-            is ZeroMatrix<A>           -> dest.indexedSet { _, _ -> ring.zero }
-            is PermutationMatrix<A>    -> dest.indexedSet { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
-            else                       -> ring.multiplyToUnsafe(this, matrix, dest)
+            is Constant<A>               -> dest.indexedSet { i, _ -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
+            is AbstractRowVector<A>      -> dest.indexedSet { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
+            is AbstractColumnVector<A>   -> dest.indexedSet { i, _ -> this.rowVectorViewAt(i).innerProduct(matrix) }
+            is IdentityMatrix<A>         -> dest.setUnsafe(this)
+            is ZeroMatrix<A>             -> dest.indexedSet { _, _ -> ring.zero }
+            is PermutationMatrix<A>      -> dest.indexedSet { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+            is AbstractDiagonalMatrix<A> -> dest.indexedSet { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
+            else                         -> ring.multiplyToUnsafe(this, matrix, dest)
         }
     }
 
@@ -105,13 +108,14 @@ abstract class AbstractMatrix<A>(val ring: CRing<A>, val rows: UInt, val columns
      * */
     protected open suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
-            is Constant<A>             -> dest.indexedSetRowParallel { i, _ -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
-            is AbstractRowVector<A>    -> dest.indexedSetRowParallel { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
-            is AbstractColumnVector<A> -> dest.indexedSetRowParallel { i, _ -> this.rowVectorViewAt(i).innerProduct(matrix) }
-            is IdentityMatrix<A>       -> dest.setUnsafeRowParallel(this)
-            is ZeroMatrix<A>           -> dest.indexedSetRowParallel { _, _ -> ring.zero }
-            is PermutationMatrix<A>    -> dest.indexedSetRowParallel { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
-            else                       -> ring.multiplyToRowParallelUnsafe(this, matrix, dest)
+            is Constant<A>               -> dest.indexedSetRowParallel { i, _ -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
+            is AbstractRowVector<A>      -> dest.indexedSetRowParallel { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
+            is AbstractColumnVector<A>   -> dest.indexedSetRowParallel { i, _ -> this.rowVectorViewAt(i).innerProduct(matrix) }
+            is IdentityMatrix<A>         -> dest.setUnsafeRowParallel(this)
+            is ZeroMatrix<A>             -> dest.indexedSetRowParallel { _, _ -> ring.zero }
+            is PermutationMatrix<A>      -> dest.indexedSetRowParallel { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+            is AbstractDiagonalMatrix<A> -> dest.indexedSetRowParallel { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
+            else                         -> ring.multiplyToRowParallelUnsafe(this, matrix, dest)
         }
     }
 

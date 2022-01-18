@@ -3,7 +3,7 @@ package math.martix.tensor
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.CRing
+import math.abstract_structure.Ring
 import math.coding.LadderIndex
 import math.martix.AbstractMatrix
 import math.martix.mutable.AbstractMutableMatrix
@@ -14,7 +14,7 @@ import math.martix.zeroMutableMatrix
  *
  * represent a matrix in the form I_l ⊗ M ⊗ I_r
  */
-class WhiskeredKroneckerProduct<A>(ring: CRing<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A>(ring, l * mA.rows * r, l * mA.columns * r) {
+class WhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A>(ring, l * mA.rows * r, l * mA.columns * r) {
 
 
     val rowIndex = LadderIndex(listOf(l.toBigInteger(), mA.rows.toBigInteger(), r.toBigInteger()))
