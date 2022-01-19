@@ -2,6 +2,7 @@ package math.operation
 
 import math.abstract_structure.Monoid
 import math.abstract_structure.Ring
+import math.powerM
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:33
@@ -77,6 +78,18 @@ fun <A> Ring<A>.product(range: UIntRange, x: (UInt) -> A): A {
         }
     }
     return sum
+}
+
+fun <A> Ring<A>.powers(a: A, range: UIntRange): List<A> {
+    if (range.isEmpty()) return emptyList()
+    val list = mutableListOf<A>()
+    var x = powerM(a, range.first)
+    list += x
+    for (i in (range.first + 1u)..range.last) {
+        x = multiply(x, a)
+        list += x
+    }
+    return list
 }
 
 fun <A> Monoid<A>.product(x: List<A>): A {

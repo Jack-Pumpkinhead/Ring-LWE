@@ -12,6 +12,7 @@ class InfiniteBitSet {
 
     /**
      * ONLY capable of bits less than Int.MAX_VALUE * 64
+     * TODO use ULongArray
      * */
     val base = mutableListOf<ULong>()
 

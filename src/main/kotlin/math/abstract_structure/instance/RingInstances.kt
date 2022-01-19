@@ -9,7 +9,6 @@ import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
 import math.integer.modInverse
 import math.integer.modular.UIntModular
-import math.integer.modular.ULongModular
 
 /**
  * Created by CowardlyLion at 2022/1/7 20:09
@@ -46,42 +45,6 @@ val ringULong: Ring<ULong> = object : Ring<ULong> {
 
     override fun hasInverse(a: ULong): Boolean = a.bitAt(0u)
     override fun inverse(a: ULong): ULong = a.toBigInteger().modInverse(twoPower64).ulongValue()
-}
-
-fun ringModularULong(modulus: ULong): Ring<ULongModular> = object : Ring<ULongModular> {
-    override val descriptions: MutableSet<String> = mutableSetOf("ring of integer modulo $modulus")
-    override val zero: ULongModular = ULongModular(modulus, 0uL)
-    override val one: ULongModular = ULongModular(modulus, 1uL)
-
-    override fun add(x: ULongModular, y: ULongModular): ULongModular {
-        require(x.modulus == modulus)
-        return x + y    //already checking modulus of x and y equal
-    }
-
-    override fun negate(a: ULongModular): ULongModular {
-        require(a.modulus == modulus)
-        return -a
-    }
-
-    override fun subtract(x: ULongModular, y: ULongModular): ULongModular {
-        require(x.modulus == modulus)
-        return x - y
-    }
-
-    override fun multiply(x: ULongModular, y: ULongModular): ULongModular {
-        require(x.modulus == modulus)
-        return x * y
-    }
-
-    override fun hasInverse(a: ULongModular): Boolean {
-        require(a.modulus == modulus)
-        return a.hasInverse()
-    }
-
-    override fun inverse(a: ULongModular): ULongModular {
-        require(a.modulus == modulus)
-        return a.inverse()
-    }
 }
 
 

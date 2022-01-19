@@ -51,5 +51,7 @@ class ULongModular(val modulus: ULong, val residue: ULong) {
         return result
     }
 
-
+    override fun toString(): String {
+        return residue.toString()
+    }
 }

@@ -10,12 +10,14 @@ import math.operation.product
  */
 abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMatrix<A>(ring, size, size), VectorLike<A> {
 
+    override val vectorSize: UInt = size
+
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (row != column) ring.zero else vectorElementAtUnsafe(row)
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
         is Constant<A>             -> Constant(ring, ring.multiply(this.vectorElementAtUnsafe(0u), matrix.value))
         is AbstractRowVector<A>    -> ring.rowVector(matrix.columns) { i -> ring.multiply(this.vectorElementAtUnsafe(0u), matrix.vectorElementAtUnsafe(i)) }
-        is AbstractColumnVector<A> -> ring.columnVector(matrix.rows) { i -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
+        is AbstractColumnVector<A> -> ring.columnVector(this.rows) { i -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
         is IdentityMatrix<A>       -> this
         is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
         else                       -> ring.matrix(matrix.rows, matrix.columns) { i, j -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(i, j)) }
@@ -24,7 +26,7 @@ abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMa
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
         is Constant<A>             -> Constant(ring, ring.multiply(this.vectorElementAtUnsafe(0u), matrix.value))
         is AbstractRowVector<A>    -> ring.rowVector(matrix.columns) { i -> ring.multiply(this.vectorElementAtUnsafe(0u), matrix.vectorElementAtUnsafe(i)) }
-        is AbstractColumnVector<A> -> ring.columnVectorParallel(matrix.rows) { i -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
+        is AbstractColumnVector<A> -> ring.columnVectorParallel(this.rows) { i -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
         is IdentityMatrix<A>       -> this
         is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
         else                       -> ring.matrixRowParallel(matrix.rows, matrix.columns) { i, j -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(i, j)) }

@@ -7,6 +7,8 @@ import math.abstract_structure.Ring
  */
 abstract class AbstractRowVector<A>(ring: Ring<A>, columns: UInt) : AbstractMatrix<A>(ring, 1u, columns), VectorLike<A> {
 
+    override val vectorSize: UInt = columns
+
     override fun vectorElementAt(index: UInt): A {
         return elementAt(0u, index)
     }

@@ -69,7 +69,7 @@ suspend fun <A> Ring<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: Abs
 }
 
 
-suspend fun <A> multiplyToParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+suspend fun <A> multiplyToRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
     require(mA.ring == mB.ring)
     require(mA.columns == mB.rows)
     mA.ring.multiplyToRowParallelUnsafe(mA, mB, dest)

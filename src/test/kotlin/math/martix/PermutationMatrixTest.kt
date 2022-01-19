@@ -8,7 +8,7 @@ import math.coding.*
 import math.isPairwiseCoprimeBigInteger
 import math.operation.multiply
 import math.operation.product
-import math.randomUIntMatrix
+import math.random.randomUIntMatrix
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -32,7 +32,7 @@ internal class PermutationMatrixTest {
                             println("perm $name")
                             val m = PermutationMatrix(ringUInt, permutation).andPrint()
                             repeat(10) {
-                                val x = randomUIntMatrix(permutation.size.uintValue(), permutation.size.uintValue(), 0u..10u).andPrint()
+                                val x = Random.randomUIntMatrix(permutation.size.uintValue(), permutation.size.uintValue(), 0u..10u).andPrint()
                                 val mx = (m * x).andPrint()
                                 val mx1 = multiply(m, x)
                                 assertEquals(mx, mx1)

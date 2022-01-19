@@ -47,7 +47,7 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
     open fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
         is Constant<A>               -> ring.columnVector(rows) { i -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
         is AbstractRowVector<A>      -> ring.matrix(this.rows, matrix.columns) { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
-        is AbstractColumnVector<A>   -> ring.columnVector(matrix.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
+        is AbstractColumnVector<A>   -> ring.columnVector(this.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
         is IdentityMatrix<A>         -> this
         is ZeroMatrix<A>             -> ZeroMatrix(ring, this.rows, matrix.columns)
         is PermutationMatrix<A>      -> ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
@@ -67,7 +67,7 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
     open suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
         is Constant<A>               -> ring.columnVectorParallel(rows) { i -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
         is AbstractRowVector<A>      -> ring.matrixRowParallel(this.rows, matrix.columns) { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
-        is AbstractColumnVector<A>   -> ring.columnVectorParallel(matrix.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
+        is AbstractColumnVector<A>   -> ring.columnVectorParallel(this.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
         is IdentityMatrix<A>         -> this
         is ZeroMatrix<A>             -> ZeroMatrix(ring, this.rows, matrix.columns)
         is PermutationMatrix<A>      -> ring.matrixRowParallel(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
@@ -84,7 +84,7 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
         multiplyToImpl(matrix, dest)
     }
 
-    protected open fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+    open fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
             is Constant<A>               -> dest.indexedSet { i, _ -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
             is AbstractRowVector<A>      -> dest.indexedSet { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
@@ -106,7 +106,7 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
     /**
      * Should implement a parallel-by-row matrix multiplication.
      * */
-    protected open suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+    open suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
             is Constant<A>               -> dest.indexedSetRowParallel { i, _ -> ring.multiply(elementAtUnsafe(i, 0u), matrix.value) }    //a->1->1
             is AbstractRowVector<A>      -> dest.indexedSetRowParallel { i, j -> ring.multiply(this.elementAtUnsafe(i, 0u), matrix.elementAtUnsafe(0u, j)) }    //a->1->b
@@ -137,10 +137,19 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
         return RowVectorView(ring, this, row)
     }
 
+    fun rowVectorViews(): List<RowVectorView<A>> {
+        return List(rows.toInt()) { row -> RowVectorView(ring, this, row.toUInt()) }
+    }
+
     fun columnVectorViewAt(column: UInt): ColumnVectorView<A> {
         require(column in 0u until columns)
         return ColumnVectorView(ring, this, column)
     }
+
+    fun columnVectorViews(): List<ColumnVectorView<A>> {
+        return List(columns.toInt()) { column -> ColumnVectorView(ring, this, column.toUInt()) }
+    }
+
 
     //simplification by actual array structure is possible, but may cause problem if underlying array is mutable.
     fun rowVectorAt(row: UInt): RowVector<A> {

@@ -8,37 +8,40 @@ import math.martix.AbstractMatrix
 import math.martix.FormalProduct
 import math.martix.permutationMatrix
 import math.martix.whiskered
+import math.operation.powers
 
 /**
  * Created by CowardlyLion at 2022/1/16 16:28
- * [primitiveRootOfUnityCalculator] compute primitive root of unity of order n
  */
-class DiscreteFourierTransformPrimePowerCache<A>(val ring: Ring<A>, prime: UInt, val primitiveRootOfUnityCalculator: (UInt) -> A) {
+@Deprecated("to removed")
+class DiscreteFourierTransformPrimePowerCache<A>(val ring: Ring<A>, val prime: PrimeData, val root: PrimePowerRootCalculator<A>) {
 
-    val p = prime.toBigInteger()
 
-    private val matrixCache = mutableListOf<AbstractMatrix<A>>(DiscreteFourierTransformPrime(ring, prime, primitiveRootOfUnityCalculator(prime)))
+    private val matrixCache = mutableListOf<AbstractMatrix<A>>(DiscreteFourierTransformPrimeOld(ring, prime, ring.powers(root.primitiveRoot(prime.prime, 1u, prime.prime), 0u until prime.prime)))
+
+    val p = prime.prime.toBigInteger()
+
+    private var power = 1u
     private var primePower = p
 
     /**
      * need a root of unity of order [primePower]*[p]
      */
     private fun computeNext() {
-        val order = primePower * p
+        val nextPower = power + 1u
+        val nextPrimePower = primePower * p
         matrixCache += FormalProduct(
             ring, listOf(
                 ring.permutationMatrix(LadderSwitcher(primePower, p)),
                 ring.whiskered(p.uintValue(), matrixCache.last(), 1u),
-                TwiddleMatrix(ring, p, primePower, primitiveRootOfUnityCalculator(order.uintValue(true))),
+                TwiddleMatrix(ring, p, primePower, root.primitiveRoot(prime.prime, nextPower, nextPrimePower.uintValue(true))),
                 ring.whiskered(1u, matrixCache[0], primePower.uintValue())
             )
         )
-        primePower = order
+        primePower = nextPrimePower
+        power = nextPower
     }
 
-    /**
-     * need a root of unity of order [p]^[power]
-     */
     fun primePowerDFT(power: UInt): AbstractMatrix<A> {
         require(power.toInt() > 0)
         while (power.toInt() > matrixCache.size) {

@@ -50,5 +50,7 @@ class UIntModular(val modulus: UInt, val residue: UInt) {
         return result
     }
 
-
+    override fun toString(): String {
+        return residue.toString()
+    }
 }

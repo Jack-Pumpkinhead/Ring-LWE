@@ -10,10 +10,11 @@ import math.martix.formalKroneckerProduct
 import math.measureTimeAndPrint
 import math.operation.multiply
 import math.operation.multiplyRowParallel
-import math.randomUIntMatrices
-import math.randomUIntMatrix
+import math.random.randomUIntMatrices
+import math.random.randomUIntMatrix
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
 /**
@@ -25,10 +26,10 @@ internal class FormalKroneckerProductTest {
     @Test
     fun multiply() {
         repeat(100) {
-            val m = randomUIntMatrices(5u, 1u..5u, 0u..10u)
+            val m = Random.randomUIntMatrices(5u, 1u..5u, 0u..10u)
             val m0 = m.fold(ringUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> ringUInt.formalKroneckerProduct(acc, i) }
             val m1 = ringUInt.formalKroneckerProduct(m)
-            val v = randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u).andPrint()
+            val v = Random.randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u).andPrint()
             val m0v = m0 * v
             val m1v = m1 * v
             val m0_v = multiply(m0, v)
@@ -48,10 +49,10 @@ internal class FormalKroneckerProductTest {
     fun multiplyParallel() {
         runBlocking {
             repeat(100) {
-                val m = randomUIntMatrices(5u, 1u..5u, 0u..10u)
+                val m = Random.randomUIntMatrices(5u, 1u..5u, 0u..10u)
                 val m0 = m.fold(ringUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> ringUInt.formalKroneckerProduct(acc, i) }
                 val m1 = ringUInt.formalKroneckerProduct(m)
-                val v = randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u).andPrint()
+                val v = Random.randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u).andPrint()
                 val m0v = m0.timesRowParallel(v)
                 val m1v = m1.timesRowParallel(v)
                 val m0_v = multiplyRowParallel(m0, v)
@@ -79,11 +80,11 @@ internal class FormalKroneckerProductTest {
     fun performance() {
         runBlocking {
             val samples = List(100) {
-                val m = randomUIntMatrices(5u, 1u..5u, 0u..20u)
+                val m = Random.randomUIntMatrices(5u, 1u..5u, 0u..20u)
                 val m0 = m.fold(ringUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> ringUInt.formalKroneckerProduct(acc, i) }
                 val m1 = ringUInt.formalKroneckerProduct(m)
                 val m2 = m1.toOrdinaryMatrix()
-                val v = randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u)
+                val v = Random.randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u)
                 Sample(m0, m1, m2, v)
             }
 

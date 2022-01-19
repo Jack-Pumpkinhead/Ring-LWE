@@ -12,19 +12,19 @@ import math.powerM
  *
  * r^(b0*b1) = 1
  */
-class TwiddleMatrix<A>(ring: Ring<A>, b0: BigInteger, b1: BigInteger, val rootOfUnity: A) : AbstractDiagonalMatrix<A>(ring, (b0 * b1).uintValue(true)) {
+class TwiddleMatrix<A>(ring: Ring<A>, b0: BigInteger, b1: BigInteger, val root: A) : AbstractDiagonalMatrix<A>(ring, (b0 * b1).uintValue(true)) {
 
     val ladderIndex = LadderIndex(listOf(b0, b1))
 
     override fun vectorElementAt(index: UInt): A {
         require(index < rows)
         val a = ladderIndex.decode(index.toBigInteger())
-        return ring.powerM(rootOfUnity, a[0] * a[1])
+        return ring.powerM(root, a[0] * a[1])
     }
 
     override fun vectorElementAtUnsafe(index: UInt): A {
         val a = ladderIndex.decode(index.toBigInteger())
-        return ring.powerM(rootOfUnity, a[0] * a[1])
+        return ring.powerM(root, a[0] * a[1])
     }
 
 

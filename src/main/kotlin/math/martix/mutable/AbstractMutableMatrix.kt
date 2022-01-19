@@ -57,5 +57,15 @@ abstract class AbstractMutableMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt
         }
     }
 
+    fun mutableColumnVectorViewAt(column: UInt): AbstractMutableMatrix<A> {
+        require(column in 0u until columns)
+        return MutableSubmatrixView(ring, this, 0u, column, this.rows, 1u)
+    }
+
+    fun mutableRowVectorViewAt(rows: UInt): AbstractMutableMatrix<A> {
+        require(rows in 0u until columns)
+        return MutableSubmatrixView(ring, this, rows, 0u, 1u, this.columns)
+    }
+
 
 }

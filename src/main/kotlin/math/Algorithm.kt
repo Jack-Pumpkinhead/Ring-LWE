@@ -32,6 +32,28 @@ fun <A> Monoid<A>.powerM(x: A, power: UInt): A = when (power) {
     }
 }
 
+fun <A> Monoid<A>.powerM(x: A, power: ULong): A = when (power) {
+    0uL  -> one
+    1uL  -> x
+    else -> {
+        var a = x
+        var b = multiply(x, x)
+        var i = power.takeHighestOneBit() shr 1
+        while (i != 0uL) {
+            if (power and i == 0uL) {
+                b = multiply(a, b)
+                a = multiply(a, a)
+            } else {
+                a = multiply(a, b)
+                b = multiply(b, b)
+            }
+            i = i shr 1
+        }
+        a
+    }
+}
+
+
 /**
  * Montgomery's ladder for computing power of [x] in a monoid [A].
  * */

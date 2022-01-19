@@ -1,7 +1,7 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.runningFoldRight
+import util.stdlib.runningFoldRight
 
 /**
  * Created by CowardlyLion at 2022/1/9 22:17

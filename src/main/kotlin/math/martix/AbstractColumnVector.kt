@@ -7,12 +7,10 @@ import math.abstract_structure.Ring
  */
 abstract class AbstractColumnVector<A>(ring: Ring<A>, rows: UInt) : AbstractMatrix<A>(ring, rows, 1u), VectorLike<A> {
 
-    override fun vectorElementAt(index: UInt): A {
-        return elementAt(index, 0u)
-    }
+    override val vectorSize: UInt = rows
 
-    override fun vectorElementAtUnsafe(index: UInt): A {
-        return elementAtUnsafe(index, 0u)
-    }
+    override fun vectorElementAt(index: UInt): A = elementAt(index, 0u)
+
+    override fun vectorElementAtUnsafe(index: UInt): A = elementAtUnsafe(index, 0u)
 
 }

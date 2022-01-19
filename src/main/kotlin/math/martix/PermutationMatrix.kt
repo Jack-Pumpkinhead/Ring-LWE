@@ -26,8 +26,8 @@ class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractMatrix<A
         is Constant<A>             -> matrix
         is RowVector<A>            -> matrix
         is AbstractRowVector<A>    -> matrix
-        is ColumnVector<A>         -> ring.columnVector(matrix.rows) { i -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
-        is AbstractColumnVector<A> -> ring.columnVector(matrix.rows) { i -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
+        is ColumnVector<A>         -> ring.columnVector(this.rows) { i -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
+        is AbstractColumnVector<A> -> ring.columnVector(this.rows) { i -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
         is IdentityMatrix<A>       -> this
         is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
         else                       -> ring.matrix(matrix.rows, matrix.columns) { i, j -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), j) }
@@ -37,8 +37,8 @@ class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractMatrix<A
         is Constant<A>             -> matrix
         is RowVector<A>            -> matrix
         is AbstractRowVector<A>    -> matrix
-        is ColumnVector<A>         -> ring.columnVectorParallel(matrix.rows) { i -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
-        is AbstractColumnVector<A> -> ring.columnVectorParallel(matrix.rows) { i -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
+        is ColumnVector<A>         -> ring.columnVectorParallel(this.rows) { i -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
+        is AbstractColumnVector<A> -> ring.columnVectorParallel(this.rows) { i -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
         is IdentityMatrix<A>       -> this
         is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
         else                       -> ring.matrixRowParallel(matrix.rows, matrix.columns) { i, j -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), j) }

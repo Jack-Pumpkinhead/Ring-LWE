@@ -15,7 +15,9 @@ class MutableSparseSubmatrixView<A>(ring: Ring<A>, val matrix: AbstractMutableMa
         }
     }
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix.elementAt(rowBase + rowSpacing * row, column)
-    override fun setElementAtUnsafe(row: UInt, column: UInt, a: A) = matrix.setElementAtUnsafe(rowBase + rowSpacing * row, column, a)
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix.elementAtUnsafe(rowBase + rowSpacing * row, column)
+    override fun setElementAtUnsafe(row: UInt, column: UInt, a: A) {
+        matrix.setElementAtUnsafe(rowBase + rowSpacing * row, column, a)
+    }
 
 }

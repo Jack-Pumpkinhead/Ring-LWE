@@ -34,10 +34,18 @@ suspend fun ULong.isPrime(): Boolean {
 }
 
 data class PrimePowerULong(val prime: ULong, val power: UInt, val primePower: ULong) {
+
+    fun reducePower(): PrimePowerULong {
+        require(power > 1u)
+        return PrimePowerULong(prime, power - 1u, primePower / prime)
+    }
+
     override fun toString(): String {
         return "$prime^$power"
     }
 }
+
+suspend fun primeFactorization1(a: ULong): List<PrimePowerULong> = a.primeFactorization()
 
 /**
  * since primeOf(Int.MAX_VALUE)^2 - ULong.MAX_VALUE = 50685770167^2 - 2^64 - 1 = 2569047297421947207889 - 18446744073709551615 > 0

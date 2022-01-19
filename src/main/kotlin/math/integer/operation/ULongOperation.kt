@@ -34,6 +34,27 @@ fun modUnaryMinusUnsafe(a: ULong, modulus: ULong): ULong = if (a == 0uL) 0uL els
 fun modMinusUnsafe(x: ULong, y: ULong, modulus: ULong): ULong = if (x >= y) x - y else modulus - (y - x)
 fun modTimesUnsafe(x: ULong, y: ULong, modulus: ULong): ULong = (x.toBigInteger() * y.toBigInteger()).mod(modulus.toBigInteger()).ulongValue()
 
+fun ULong.powerM(power: UInt): ULong = when (power) {
+    0u   -> 1uL
+    1u   -> this
+    else -> {
+        var a = this
+        var b = a * a
+        var i = power.takeHighestOneBit() shr 1
+        while (i != 0u) {
+            if (power and i == 0u) {
+                b *= a
+                a *= a
+            } else {
+                a *= b
+                b *= b
+            }
+            i = i shr 1
+        }
+        a
+    }
+}
+
 /**
  * @return [x]^[power] mod [modulus]
  */

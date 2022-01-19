@@ -129,3 +129,13 @@ suspend fun primeOf(n: Int): ULong {
         primeCache[n]
     }
 }
+
+suspend fun primeOf(n: UInt): ULong {
+    require(n.toInt() >= 0)
+    return mutex.withLock {
+        while (n >= primeCache.size.toUInt()) {
+            searchOnce()
+        }
+        primeCache[n.toInt()]
+    }
+}
