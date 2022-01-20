@@ -77,49 +77,52 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMa
         }
     }
 
-    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
-        is Constant<A>               -> matrix
-        is AbstractRowVector<A>      -> matrix
-        is AbstractColumnVector<A>   -> timesImpl(matrix)
-        is IdentityMatrix<A>         -> super.timesImpl(matrix)
-        is ZeroMatrix<A>             -> super.timesImpl(matrix)
-        is PermutationMatrix<A>      -> super.timesImpl(matrix)
-        is AbstractDiagonalMatrix<A> -> super.timesImpl(matrix)
-        else                         -> {
-            val data = List(this.rows.toInt()) { mutableListOf<A>() }
-            for (vector in matrix.columnVectorViews()) {
-                val columnVector = this.timesImpl(vector)
-                for (i in 0u until columnVector.vectorSize) {
-                    data[i.toInt()] += columnVector.vectorElementAtUnsafe(i)
-                }
-            }
-            OrdinaryMatrix(ring, data)
-        }
-    }
-
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
-        is Constant<A>               -> matrix
-        is AbstractRowVector<A>      -> matrix
-        is AbstractColumnVector<A>   -> timesImpl(matrix)
-        is IdentityMatrix<A>         -> super.timesImpl(matrix)
-        is ZeroMatrix<A>             -> super.timesImpl(matrix)
-        is PermutationMatrix<A>      -> super.timesImpl(matrix)
-        is AbstractDiagonalMatrix<A> -> super.timesImpl(matrix)
-        else                         -> {
-            coroutineScope {
-                val result = ring.zeroMutableMatrix(this@DiscreteFourierTransformMatrixPrime.rows, matrix.columns)
-                for ((i, vector) in matrix.columnVectorViews().withIndex()) {
-                    launch {
-                        this@DiscreteFourierTransformMatrixPrime.multiplyToImpl(vector, result.mutableColumnVectorViewAt(i.toUInt()))
+    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order == 2uL) super.timesImpl(matrix) else
+        when (matrix) {
+            is Constant<A>               -> matrix
+            is AbstractRowVector<A>      -> matrix
+            is AbstractColumnVector<A>   -> timesImpl(matrix)
+            is IdentityMatrix<A>         -> super.timesImpl(matrix)
+            is ZeroMatrix<A>             -> super.timesImpl(matrix)
+            is PermutationMatrix<A>      -> super.timesImpl(matrix)
+            is AbstractDiagonalMatrix<A> -> super.timesImpl(matrix)
+            else                         -> {
+                val data = List(this.rows.toInt()) { mutableListOf<A>() }
+                for (vector in matrix.columnVectorViews()) {
+                    val columnVector = this.timesImpl(vector)
+                    for (i in 0u until columnVector.vectorSize) {
+                        data[i.toInt()] += columnVector.vectorElementAtUnsafe(i)
                     }
                 }
-                result
+                OrdinaryMatrix(ring, data)
             }
         }
-    }
+
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order == 2uL) super.timesRowParallelImpl(matrix) else
+        when (matrix) {
+            is Constant<A>               -> matrix
+            is AbstractRowVector<A>      -> matrix
+            is AbstractColumnVector<A>   -> timesImpl(matrix)
+            is IdentityMatrix<A>         -> super.timesImpl(matrix)
+            is ZeroMatrix<A>             -> super.timesImpl(matrix)
+            is PermutationMatrix<A>      -> super.timesImpl(matrix)
+            is AbstractDiagonalMatrix<A> -> super.timesImpl(matrix)
+            else                         -> {
+                coroutineScope {
+                    val result = ring.zeroMutableMatrix(this@DiscreteFourierTransformMatrixPrime.rows, matrix.columns)
+                    for ((i, vector) in matrix.columnVectorViews().withIndex()) {
+                        launch {
+                            this@DiscreteFourierTransformMatrixPrime.multiplyToImpl(vector, result.mutableColumnVectorViewAt(i.toUInt()))
+                        }
+                    }
+                    result
+                }
+            }
+        }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        when (matrix) {
+        if (root.order == 2uL) super.multiplyToImpl(matrix, dest)
+        else when (matrix) {
             is Constant<A>               -> dest.setUnsafe(matrix)
             is AbstractRowVector<A>      -> dest.setUnsafe(matrix)
             is AbstractColumnVector<A>   -> multiplyToImpl(matrix, dest)
@@ -136,7 +139,8 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMa
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        when (matrix) {
+        if (root.order == 2uL) super.multiplyToRowParallelImpl(matrix, dest)
+        else when (matrix) {
             is Constant<A>               -> dest.setUnsafeRowParallel(matrix)
             is AbstractRowVector<A>      -> dest.setUnsafeRowParallel(matrix)
             is AbstractColumnVector<A>   -> multiplyToImpl(matrix, dest)

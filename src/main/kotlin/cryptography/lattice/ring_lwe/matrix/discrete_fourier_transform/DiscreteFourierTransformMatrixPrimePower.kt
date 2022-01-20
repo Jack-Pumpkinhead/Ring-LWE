@@ -27,7 +27,7 @@ class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootData<A>, primeCa
             val reduceOrder = order.reducePower()
             FormalProduct(
                 ring, listOf(
-                    ring.permutationMatrix(LadderSwitcher(reduceOrder.primePower.toBigInteger(), reduceOrder.prime.toBigInteger())),
+                    ring.permutationMatrix(LadderSwitcher(reduceOrder.prime.toBigInteger(), reduceOrder.primePower.toBigInteger())),
                     ring.whiskered(reduceOrder.prime.toUInt(), DiscreteFourierTransformMatrixPrimePower(root.subRootData(0u), primeCase), 1u),
                     TwiddleMatrix(ring, reduceOrder.prime.toBigInteger(), reduceOrder.primePower.toBigInteger(), root.root),
                     ring.whiskered(1u, primeCase, reduceOrder.primePower.toUInt())

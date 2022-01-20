@@ -36,7 +36,7 @@ class DiscreteFourierTransformMatrix<A>(val root: RootData<A>) : AbstractMatrix<
                 ring, listOf(
                     ring.permutationMatrix(permCLInv(factors)),
                     FormalKroneckerProduct(ring, root.allSubRootDataPrimePower().map { root1 ->
-                        println(root1)
+//                        println(root1)
                         val power1 = root1.orderFactorization[0].power
                         if (power1 == 1u) {
                             DiscreteFourierTransformMatrixPrime(root1).andPrint()
