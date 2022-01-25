@@ -21,5 +21,8 @@ class RowVector<A>(ring: Ring<A>, val vector: List<A>) : AbstractRowVector<A>(ri
             else               -> super.timesImpl(matrix)   //1->a->b
         }
 
-
+    override fun rowListAt(row: UInt): List<A> {
+        require(row == 0u)
+        return vector
+    }
 }

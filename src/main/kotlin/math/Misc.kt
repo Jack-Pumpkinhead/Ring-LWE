@@ -16,13 +16,14 @@ fun <A> sizeOfFirstRowOrZero(matrix: List<List<A>>): UInt {
     return if (matrix.isEmpty()) 0u else matrix[0].size.toUInt()
 }
 
-fun <A> requireEqualSize(matrix: List<List<A>>) {
+fun <A> isRectangular(matrix: List<List<A>>): Boolean {
     if (matrix.isNotEmpty()) {
         val columns = matrix[0].size
         for (row in matrix) {
-            require(row.size == columns)
+            if (row.size != columns) return false
         }
     }
+    return true
 }
 
 fun <A> canMultiplyElementWise(a: List<AbstractMatrix<A>>, b: List<AbstractMatrix<A>>): Boolean {
@@ -36,10 +37,11 @@ fun <A> canMultiplyElementWise(a: List<AbstractMatrix<A>>, b: List<AbstractMatri
 }
 
 
-val debug = false
+val enableAssertion = false
+val printMatrix = false
 
 fun <A> AbstractMatrix<A>.andPrint(): AbstractMatrix<A> {
-    if (debug) {
+    if (printMatrix) {
         println("$this\n\n")
     }
     return this
@@ -48,7 +50,6 @@ fun <A> AbstractMatrix<A>.andPrint(): AbstractMatrix<A> {
 @OptIn(ExperimentalTime::class)
 inline fun measureTimeAndPrint(name: String, block: () -> Unit) {
     val time = measureTime(block)
-
     println("$name: ${time.toString(DurationUnit.MILLISECONDS, 5)}")
 }
 

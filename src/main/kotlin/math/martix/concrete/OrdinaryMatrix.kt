@@ -3,14 +3,15 @@ package math.martix.concrete
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
+import math.isRectangular
 import math.martix.AbstractMatrix
 import math.martix.EmptyMatrix
 import math.martix.matrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.operation.innerProduct
-import math.requireEqualSize
 import math.sizeOfFirstRowOrZero
+import util.stdlib.lazyAssert
 
 /**
  * Created by CowardlyLion at 2022/1/7 21:35
@@ -18,7 +19,7 @@ import math.sizeOfFirstRowOrZero
 class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
 
     init {
-        requireEqualSize(matrix)
+        lazyAssert { isRectangular(matrix) }
     }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix[row.toInt()][column.toInt()]
@@ -108,6 +109,8 @@ class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatr
     }
 
 
+    override fun rowListAt(row: UInt): List<A> = matrix[row.toInt()]
+
     override fun downCast(): AbstractMatrix<A> {
         return when {
             rows == 0u || columns == 0u -> return EmptyMatrix(ring, rows, columns)
@@ -123,7 +126,7 @@ class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatr
 
     override fun toString(): String {
         return matrix.joinToString(",\n", "{\n", "}") { row ->
-            row.joinToString(", ","{","}") { it.toString() }
+            row.joinToString(", ", "{", "}") { it.toString() }
         }
     }
 }

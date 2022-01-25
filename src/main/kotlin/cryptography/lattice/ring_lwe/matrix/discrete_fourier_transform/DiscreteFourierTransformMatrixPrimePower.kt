@@ -1,5 +1,6 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import cryptography.lattice.ring_lwe.coding.LadderSwitcher
 import cryptography.lattice.ring_lwe.matrix.TwiddleMatrix
@@ -27,10 +28,10 @@ class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootData<A>, primeCa
             val reduceOrder = order.reducePower()
             FormalProduct(
                 ring, listOf(
-                    ring.permutationMatrix(LadderSwitcher(reduceOrder.prime.toBigInteger(), reduceOrder.primePower.toBigInteger())),
-                    ring.whiskered(reduceOrder.prime.toUInt(), DiscreteFourierTransformMatrixPrimePower(root.subRootData(0u), primeCase), 1u),
+                    ring.permutationMatrix(LadderSwitcher(reduceOrder.prime.toUInt(), reduceOrder.primePower.toUInt())),
+                    ring.whiskered(reduceOrder.prime.toBigInteger(), DiscreteFourierTransformMatrixPrimePower(root.subRootData(0u), primeCase), BigInteger.ONE),
                     TwiddleMatrix(ring, reduceOrder.prime.toBigInteger(), reduceOrder.primePower.toBigInteger(), root.root),
-                    ring.whiskered(1u, primeCase, reduceOrder.primePower.toUInt())
+                    ring.whiskered(BigInteger.ONE, primeCase, reduceOrder.primePower.toBigInteger())
                 )
             )
         }

@@ -1,17 +1,13 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
-import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.abstract_structure.instance.categoryMatrix
-import math.andPrint
-import math.coding.permCLInv
-import math.coding.permLRInv
+import cryptography.lattice.ring_lwe.coding.permCLInv
+import cryptography.lattice.ring_lwe.coding.permLRInv
 import math.integer.operation.modTimes
 import math.martix.AbstractMatrix
 import math.martix.FormalProduct
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.permutationMatrix
 import math.martix.tensor.FormalKroneckerProduct
-import math.operation.composeAllPrefixedWithIdentity
 import math.powerM
 
 /**
@@ -31,15 +27,14 @@ class DiscreteFourierTransformMatrix<A>(val root: RootData<A>) : AbstractMatrix<
                 DiscreteFourierTransformMatrixPrimePower(root, primeCase)
             }
         } else {
-            val factors = root.orderFactorization.map { it.primePower.toBigInteger() }
-            val formalProduct = FormalProduct(
+            val factors = root.orderFactorization.map { it.primePower.toUInt() }
+            FormalProduct(
                 ring, listOf(
                     ring.permutationMatrix(permCLInv(factors)),
                     FormalKroneckerProduct(ring, root.allSubRootDataPrimePower().map { root1 ->
-//                        println(root1)
                         val power1 = root1.orderFactorization[0].power
                         if (power1 == 1u) {
-                            DiscreteFourierTransformMatrixPrime(root1).andPrint()
+                            DiscreteFourierTransformMatrixPrime(root1)
                         } else {
                             val primeCase = DiscreteFourierTransformMatrixPrime(root1.subRootData(listOf(power1 - 1u)))
                             DiscreteFourierTransformMatrixPrimePower(root1, primeCase)
@@ -48,8 +43,6 @@ class DiscreteFourierTransformMatrix<A>(val root: RootData<A>) : AbstractMatrix<
                     ring.permutationMatrix(permLRInv(factors))
                 )
             )
-            ring.categoryMatrix().composeAllPrefixedWithIdentity(formalProduct.matrices).andPrint()
-            formalProduct.andPrint()
         }
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = underlyingMatrix.timesImpl(matrix)

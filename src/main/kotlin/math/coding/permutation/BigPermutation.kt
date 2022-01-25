@@ -1,4 +1,4 @@
-package math.coding
+package math.coding.permutation
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import util.InfiniteBitSet
@@ -8,14 +8,14 @@ import util.InfiniteBitSet
  *
  * permutation of {0, 1, ..., size-1}
  */
-abstract class Permutation(val size: BigInteger) {
+abstract class BigPermutation(val size: BigInteger) {
 
     abstract operator fun invoke(x: BigInteger): BigInteger
     abstract fun inv(y: BigInteger): BigInteger
 
-    fun toInverse() = object : Permutation(size) {
-        override operator fun invoke(x: BigInteger): BigInteger = this@Permutation.inv(x)
-        override fun inv(y: BigInteger): BigInteger = this@Permutation(y)
+    fun toInverse() = object : BigPermutation(size) {
+        override operator fun invoke(x: BigInteger): BigInteger = this@BigPermutation.inv(x)
+        override fun inv(y: BigInteger): BigInteger = this@BigPermutation(y)
     }
 
     /**

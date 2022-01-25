@@ -1,8 +1,9 @@
 package math.martix.mutable
 
 import math.abstract_structure.Ring
-import math.requireEqualSize
+import math.isRectangular
 import math.sizeOfFirstRowOrZero
+import util.stdlib.lazyAssert
 
 /**
  * Created by CowardlyLion at 2022/1/8 22:49
@@ -12,7 +13,7 @@ import math.sizeOfFirstRowOrZero
 class MutableMatrix<A>(ring: Ring<A>, val matrix: List<MutableList<A>>) : AbstractMutableMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
 
     init {
-        requireEqualSize(matrix)
+        lazyAssert { isRectangular(matrix) }
     }
 
 
@@ -22,4 +23,7 @@ class MutableMatrix<A>(ring: Ring<A>, val matrix: List<MutableList<A>>) : Abstra
         matrix[row.toInt()][column.toInt()] = a
     }
 
+    override fun rowListAt(row: UInt): List<A> {
+        return matrix[row.toInt()].toList()
+    }
 }

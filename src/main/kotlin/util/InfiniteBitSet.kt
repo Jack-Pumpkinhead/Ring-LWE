@@ -11,7 +11,7 @@ import math.setBitAt
 class InfiniteBitSet {
 
     /**
-     * ONLY capable of bits less than Int.MAX_VALUE * 64
+     * ONLY capable of bits(index) < Int.MAX_VALUE * 64
      * TODO use ULongArray
      * */
     val base = mutableListOf<ULong>()
@@ -22,6 +22,13 @@ class InfiniteBitSet {
         val wordIndex = i / num64
         return if (wordIndex >= base.size.toBigInteger()) false else {
             base[wordIndex.intValue()].bitAt(i.mod(num64).uintValue())
+        }
+    }
+
+    fun bitAt(i: UInt): Boolean {
+        val wordIndex = i / 64u
+        return if (wordIndex >= base.size.toUInt()) false else {
+            base[wordIndex.toInt()].bitAt(i.mod(64u))
         }
     }
 
@@ -37,7 +44,21 @@ class InfiniteBitSet {
             }
             base[wordIndex].setBitAt(remainder.uintValue(), true)
         } else if (wordIndex < base.size) {
-            base[wordIndex].setBitAt(remainder.uintValue(),false)
+            base[wordIndex].setBitAt(remainder.uintValue(), false)
+        }
+    }
+
+    fun setBitAt(i: UInt, bit: Boolean) {
+        val wordIndex = (i / 64u).toInt()
+        val remainder = i.mod(64u)
+
+        if (bit) {
+            while (wordIndex >= base.size) {
+                base += 0uL
+            }
+            base[wordIndex].setBitAt(remainder, true)
+        } else if (wordIndex < base.size) {
+            base[wordIndex].setBitAt(remainder, false)
         }
     }
 

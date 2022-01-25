@@ -1,6 +1,8 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import cryptography.lattice.ring_lwe.coding.*
+import math.coding.permutation.BigSwitchIndexPermutation
 import math.isPairwiseCoprimeBigInteger
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -9,7 +11,7 @@ import kotlin.random.nextUInt
 /**
  * Created by CowardlyLion at 2022/1/16 20:11
  */
-internal class PermutationTest {
+internal class BigPermutationTest {
 
     @Test
     fun cycleDecomposition() {
@@ -19,7 +21,7 @@ internal class PermutationTest {
                 if (bound.isPairwiseCoprimeBigInteger()) {
                     println("bound: ${bound.joinToString(", ", "[", "]")}")
 
-                    fun printCycles(permutation: SwitchIndexPermutation, name: String) {
+                    fun printCycles(permutation: BigSwitchIndexPermutation, name: String) {
                         println("$name, ${if (permutation.isOddPermutation) "odd" else "even"}")
                         println(permutation.cycleDecomposition.joinToString(" ") { cycle -> cycle.joinToString(" ", "(", ")") })
                     }

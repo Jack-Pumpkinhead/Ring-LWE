@@ -1,10 +1,12 @@
 package math.martix
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import math.abstract_structure.Ring
-import math.coding.Permutation
+import math.coding.permutation.Permutation
 import math.martix.concrete.*
 import math.martix.mutable.ArrayMatrix
 import math.martix.mutable.MutableMatrix
@@ -93,7 +95,7 @@ fun <A> Ring<A>.diagonalMatrix(size: UInt, generator: (UInt) -> A) = DiagonalMat
 fun <A> Ring<A>.formalKroneckerProduct(vararg matrices: AbstractMatrix<A>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices.toList())
 fun <A> Ring<A>.formalKroneckerProduct(matrices: List<AbstractMatrix<A>>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices)
 fun <A> Ring<A>.permutationMatrix(permutation: Permutation) = PermutationMatrix(this, permutation)
-fun <A> Ring<A>.whiskered(l: UInt, matrix: AbstractMatrix<A>, r: UInt) = WhiskeredKroneckerProduct(this, l, matrix, r)
+fun <A> Ring<A>.whiskered(l: BigInteger, matrix: AbstractMatrix<A>, r: BigInteger) = WhiskeredKroneckerProduct(this, l, matrix, r)
 
 inline fun <reified A> AbstractMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> {
     return ring.mutableArrayMatrix(rows, columns) { i, j -> elementAt(i, j) }
@@ -108,17 +110,17 @@ fun <A> Ring<A>.decomposeFormalKroneckerProduct(matrices: List<AbstractMatrix<A>
     0    -> listOf(identityMatrix(1u))
     1    -> matrices
     else -> {
-        var l = 1u
+        var l = BigInteger.ONE
         for (m in matrices) {
-            l *= m.rows
+            l *= m.rows.toBigInteger()
         }
-        var r = 1u
+        var r = BigInteger.ONE
 
         val result = mutableListOf<AbstractMatrix<A>>()
         for (i in matrices.size - 1 downTo 0) {
-            l /= matrices[i].rows
+            l /= matrices[i].rows.toBigInteger()
             result += WhiskeredKroneckerProduct(this, l, matrices[i], r)
-            r *= matrices[i].columns
+            r *= matrices[i].columns.toBigInteger()
         }
         result
     }

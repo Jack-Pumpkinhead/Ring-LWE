@@ -1,5 +1,7 @@
 package math.abstract_structure
 
+import util.stdlib.lazyAssert
+
 /**
  * Created by CowardlyLion at 2022/1/8 13:00
  */
@@ -14,8 +16,8 @@ interface Category<C0, C1> {
     fun compose(f: C1, g: C1): C1 {
         require(target(f) == source(g))
         val result = composeUnsafe(f, g)
-        assert(source(result) == source(f))
-        assert(target(result) == target(g))
+        lazyAssert { source(result) == source(f) }
+        lazyAssert { target(result) == target(g) }
         return result
     }
 

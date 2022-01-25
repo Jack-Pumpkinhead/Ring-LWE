@@ -1,11 +1,11 @@
 package math.martix
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
-import com.ionspin.kotlin.bignum.integer.toBigInteger
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
-import math.coding.Permutation
-import math.martix.concrete.ColumnVector
+import math.coding.permutation.Permutation
 import math.martix.concrete.Constant
+import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.RowVector
 import math.martix.mutable.AbstractMutableMatrix
 
@@ -15,65 +15,89 @@ import math.martix.mutable.AbstractMutableMatrix
  * define matrix F of permutation f satisfying A^i = (FA)^f(i)
  * i.e. F^f(i)_i = 1 and other entry has value 0
  */
-class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractMatrix<A>(ring, f.size.uintValue(true), f.size.uintValue(true)) {
+open class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractSquareMatrix<A>(ring, f.size) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = if (f(column.toBigInteger()) == row.toBigInteger()) ring.one else ring.zero
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = if (f(column) == row) ring.one else ring.zero
 
     /**
      * (FM)^i_j = M^(f^-1(i))_j
+     * (FM)^f(i)_j = M^i_j
      * */
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
         is Constant<A>             -> matrix
         is RowVector<A>            -> matrix
         is AbstractRowVector<A>    -> matrix
-        is ColumnVector<A>         -> ring.columnVector(this.rows) { i -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
-        is AbstractColumnVector<A> -> ring.columnVector(this.rows) { i -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
+        is AbstractColumnVector<A> -> {
+            val result = ring.zeroMutableMatrix(this.rows, 1u)  //TODO replaced by zero mutable column matrix
+            for ((x, fx) in f) {
+                result.setElementAtUnsafe(fx, 0u, matrix.vectorElementAtUnsafe(x))
+            }
+            result
+        }
         is IdentityMatrix<A>       -> this
         is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
-        else                       -> ring.matrix(matrix.rows, matrix.columns) { i, j -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), j) }
+        else                       -> {
+            val list = MutableList<List<A>>(this.rows.toInt()) { emptyList() }
+            for ((x, fx) in f) {
+                list[fx.toInt()] = matrix.rowListAt(x)
+            }
+            OrdinaryMatrix(ring, list)
+        }
     }
 
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
-        is Constant<A>             -> matrix
-        is RowVector<A>            -> matrix
-        is AbstractRowVector<A>    -> matrix
-        is ColumnVector<A>         -> ring.columnVectorParallel(this.rows) { i -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
-        is AbstractColumnVector<A> -> ring.columnVectorParallel(this.rows) { i -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
-        is IdentityMatrix<A>       -> this
-        is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
-        else                       -> ring.matrixRowParallel(matrix.rows, matrix.columns) { i, j -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), j) }
-    }
+    //    already row parallel
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = timesImpl(matrix)
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
             is Constant<A>             -> dest.setUnsafe(matrix)
             is RowVector<A>            -> dest.setUnsafe(matrix)
             is AbstractRowVector<A>    -> dest.setUnsafe(matrix)
-            is ColumnVector<A>         -> dest.indexedSet { i, _ -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
-            is AbstractColumnVector<A> -> dest.indexedSet { i, _ -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
+            is AbstractColumnVector<A> -> {
+                for ((x, fx) in f) {
+                    dest.setElementAtUnsafe(fx, 0u, matrix.vectorElementAtUnsafe(x))
+                }
+            }
             is IdentityMatrix<A>       -> dest.setUnsafe(this)
             is ZeroMatrix<A>           -> dest.indexedSet { _, _ -> ring.zero }
-            else                       -> dest.indexedSet { i, j -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), j) }
+            else                       -> {
+                for ((x, fx) in f) {
+                    for (j in 0u until matrix.columns) {
+                        dest.setElementAtUnsafe(fx, j, matrix.elementAtUnsafe(x, j))
+                    }
+                }
+            }
         }
     }
 
-    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
         when (matrix) {
-            is Constant<A>             -> dest.setUnsafeRowParallel(matrix)
-            is RowVector<A>            -> dest.setUnsafeRowParallel(matrix)
-            is AbstractRowVector<A>    -> dest.setUnsafeRowParallel(matrix)
-            is ColumnVector<A>         -> dest.indexedSetRowParallel { i, _ -> matrix.vector[f.inv(i.toBigInteger()).intValue(true)] }
-            is AbstractColumnVector<A> -> dest.indexedSetRowParallel { i, _ -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), 0u) }
-            is IdentityMatrix<A>       -> dest.setUnsafeRowParallel(this)
-            is ZeroMatrix<A>           -> dest.indexedSetRowParallel { _, _ -> ring.zero }
-            else                       -> dest.indexedSetRowParallel { i, j -> matrix.elementAtUnsafe(f.inv(i.toBigInteger()).uintValue(true), j) }
+            is Constant<A>             -> dest.setUnsafe(matrix)
+            is RowVector<A>            -> dest.setUnsafe(matrix)
+            is AbstractRowVector<A>    -> dest.setUnsafe(matrix)
+            is AbstractColumnVector<A> -> {
+                for ((x, fx) in f) {
+                    dest.setElementAtUnsafe(fx, 0u, matrix.vectorElementAtUnsafe(x))
+                }
+            }
+            is IdentityMatrix<A>       -> dest.setUnsafe(this@PermutationMatrix)
+            is ZeroMatrix<A>           -> dest.indexedSet { _, _ -> ring.zero }
+            else                       -> {
+                for ((x, fx) in f) {
+                    launch {
+                        for (j in 0u until matrix.columns) {
+                            dest.setElementAtUnsafe(fx, j, matrix.elementAtUnsafe(x, j))
+                        }
+                    }
+                }
+            }
         }
     }
 
     override fun downCast(): AbstractMatrix<A> = when (f.size) {
-        BigInteger.ZERO -> EmptyMatrix(ring, rows, columns)
-        BigInteger.ONE  -> ring.identityMatrix(1u)
-        else            -> super.downCast()
+        0u   -> EmptyMatrix(ring, rows, columns)
+        1u   -> ring.identityMatrix(1u)
+        else -> super.downCast()
     }
 
     override fun determinant(): A = if (f.isOddPermutation) ring.negate(ring.one) else ring.one

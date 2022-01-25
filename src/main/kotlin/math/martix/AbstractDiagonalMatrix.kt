@@ -8,7 +8,7 @@ import math.operation.product
 /**
  * Created by CowardlyLion at 2022/1/17 11:54
  */
-abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMatrix<A>(ring, size, size), VectorLike<A> {
+abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(ring, size), VectorLike<A> {
 
     override val vectorSize: UInt = size
 

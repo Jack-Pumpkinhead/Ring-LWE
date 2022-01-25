@@ -20,10 +20,11 @@ import kotlin.random.nextUInt
  */
 internal class DiscreteFourierTransformMatrixPrimeTest {
 
+//    TODO improve performance(implement real dft) 16s 19s
     @Test
     fun primeField() {
         runBlocking {
-            for (i in 1u..300u) {
+            for (i in 1u..250u) {
                 val primeModulus = primeOf(i)
                 val order = primeModulus - 1uL
                 val factorization = primeFactorization1(order)

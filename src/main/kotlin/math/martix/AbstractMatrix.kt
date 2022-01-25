@@ -1,6 +1,5 @@
 package math.martix
 
-import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
@@ -12,10 +11,10 @@ import math.martix.concrete.view.ColumnVectorView
 import math.martix.concrete.view.RowVectorView
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
+import math.operation.multiplyRowParallelUnsafe
 import math.operation.multiplyToRowParallelUnsafe
 import math.operation.multiplyToUnsafe
 import math.operation.multiplyUnsafe
-import math.operation.multiplyRowParallelUnsafe
 
 /**
  * Created by CowardlyLion at 2022/1/7 21:22
@@ -50,7 +49,16 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
         is AbstractColumnVector<A>   -> ring.columnVector(this.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
         is IdentityMatrix<A>         -> this
         is ZeroMatrix<A>             -> ZeroMatrix(ring, this.rows, matrix.columns)
-        is PermutationMatrix<A>      -> ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+        is PermutationMatrix<A>      -> {
+            //(AF)^i_j = A^i_f(j)
+            val result = ring.zeroMutableMatrix(this.rows, matrix.columns)
+            for ((x, fx) in matrix.f) {
+                for (i in 0u until this.rows) {
+                    result.setElementAtUnsafe(i, x, matrix.elementAtUnsafe(i, fx))
+                }
+            }
+            result
+        }
         is AbstractDiagonalMatrix<A> -> ring.matrix(rows, columns) { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
         else                         -> ring.multiplyUnsafe(this, matrix)
     }
@@ -70,7 +78,18 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
         is AbstractColumnVector<A>   -> ring.columnVectorParallel(this.rows) { i -> this.rowVectorViewAt(i).innerProduct(matrix) }
         is IdentityMatrix<A>         -> this
         is ZeroMatrix<A>             -> ZeroMatrix(ring, this.rows, matrix.columns)
-        is PermutationMatrix<A>      -> ring.matrixRowParallel(rows, columns) { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+        is PermutationMatrix<A>      -> coroutineScope {    //this is column parallel
+            //(AF)^i_j = A^i_f(j)
+            val result = ring.zeroMutableMatrix(this@AbstractMatrix.rows, matrix.columns)
+            for ((x, fx) in matrix.f) {
+                launch {
+                    for (i in 0u until this@AbstractMatrix.rows) {
+                        result.setElementAtUnsafe(i, x, matrix.elementAtUnsafe(i, fx))
+                    }
+                }
+            }
+            result
+        }
         is AbstractDiagonalMatrix<A> -> ring.matrixRowParallel(rows, columns) { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
         else                         -> ring.multiplyRowParallelUnsafe(this, matrix)
     }
@@ -91,7 +110,14 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
             is AbstractColumnVector<A>   -> dest.indexedSet { i, _ -> this.rowVectorViewAt(i).innerProduct(matrix) }
             is IdentityMatrix<A>         -> dest.setUnsafe(this)
             is ZeroMatrix<A>             -> dest.indexedSet { _, _ -> ring.zero }
-            is PermutationMatrix<A>      -> dest.indexedSet { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+            is PermutationMatrix<A>      -> {
+                //(AF)^i_j = A^i_f(j)
+                for ((x, fx) in matrix.f) {
+                    for (i in 0u until this.rows) {
+                        dest.setElementAtUnsafe(i, x, matrix.elementAtUnsafe(i, fx))
+                    }
+                }
+            }
             is AbstractDiagonalMatrix<A> -> dest.indexedSet { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
             else                         -> ring.multiplyToUnsafe(this, matrix, dest)
         }
@@ -113,7 +139,16 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
             is AbstractColumnVector<A>   -> dest.indexedSetRowParallel { i, _ -> this.rowVectorViewAt(i).innerProduct(matrix) }
             is IdentityMatrix<A>         -> dest.setUnsafeRowParallel(this)
             is ZeroMatrix<A>             -> dest.indexedSetRowParallel { _, _ -> ring.zero }
-            is PermutationMatrix<A>      -> dest.indexedSetRowParallel { i, j -> elementAtUnsafe(i, matrix.f(j.toBigInteger()).uintValue(true)) }    //(AF)^i_j = A^i_k F^k_j = A^i_f(j)
+            is PermutationMatrix<A>      -> coroutineScope {    //this is column parallel
+                //(AF)^i_j = A^i_f(j)
+                for ((x, fx) in matrix.f) {
+                    launch {
+                        for (i in 0u until this@AbstractMatrix.rows) {
+                            dest.setElementAtUnsafe(i, x, matrix.elementAtUnsafe(i, fx))
+                        }
+                    }
+                }
+            }
             is AbstractDiagonalMatrix<A> -> dest.indexedSetRowParallel { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
             else                         -> ring.multiplyToRowParallelUnsafe(this, matrix, dest)
         }
@@ -151,6 +186,11 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
     }
 
 
+    open fun rowListAt(row: UInt): List<A> {
+        require(row in 0u until rows)
+        return List(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }
+    }
+
     //simplification by actual array structure is possible, but may cause problem if underlying array is mutable.
     fun rowVectorAt(row: UInt): RowVector<A> {
         require(row in 0u until rows)
@@ -165,18 +205,8 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
     fun toOrdinaryMatrix(): OrdinaryMatrix<A> = ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
     open fun toMutableMatrix(): MutableMatrix<A> = ring.mutableMatrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
 
-    val isSquareMatrix: Boolean = rows == columns
-    open fun determinant(): A {
-        TODO()
-    }
 
-    open fun hasInverse(): Boolean {
-        return determinant() != ring.zero
-    }
-
-    open fun inverse(): AbstractMatrix<A> {
-        TODO()
-    }
+    open fun isSquareMatrix(): Boolean = rows == columns
 
 
     fun indexed(op: (UInt, UInt) -> Unit) {

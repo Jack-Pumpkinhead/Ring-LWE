@@ -224,6 +224,18 @@ fun UInt.modInverse(modulus: UInt): UInt {
 }
 
 
+fun isCoprime(a: ULong, b: ULong) = gcd(a, b) == 1uL
+
+fun ULong.coprimeElements(): MutableList<ULong> {
+    val list = mutableListOf<ULong>()
+    for (i in 1uL until this) {
+        if (isCoprime(i, this)) {
+            list += i
+        }
+    }
+    return list
+}
+
 fun gcd(a: ULong, b: ULong): ULong {
     var a0 = a
     var a1 = b

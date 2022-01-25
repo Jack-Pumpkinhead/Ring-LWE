@@ -1,27 +1,29 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import math.abstract_structure.instance.ringBigInteger
 import math.isPairwiseCoprimeBigInteger
 import math.nonNegMin
-import org.junit.jupiter.api.Assertions.assertEquals
+import math.operation.product
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 import kotlin.random.nextUInt
 import kotlin.random.nextULong
 
 /**
- * Created by CowardlyLion at 2022/1/15 16:16
+ * Created by CowardlyLion at 2022/1/15 21:24
  */
-internal class RuritanianIndexTest {
+internal class BigChineseRemainderIndexTest {
 
     @Test
     fun encodeDecode() {
         for (length in 1..10) {
             repeat(length * 100 + length * length * 10) {
-                val bound = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
-                if (bound.isPairwiseCoprimeBigInteger()) {
-                    println("bound: ${bound.joinToString(", ", "[", "]")}")
-                    val index = RuritanianIndex(bound)
+                val bounds = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
+                if (bounds.isPairwiseCoprimeBigInteger()) {
+                    println("bound: ${bounds.joinToString(", ", "[", "]")}")
+                    val index = BigChineseRemainderIndex(bounds, ringBigInteger.product(bounds))
                     repeat(1000) {
                         val i = List(length) { Random.nextUInt(index.bounds[it].uintValue()).toBigInteger() }
                         val c = index.encode(i)
@@ -37,10 +39,10 @@ internal class RuritanianIndexTest {
     fun decodeEncode() {
         for (length in 1..10) {
             repeat(length * 100 + length * length * 10) {
-                val bound = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
-                if (bound.isPairwiseCoprimeBigInteger()) {
-                    println("bound: ${bound.joinToString(", ", "[", "]")}")
-                    val index = RuritanianIndex(bound)
+                val bounds = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
+                if (bounds.isPairwiseCoprimeBigInteger()) {
+                    println("bound: ${bounds.joinToString(", ", "[", "]")}")
+                    val index = BigChineseRemainderIndex(bounds, ringBigInteger.product(bounds))
                     repeat(1000) {
                         val c = Random.nextULong(nonNegMin(index.indexBound, ULong.MAX_VALUE)).toBigInteger()
                         val i = index.decode(c)
@@ -51,4 +53,5 @@ internal class RuritanianIndexTest {
             }
         }
     }
+
 }
