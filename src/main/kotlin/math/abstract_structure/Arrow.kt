@@ -3,7 +3,7 @@ package math.abstract_structure
 /**
  * Created by CowardlyLion at 2022/1/17 13:29
  */
-class Arrow<C0, A>(val source: C0, val target: C0, val function: (A) -> A) {
+open class Arrow<C0, A>(val source: C0, val target: C0, val function: (A) -> A) {
 
     operator fun times(arrow: Arrow<C0, A>): Arrow<C0, A> {
         require(this.target == arrow.source)

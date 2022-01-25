@@ -1,8 +1,8 @@
 package math.abstract_structure
 
 import kotlinx.coroutines.runBlocking
+import math.abstract_structure.instance.RingUInt
 import math.abstract_structure.instance.categoryUIntMatrix
-import math.abstract_structure.instance.ringUInt
 import math.martix.matrix
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -21,9 +21,9 @@ internal class CategoryInstanceKtTest {
             val j = Random.nextUInt(5u, 10u)
             val k = Random.nextUInt(5u, 10u)
             val l = Random.nextUInt(5u, 10u)
-            val mA = ringUInt.matrix(i, j) { _, _ -> Random.nextUInt(10u) }
-            val mB = ringUInt.matrix(j, k) { _, _ -> Random.nextUInt(10u) }
-            val mC = ringUInt.matrix(k, l) { _, _ -> Random.nextUInt(10u) }
+            val mA = RingUInt.matrix(i, j) { _, _ -> Random.nextUInt(10u) }
+            val mB = RingUInt.matrix(j, k) { _, _ -> Random.nextUInt(10u) }
+            val mC = RingUInt.matrix(k, l) { _, _ -> Random.nextUInt(10u) }
 
             val mAB = mA * mB
             val mAB1 = categoryUIntMatrix.compose(mA, mB)

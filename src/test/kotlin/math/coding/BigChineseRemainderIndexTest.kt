@@ -1,7 +1,7 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.abstract_structure.instance.ringBigInteger
+import math.abstract_structure.instance.RingBigInteger
 import math.isPairwiseCoprimeBigInteger
 import math.nonNegMin
 import math.operation.product
@@ -23,7 +23,7 @@ internal class BigChineseRemainderIndexTest {
                 val bounds = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
                 if (bounds.isPairwiseCoprimeBigInteger()) {
                     println("bound: ${bounds.joinToString(", ", "[", "]")}")
-                    val index = BigChineseRemainderIndex(bounds, ringBigInteger.product(bounds))
+                    val index = BigChineseRemainderIndex(bounds, RingBigInteger.product(bounds))
                     repeat(1000) {
                         val i = List(length) { Random.nextUInt(index.bounds[it].uintValue()).toBigInteger() }
                         val c = index.encode(i)
@@ -42,7 +42,7 @@ internal class BigChineseRemainderIndexTest {
                 val bounds = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
                 if (bounds.isPairwiseCoprimeBigInteger()) {
                     println("bound: ${bounds.joinToString(", ", "[", "]")}")
-                    val index = BigChineseRemainderIndex(bounds, ringBigInteger.product(bounds))
+                    val index = BigChineseRemainderIndex(bounds, RingBigInteger.product(bounds))
                     repeat(1000) {
                         val c = Random.nextULong(nonNegMin(index.indexBound, ULong.MAX_VALUE)).toBigInteger()
                         val i = index.decode(c)

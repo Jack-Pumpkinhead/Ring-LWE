@@ -1,6 +1,7 @@
 package math.martix
 
 import math.abstract_structure.Ring
+import math.vector.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:48

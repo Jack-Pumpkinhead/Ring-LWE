@@ -77,7 +77,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMa
         }
     }
 
-    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order == 2uL) super.timesImpl(matrix) else
+    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order <= 3uL) super.timesImpl(matrix) else
         when (matrix) {
             is Constant<A>               -> matrix
             is AbstractRowVector<A>      -> matrix
@@ -98,7 +98,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMa
             }
         }
 
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order == 2uL) super.timesRowParallelImpl(matrix) else
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order <= 3uL) super.timesRowParallelImpl(matrix) else
         when (matrix) {
             is Constant<A>               -> matrix
             is AbstractRowVector<A>      -> matrix
@@ -121,7 +121,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMa
         }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        if (root.order == 2uL) super.multiplyToImpl(matrix, dest)
+        if (root.order <= 3uL) super.multiplyToImpl(matrix, dest)
         else when (matrix) {
             is Constant<A>               -> dest.setUnsafe(matrix)
             is AbstractRowVector<A>      -> dest.setUnsafe(matrix)
@@ -139,7 +139,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMa
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        if (root.order == 2uL) super.multiplyToRowParallelImpl(matrix, dest)
+        if (root.order <= 3uL) super.multiplyToRowParallelImpl(matrix, dest)
         else when (matrix) {
             is Constant<A>               -> dest.setUnsafeRowParallel(matrix)
             is AbstractRowVector<A>      -> dest.setUnsafeRowParallel(matrix)

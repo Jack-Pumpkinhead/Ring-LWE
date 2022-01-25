@@ -1,7 +1,7 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.abstract_structure.instance.ringBigInteger
+import math.abstract_structure.instance.RingBigInteger
 import math.operation.product
 import util.stdlib.lazyAssert
 
@@ -15,7 +15,7 @@ import util.stdlib.lazyAssert
 abstract class BigBoundedMultiIndex(val bounds: List<BigInteger>, val indexBound: BigInteger) {
 
     init {
-        lazyAssert { ringBigInteger.product(bounds) == indexBound }
+        lazyAssert { RingBigInteger.product(bounds) == indexBound }
     }
 
     abstract fun encode(indices: List<BigInteger>): BigInteger

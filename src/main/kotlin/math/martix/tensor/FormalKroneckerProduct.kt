@@ -2,7 +2,7 @@ package math.martix.tensor
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.abstract_structure.Ring
-import math.abstract_structure.instance.ringBigInteger
+import math.abstract_structure.instance.RingBigInteger
 import math.canMultiplyElementWise
 import math.coding.BigLadderIndex
 import math.martix.AbstractMatrix
@@ -20,9 +20,9 @@ class FormalKroneckerProduct<A>(ring: Ring<A>, val elements: List<AbstractMatrix
 
     init {
         val rows = elements.map { it.rows.toBigInteger() }
-        rowIndex = BigLadderIndex(rows, ringBigInteger.product(rows))
+        rowIndex = BigLadderIndex(rows, RingBigInteger.product(rows))
         val columns = elements.map { it.columns.toBigInteger() }
-        columnIndex = BigLadderIndex(columns, ringBigInteger.product(columns))
+        columnIndex = BigLadderIndex(columns, RingBigInteger.product(columns))
         require(rowIndex.indexBound <= UInt.MAX_VALUE)
         require(columnIndex.indexBound <= UInt.MAX_VALUE)
 //        empty elements is ruled out in FormalProduct

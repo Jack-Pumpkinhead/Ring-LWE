@@ -1,6 +1,6 @@
 package math.coding
 
-import math.abstract_structure.instance.ringUInt
+import math.abstract_structure.instance.RingUInt
 import math.operation.product
 import util.stdlib.lazyAssert
 
@@ -18,7 +18,7 @@ import util.stdlib.lazyAssert
 abstract class BoundedMultiIndex(val bounds: List<UInt>, val indexBound: UInt) : Iterable<UInt> {
 
     init {
-        lazyAssert { ringUInt.product(bounds) == indexBound }
+        lazyAssert { RingUInt.product(bounds) == indexBound }
         lazyAssert { indexBound.toInt() > 0 }
     }
 

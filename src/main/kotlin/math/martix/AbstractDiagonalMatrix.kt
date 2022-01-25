@@ -4,6 +4,7 @@ import math.abstract_structure.Ring
 import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
 import math.operation.product
+import math.vector.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/17 11:54

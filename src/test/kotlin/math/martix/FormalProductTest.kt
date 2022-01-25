@@ -1,8 +1,8 @@
 package math.martix
 
 import kotlinx.coroutines.runBlocking
+import math.abstract_structure.instance.RingUInt
 import math.abstract_structure.instance.categoryUIntMatrix
-import math.abstract_structure.instance.ringUInt
 import math.andPrint
 import math.operation.*
 import math.random.randomMultiplicableUIntMatrices
@@ -22,7 +22,7 @@ internal class FormalProductTest {
         repeat(100) {
             val matrices = Random.randomMultiplicableUIntMatrices(5u, 1u..10u, 0u..100u)
             println("---------------")
-            val matrix = FormalProduct(ringUInt, matrices).andPrint()
+            val matrix = FormalProduct(RingUInt, matrices).andPrint()
             val matrix1 = matrix.toOrdinaryMatrix().andPrint()
             val matrix2 = categoryUIntMatrix.composeAllPrefixedWithIdentity(matrices).andPrint()
             assertEquals(matrix, matrix1)
@@ -34,7 +34,7 @@ internal class FormalProductTest {
     fun timesImpl() {
         repeat(1000) {
             val matrices = Random.randomMultiplicableUIntMatrices(3u, 1u..10u, 0u..100u)
-            val matrix = FormalProduct(ringUInt, matrices)
+            val matrix = FormalProduct(RingUInt, matrices)
             val matrix1 = matrix.toOrdinaryMatrix()
             val x = Random.randomUIntMatrix(matrices.last().columns..matrices.last().columns, 1u..10u, 0u..100u)
             val mx = (matrix * x).andPrint()
@@ -53,7 +53,7 @@ internal class FormalProductTest {
         runBlocking {
             repeat(1000) {
                 val matrices = Random.randomMultiplicableUIntMatrices(3u, 1u..10u, 0u..100u)
-                val matrix = FormalProduct(ringUInt, matrices)
+                val matrix = FormalProduct(RingUInt, matrices)
                 val matrix1 = matrix.toOrdinaryMatrix()
                 val x = Random.randomUIntMatrix(matrices.last().columns..matrices.last().columns, 1u..10u, 0u..100u)
                 val mx = (matrix.timesRowParallel(x)).andPrint()
@@ -72,13 +72,13 @@ internal class FormalProductTest {
     fun multiplyToImpl() {
         repeat(1000) {
             val matrices = Random.randomMultiplicableUIntMatrices(3u, 1u..10u, 0u..100u)
-            val matrix = FormalProduct(ringUInt, matrices)
+            val matrix = FormalProduct(RingUInt, matrices)
             val matrix1 = matrix.toOrdinaryMatrix()
             val x = Random.randomUIntMatrix(matrices.last().columns..matrices.last().columns, 1u..10u, 0u..100u)
-            val mx = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
-            val mx1 = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
-            val m1x = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
-            val m1x1 = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+            val mx = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+            val mx1 = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+            val m1x = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+            val m1x1 = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
             matrix.multiplyTo(x, mx)
             multiplyTo(matrix, x, mx1)
             matrix1.multiplyTo(x, m1x)
@@ -95,13 +95,13 @@ internal class FormalProductTest {
         runBlocking {
             repeat(1000) {
                 val matrices = Random.randomMultiplicableUIntMatrices(3u, 1u..10u, 0u..100u)
-                val matrix = FormalProduct(ringUInt, matrices)
+                val matrix = FormalProduct(RingUInt, matrices)
                 val matrix1 = matrix.toOrdinaryMatrix()
                 val x = Random.randomUIntMatrix(matrices.last().columns..matrices.last().columns, 1u..10u, 0u..100u)
-                val mx = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
-                val mx1 = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
-                val m1x = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
-                val m1x1 = ringUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+                val mx = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+                val mx1 = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+                val m1x = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
+                val m1x1 = RingUInt.zeroMutableMatrix(matrices.first().rows, x.columns)
                 matrix.multiplyToRowParallel(x, mx)
                 multiplyToRowParallel(matrix, x, mx1)
                 matrix1.multiplyToRowParallel(x, m1x)

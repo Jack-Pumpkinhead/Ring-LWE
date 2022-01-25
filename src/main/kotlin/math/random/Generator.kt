@@ -1,8 +1,8 @@
 package math.random
 
 import math.abstract_structure.Ring
-import math.abstract_structure.instance.ringModularUInt
-import math.abstract_structure.instance.ringUInt
+import math.abstract_structure.instance.RingModularUInt
+import math.abstract_structure.instance.RingUInt
 import math.integer.modular.UIntModular
 import math.integer.modular.ULongModular
 import math.martix.concrete.OrdinaryMatrix
@@ -31,8 +31,8 @@ fun <T> Random.randomizedElements(weights: DoubleArray, vararg elements: T): T {
     return elements.last()
 }
 
-fun Random.randomUIntMatrix(rows: UInt, columns: UInt, bound: UIntRange) = ringUInt.matrix(rows, columns) { _, _ -> nextUInt(bound) }
-fun Random.randomUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, bound: UIntRange) = ringUInt.matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> nextUInt(bound) }
+fun Random.randomUIntMatrix(rows: UInt, columns: UInt, bound: UIntRange) = RingUInt.matrix(rows, columns) { _, _ -> nextUInt(bound) }
+fun Random.randomUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, bound: UIntRange) = RingUInt.matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> nextUInt(bound) }
 fun Random.randomMultiplicableUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange): List<OrdinaryMatrix<UInt>> {
     var a = nextUInt(size)
     return List(matrices.toInt()) {
@@ -49,5 +49,5 @@ fun Random.randomUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange)
     }
 }
 
-fun Random.randomModularUIntMatrix(modulus: UInt, rowsRange: UIntRange, columnsRange: UIntRange) = ringModularUInt(modulus).matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> UIntModular(modulus, nextUInt(modulus)) }
+fun Random.randomModularUIntMatrix(modulus: UInt, rowsRange: UIntRange, columnsRange: UIntRange) = RingModularUInt(modulus).matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> UIntModular(modulus, nextUInt(modulus)) }
 fun Random.randomModularULongMatrix(ring: Ring<ULongModular>, modulus: ULong, rowsRange: UIntRange, columnsRange: UIntRange) = ring.matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> ULongModular(modulus, nextULong(modulus)) }

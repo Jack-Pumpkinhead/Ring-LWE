@@ -2,7 +2,7 @@ package math.integer
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.abstract_structure.instance.ringULong
+import math.abstract_structure.instance.RingULong
 import math.integer.operation.modPowerS
 import math.operation.product
 import kotlin.math.sqrt
@@ -322,7 +322,7 @@ suspend fun allMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: ULong): MutableL
         else -> {
             val a = prime - 1uL
             val factorization = a.primeFactorization()
-            val radical = ringULong.product(factorization.map { it.prime })
+            val radical = RingULong.product(factorization.map { it.prime })
             val generators = mutableListOf<ULong>()
             if (radical == a) {
                 nextNumber@ for (i in 2uL until prime) {
@@ -360,7 +360,7 @@ suspend fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: ULong): ULong 
         else -> {
             val a = prime - 1uL
             val factorization = a.primeFactorization()
-            val radical = ringULong.product(factorization.map { it.prime })
+            val radical = RingULong.product(factorization.map { it.prime })
             if (radical == a) {
                 nextNumber@ for (i in 2uL until prime) {
                     for (factor in factorization) {

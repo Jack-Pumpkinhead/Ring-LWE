@@ -19,10 +19,10 @@ fun <A> Ring<A>.categoryMatrix(): Category<UInt, AbstractMatrix<A>> = object : C
     override fun id(c0: UInt): AbstractMatrix<A> = identityMatrix(c0)
 }
 
-val categoryUIntMatrix = ringUInt.categoryMatrix()
-fun categoryModularUIntMatrix(modulus: UInt) = ringModularUInt(modulus).categoryMatrix()
-val categoryBigIntegerMatrix = ringBigInteger.categoryMatrix()
-fun categoryModularBigIntegerMatrix(modulus: BigInteger) = ringModularBigInteger(modulus).categoryMatrix()
+val categoryUIntMatrix = RingUInt.categoryMatrix()
+fun categoryModularUIntMatrix(modulus: UInt) = RingModularUInt(modulus).categoryMatrix()
+val categoryBigIntegerMatrix = RingBigInteger.categoryMatrix()
+fun categoryModularBigIntegerMatrix(modulus: BigInteger) = RingModularBigInteger(modulus).categoryMatrix()
 
 //used in common notation (multiply on the left, act on column vector)
 fun <A> Ring<A>.categoryMatrixOpposite(): Category<UInt, AbstractMatrix<A>> = object : Category<UInt, AbstractMatrix<A>> {
@@ -33,8 +33,8 @@ fun <A> Ring<A>.categoryMatrixOpposite(): Category<UInt, AbstractMatrix<A>> = ob
     override fun id(c0: UInt): AbstractMatrix<A> = identityMatrix(c0)
 }
 
-val categoryUIntMatrixOpposite = ringUInt.categoryMatrixOpposite()
-fun categoryModularUIntMatrixOpposite(modulus: UInt) = ringModularUInt(modulus).categoryMatrixOpposite()
-val categoryBigIntegerMatrixOpposite = ringBigInteger.categoryMatrixOpposite()
-fun categoryModularBigIntegerMatrixOpposite(modulus: BigInteger) = ringModularBigInteger(modulus).categoryMatrixOpposite()
+val categoryUIntMatrixOpposite = RingUInt.categoryMatrixOpposite()
+fun categoryModularUIntMatrixOpposite(modulus: UInt) = RingModularUInt(modulus).categoryMatrixOpposite()
+val categoryBigIntegerMatrixOpposite = RingBigInteger.categoryMatrixOpposite()
+fun categoryModularBigIntegerMatrixOpposite(modulus: BigInteger) = RingModularBigInteger(modulus).categoryMatrixOpposite()
 

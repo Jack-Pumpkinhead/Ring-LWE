@@ -114,3 +114,6 @@ fun ULong.setBitAt(i: UInt, bit: Boolean): ULong {
         this.inv().or(1uL.shl(i.toInt())).inv()
     }
 }
+
+val twoPower32 = 1uL.shl(32)
+val twoPower64 = BigInteger.ONE.shl(64)

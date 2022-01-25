@@ -1,8 +1,8 @@
 package math.martix
 
 import kotlinx.coroutines.runBlocking
+import math.abstract_structure.instance.RingUInt
 import math.abstract_structure.instance.categoryUIntMatrix
-import math.abstract_structure.instance.ringUInt
 import math.andPrint
 import math.operation.*
 import math.random.randomMultiplicableUIntMatrices
@@ -21,8 +21,8 @@ internal class OrdinaryMatrixTest {
     fun identityMatrix() {
         repeat(1000) {
             val m = Random.randomUIntMatrix(1u..100u, 1u..100u, 0u..100u).andPrint()
-            val ml = ringUInt.identityOrdinaryMatrix(m.rows).andPrint()
-            val mr = ringUInt.identityOrdinaryMatrix(m.columns).andPrint()
+            val ml = RingUInt.identityOrdinaryMatrix(m.rows).andPrint()
+            val mr = RingUInt.identityOrdinaryMatrix(m.columns).andPrint()
             val m1 = categoryUIntMatrix.composeAllPrefixedWithIdentity(listOf(ml, m)).andPrint()
             val m2 = categoryUIntMatrix.composeAllPrefixedWithIdentity(listOf(m, mr)).andPrint()
 //            val m1 = (ml * m).andPrint()
@@ -67,8 +67,8 @@ internal class OrdinaryMatrixTest {
             m[0].andPrint()
             m[1].andPrint()
             val m0 = (m[0] * m[1]).andPrint()
-            val m01 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-            val m02 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+            val m01 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+            val m02 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
             m[0].multiplyTo(m[1], m01)
             multiplyTo(m[0], m[1], m02)
             assertEquals(m0, m01)
@@ -84,8 +84,8 @@ internal class OrdinaryMatrixTest {
                 m[0].andPrint()
                 m[1].andPrint()
                 val m0 = (m[0] * m[1]).andPrint()
-                val m01 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-                val m02 = ringUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+                val m01 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
+                val m02 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
                 m[0].multiplyToRowParallel(m[1], m01)
                 multiplyToRowParallel(m[0], m[1], m02)
                 assertEquals(m0, m01)

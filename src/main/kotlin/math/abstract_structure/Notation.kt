@@ -4,7 +4,7 @@ package math.abstract_structure
  * Created by CowardlyLion at 2022/1/17 12:31
  */
 
-fun <C0, A> FiniteConcreteCategory<C0, A>.apply(a: A, vararg arrows: Arrow<C0, A>): A {
+fun <C0, C0E, Arr : Arrow<C0, C0E>> FiniteConcreteCategory<C0, C0E, Arr>.apply(a: C0E, vararg arrows: Arr): C0E {
     if (arrows.isEmpty()) return a
     var result = a
     for (arrow in arrows) {
@@ -14,3 +14,5 @@ fun <C0, A> FiniteConcreteCategory<C0, A>.apply(a: A, vararg arrows: Arrow<C0, A
     }
     return result
 }
+
+const val standardBase = "standard base"

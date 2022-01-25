@@ -3,7 +3,6 @@ package math.vector
 import math.abstract_structure.Ring
 import math.integer.PrimePowerULong
 import math.integer.operation.modMinusUnsafe
-import math.martix.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/19 13:34

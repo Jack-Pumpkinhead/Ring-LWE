@@ -1,6 +1,6 @@
 package math.coding.iterator
 
-import math.abstract_structure.instance.ringUInt
+import math.abstract_structure.instance.RingUInt
 import math.operation.product
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -17,7 +17,7 @@ internal class MultiIndexIteratorTest {
             repeat(3) {
                 val bounds = List(length) { Random.nextUInt(1u..7u) }
                 println("radices: ${bounds.joinToString(", ", "[", "]")}")
-                val iterator = MultiIndexIteratorImpl(bounds, ringUInt.product(bounds))
+                val iterator = MultiIndexIteratorImpl(bounds, RingUInt.product(bounds))
                 for (code in iterator) {
                     println(code)
                 }

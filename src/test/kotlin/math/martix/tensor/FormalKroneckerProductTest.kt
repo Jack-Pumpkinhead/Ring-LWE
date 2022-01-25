@@ -1,7 +1,7 @@
 package math.martix.tensor
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.ringUInt
+import math.abstract_structure.instance.RingUInt
 import math.andPrint
 import math.martix.AbstractMatrix
 import math.martix.concrete.OrdinaryMatrix
@@ -27,8 +27,8 @@ internal class FormalKroneckerProductTest {
     fun multiply() {
         repeat(100) {
             val m = Random.randomUIntMatrices(5u, 1u..5u, 0u..10u)
-            val m0 = m.fold(ringUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> ringUInt.formalKroneckerProduct(acc, i) }
-            val m1 = ringUInt.formalKroneckerProduct(m)
+            val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
+            val m1 = RingUInt.formalKroneckerProduct(m)
             val v = Random.randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u).andPrint()
             val m0v = m0 * v
             val m1v = m1 * v
@@ -50,8 +50,8 @@ internal class FormalKroneckerProductTest {
         runBlocking {
             repeat(100) {
                 val m = Random.randomUIntMatrices(5u, 1u..5u, 0u..10u)
-                val m0 = m.fold(ringUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> ringUInt.formalKroneckerProduct(acc, i) }
-                val m1 = ringUInt.formalKroneckerProduct(m)
+                val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
+                val m1 = RingUInt.formalKroneckerProduct(m)
                 val v = Random.randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u).andPrint()
                 val m0v = m0.timesRowParallel(v)
                 val m1v = m1.timesRowParallel(v)
@@ -81,8 +81,8 @@ internal class FormalKroneckerProductTest {
         runBlocking {
             val samples = List(100) {
                 val m = Random.randomUIntMatrices(5u, 1u..5u, 0u..20u)
-                val m0 = m.fold(ringUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> ringUInt.formalKroneckerProduct(acc, i) }
-                val m1 = ringUInt.formalKroneckerProduct(m)
+                val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
+                val m1 = RingUInt.formalKroneckerProduct(m)
                 val m2 = m1.toOrdinaryMatrix()
                 val v = Random.randomUIntMatrix(m0.columns..m0.columns, 1u..5u, 0u..10u)
                 Sample(m0, m1, m2, v)

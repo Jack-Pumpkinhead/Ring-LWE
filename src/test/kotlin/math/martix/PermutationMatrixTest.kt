@@ -2,8 +2,8 @@ package math.martix
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import cryptography.lattice.ring_lwe.coding.*
-import math.abstract_structure.instance.ringBigInteger
-import math.abstract_structure.instance.ringUInt
+import math.abstract_structure.instance.RingBigInteger
+import math.abstract_structure.instance.RingUInt
 import math.andPrint
 import math.coding.permutation.SwitchIndexPermutation
 import math.isPairwiseCoprimeUInt
@@ -28,13 +28,13 @@ internal class PermutationMatrixTest {
                 val bound = List(length) { Random.nextUInt(2u..10u) }
                 if (bound.isPairwiseCoprimeUInt()) {
                     println("bound: ${bound.joinToString(", ", "[", "]")}")
-                    if (ringBigInteger.product(bound.map { it.toBigInteger() }) >= Int.MAX_VALUE.toBigInteger()) {
+                    if (RingBigInteger.product(bound.map { it.toBigInteger() }) >= Int.MAX_VALUE.toBigInteger()) {
                         println("too big, skip.")
                     } else {
 
                         fun testPermutation(permutation: SwitchIndexPermutation, name: String) {
                             measureTimeAndPrint("perm $name") {
-                                val m = PermutationMatrix(ringUInt, permutation).andPrint()
+                                val m = PermutationMatrix(RingUInt, permutation).andPrint()
                                 repeat(10) {
 
                                     val x = Random.randomUIntMatrix(permutation.size, 3u, 0u..10u).andPrint()
@@ -64,7 +64,7 @@ internal class PermutationMatrixTest {
         println("bound: ${bound.joinToString(", ", "[", "]")}")
         fun testPermutation(permutation: SwitchIndexPermutation, name: String) {
             println("perm $name")
-            val m = PermutationMatrix(ringUInt, permutation).andPrint()
+            val m = PermutationMatrix(RingUInt, permutation).andPrint()
             repeat(10) {
 //                        println("x$it")
                 val x = Random.randomUIntMatrix(permutation.size, 3u, 0u..10u).andPrint()

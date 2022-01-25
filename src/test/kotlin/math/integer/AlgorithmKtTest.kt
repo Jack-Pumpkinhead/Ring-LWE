@@ -1,7 +1,7 @@
 package math.integer
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.ringULong
+import math.abstract_structure.instance.RingULong
 import math.operation.product
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -38,7 +38,7 @@ internal class AlgorithmKtTest {
         runBlocking {
             for (i in 1uL..10000uL) {
                 val factorization = i.primeFactorization()
-                assertEquals(i, ringULong.product(factorization.map { it.primePower }))
+                assertEquals(i, RingULong.product(factorization.map { it.primePower }))
                 println("$i = $factorization")
             }
         }
