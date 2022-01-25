@@ -35,6 +35,12 @@ abstract class BoundedMultiIndex(val bounds: List<UInt>, val indexBound: UInt) :
     abstract fun cyclicIncreaseAt(index: UInt, i: Int): UInt
 
     /**
+     * assume code at [i] is maximal, then increase it to 0
+     * decode [index], cyclic increase multi-index at [i] by 1 to 0 then encode
+     */
+    abstract fun cyclicIncreaseToZeroAt(index: UInt, i: Int): UInt
+
+    /**
      * decode [index], cyclic decrease multi-index at [i] by 1 then encode
      */
     abstract fun cyclicDecreaseAt(index: UInt, i: Int): UInt

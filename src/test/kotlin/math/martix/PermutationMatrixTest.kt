@@ -58,9 +58,6 @@ internal class PermutationMatrixTest {
         }
     }
 
-    //TODO RC is very slow, improve it. 29s -> 1sec 322ms
-//    1sec 339ms
-//
     @Test
     fun timesImpl1() {
         val bound = listOf(8u, 9u, 5u)

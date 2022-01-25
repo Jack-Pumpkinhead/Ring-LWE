@@ -25,15 +25,13 @@ class LadderSwitcher(val b0: UInt, val b1: UInt) : Permutation(b0 * b1) {
 
     override fun iterator(): Iterator<PermutationPair> = object : Iterator<PermutationPair> {
 
+        var index = 0u
         val fromCode = mutableListOf(0u, 0u)
-        var first = true
 
-        override fun hasNext(): Boolean = first || fromCode[0] != b0 - 1u || fromCode[1] != b1 - 1u
+        override fun hasNext(): Boolean = index != this@LadderSwitcher.size
 
         override fun next(): PermutationPair {
-            if (first) {
-                first = false
-            } else {
+            if (index != 0u) {
                 if (fromCode[1] == b1 - 1u) {
                     fromCode[1] = 0u
                     fromCode[0]++
@@ -41,6 +39,7 @@ class LadderSwitcher(val b0: UInt, val b1: UInt) : Permutation(b0 * b1) {
                     fromCode[1]++
                 }
             }
+            index++
             return PermutationPair(fromIndex.encode(fromCode), toIndex.encode(listOf(fromCode[1], fromCode[0])))
         }
     }

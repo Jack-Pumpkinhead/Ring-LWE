@@ -1,6 +1,7 @@
-package math.coding
+package math.coding.iterator
 
-import math.coding.iterator.GrayCodeIterator
+import math.abstract_structure.instance.ringUInt
+import math.operation.product
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 import kotlin.random.nextUInt
@@ -15,9 +16,9 @@ internal class GrayCodeIteratorTest {
     fun test() {
         for (length in 1..5) {
             repeat(3) {
-                val radices = List(length) { Random.nextUInt(1u..7u) }
-                println("radices: ${radices.joinToString(", ", "[", "]")}")
-                val iterator = GrayCodeIterator(radices)
+                val bounds = List(length) { Random.nextUInt(1u..7u) }
+                println("radices: ${bounds.joinToString(", ", "[", "]")}")
+                val iterator = GrayCodeIteratorImpl(bounds, ringUInt.product(bounds))
                 for (code in iterator) {
                     println(code)
                 }

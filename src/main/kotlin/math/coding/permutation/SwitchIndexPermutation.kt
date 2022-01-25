@@ -1,15 +1,14 @@
 package math.coding.permutation
 
 import math.coding.BoundedMultiIndex
+import math.coding.iterator.GrayCodeIterator
+import math.coding.iterator.MultiIndexIterator
 import util.stdlib.lazyAssert
 
 /**
  * Created by CowardlyLion at 2022/1/24 13:48
  */
 class SwitchIndexPermutation(val fromIndex: BoundedMultiIndex, val toIndex: BoundedMultiIndex) : Permutation(fromIndex.indexBound) {
-
-    val bounds = fromIndex.bounds
-    val indexBound = fromIndex.indexBound
 
     init {
         lazyAssert { fromIndex.bounds == toIndex.bounds }
@@ -19,95 +18,44 @@ class SwitchIndexPermutation(val fromIndex: BoundedMultiIndex, val toIndex: Boun
 
     override fun inv(y: UInt): UInt = fromIndex.encode(toIndex.decode(y))
 
+
 //    override fun iterator(): Iterator<PermutationPair> = iteratorNormal()
     override fun iterator(): Iterator<PermutationPair> = iteratorGray()
 
-    fun iteratorNormal(): Iterator<PermutationPair> = object : Iterator<PermutationPair> {
+    fun iteratorNormal(): MultiIndexIterator<PermutationPair> = object : MultiIndexIterator<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {
 
-        val code = MutableList(bounds.size) { 0u }
         var fromEncode = fromIndex.firstIndex()
         var toEncode = toIndex.firstIndex()
 
-        var first = true
+        override fun returnCode(): PermutationPair = PermutationPair(fromEncode, toEncode)
 
-        private fun isAtEnd(i: Int): Boolean = code[i] == bounds[i] - 1u
+        override fun atIncrease(i: Int) {
+            fromEncode = fromIndex.increaseAt(fromEncode, i)
+            toEncode = toIndex.increaseAt(toEncode, i)
+        }
 
-        override fun hasNext(): Boolean = first || !bounds.indices.all { isAtEnd(it) }
-
-        override fun next(): PermutationPair {
-            if (first) {
-                first = false
-            } else {
-                var i = bounds.size - 1
-                var end = isAtEnd(i)
-                while (end) {
-                    code[i] = 0u
-                    fromEncode = fromIndex.cyclicIncreaseAt(fromEncode, i)
-                    toEncode = toIndex.cyclicIncreaseAt(toEncode, i)
-                    i--
-                    end = isAtEnd(i)
-                }
-                code[i]++
-                fromEncode = fromIndex.cyclicIncreaseAt(fromEncode, i)
-                toEncode = toIndex.cyclicIncreaseAt(toEncode, i)
-            }
-            return PermutationPair(fromEncode, toEncode)
+        override fun atCyclicIncreaseToZero(i: Int) {
+            fromEncode = fromIndex.cyclicIncreaseToZeroAt(fromEncode, i)
+            toEncode = toIndex.cyclicIncreaseToZeroAt(toEncode, i)
         }
     }
 
-    fun iteratorGray(): Iterator<PermutationPair> = object : Iterator<PermutationPair> {
+    fun iteratorGray(): GrayCodeIterator<PermutationPair> = object : GrayCodeIterator<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {
 
-        val code = MutableList(bounds.size) { 0u }
         var fromEncode = fromIndex.firstIndex()
         var toEncode = toIndex.firstIndex()
 
-        var first = true
-        val reverseOrder = MutableList(bounds.size) { false }
-        var i = bounds.size - 1
+        override fun returnCode(): PermutationPair = PermutationPair(fromEncode, toEncode)
 
-
-        private fun isAtEnd(i: Int): Boolean = if (reverseOrder[i]) code[i] == 0u else code[i] == bounds[i] - 1u
-
-        override fun hasNext(): Boolean = first || i != bounds.size - 1 || !(0..i).all { isAtEnd(it) }
-
-        override fun next(): PermutationPair {
-            if (first) {
-                first = false
-            } else {
-                var shouldTryNext = tryNext()
-                while (shouldTryNext) {
-                    shouldTryNext = tryNext()
-                }
-            }
-            return PermutationPair(fromEncode, toEncode)
+        override fun atIncrease(i: Int) {
+            fromEncode = fromIndex.increaseAt(fromEncode, i)
+            toEncode = toIndex.increaseAt(toEncode, i)
         }
 
-        private fun tryNext(): Boolean =
-            if (reverseOrder[i]) {
-                if (code[i] == 0u) {
-                    reverseOrder[i] = !reverseOrder[i]
-                    i--
-                    true
-                } else {
-                    code[i]--
-                    fromEncode = fromIndex.decreaseAt(fromEncode, i)
-                    toEncode = toIndex.decreaseAt(toEncode, i)
-                    i = bounds.size - 1
-                    false
-                }
-            } else {
-                if (code[i] == bounds[i] - 1u) {
-                    reverseOrder[i] = !reverseOrder[i]
-                    i--
-                    true
-                } else {
-                    code[i]++
-                    fromEncode = fromIndex.increaseAt(fromEncode, i)
-                    toEncode = toIndex.increaseAt(toEncode, i)
-                    i = bounds.size - 1
-                    false
-                }
-            }
+        override fun atDecrease(i: Int) {
+            fromEncode = fromIndex.decreaseAt(fromEncode, i)
+            toEncode = toIndex.decreaseAt(toEncode, i)
+        }
     }
 
 

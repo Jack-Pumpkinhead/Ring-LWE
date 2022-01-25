@@ -1,8 +1,7 @@
-package math.coding
+package math.coding.permutation
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import cryptography.lattice.ring_lwe.coding.*
-import math.coding.permutation.BigSwitchIndexPermutation
 import math.isPairwiseCoprimeBigInteger
 import org.junit.jupiter.api.Test
 import kotlin.random.Random

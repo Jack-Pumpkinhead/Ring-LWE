@@ -1,5 +1,6 @@
 package math.coding
 
+import math.coding.iterator.GrayCodeIterator
 import math.integer.operation.modMinusUnsafe
 import util.stdlib.lazyAssert2
 import util.stdlib.runningFoldRight
@@ -62,6 +63,13 @@ class LadderIndex(bounds: List<UInt>, indexBound: UInt) : BoundedMultiIndex(boun
             }
         }
 
+    override fun cyclicIncreaseToZeroAt(index: UInt, i: Int): UInt =
+        if (i == 0) {
+            (index + indexBase[0]).mod(indexBound)
+        } else {
+            index + indexBase[i] - indexBase[i - 1]
+        }
+
     override fun cyclicDecreaseAt(index: UInt, i: Int): UInt =
         if (i == 0) {
             modMinusUnsafe(index, indexBase[0], indexBound)
@@ -80,54 +88,18 @@ class LadderIndex(bounds: List<UInt>, indexBound: UInt) : BoundedMultiIndex(boun
 
     override fun iterator(): Iterator<UInt> = (0u until indexBound).iterator()
 
-    override fun iteratorGray(): Iterator<UInt> = object : Iterator<UInt> {
+    override fun iteratorGray(): GrayCodeIterator<UInt> = object : GrayCodeIterator<UInt>(bounds, indexBound) {
 
-        val code = MutableList(bounds.size) { 0u }
         var encode = 0u
+        override fun returnCode(): UInt = encode
 
-        var first = true
-        val reverseOrder = MutableList(bounds.size) { false }
-        var i = bounds.size - 1
-
-        private fun isAtEnd(i: Int): Boolean = if (reverseOrder[i]) code[i] == 0u else code[i] == bounds[i] - 1u
-
-        override fun hasNext(): Boolean = first || i != bounds.size - 1 || !(0..i).all { isAtEnd(it) }
-
-        override fun next(): UInt {
-            if (first) {
-                first = false
-            } else {
-                var shouldTryNext = tryNext()
-                while (shouldTryNext) {
-                    shouldTryNext = tryNext()
-                }
-            }
-            return encode
+        override fun atIncrease(i: Int) {
+            encode += indexBase[i]
         }
 
-        private fun tryNext(): Boolean =
-            if (reverseOrder[i]) {
-                if (code[i] == 0u) {
-                    reverseOrder[i] = !reverseOrder[i]
-                    i--
-                    true
-                } else {
-                    code[i]--
-                    encode -= indexBase[i]
-                    i = bounds.size - 1
-                    false
-                }
-            } else {
-                if (code[i] == bounds[i] - 1u) {
-                    reverseOrder[i] = !reverseOrder[i]
-                    i--
-                    true
-                } else {
-                    code[i]++
-                    encode += indexBase[i]
-                    i = bounds.size - 1
-                    false
-                }
-            }
+        override fun atDecrease(i: Int) {
+            encode -= indexBase[i]
+        }
     }
+
 }

@@ -1,5 +1,7 @@
 package math.coding
 
+import math.coding.iterator.GrayCodeIterator
+import math.coding.iterator.MultiIndexIterator
 import math.integer.modInverse
 import math.integer.operation.modMinusUnsafe
 import math.integer.operation.modPlusUnsafe
@@ -43,88 +45,36 @@ class ChineseRemainderIndex(bounds: List<UInt>, indexBound: UInt) : BoundedMulti
     override fun firstIndex(): UInt = 0u
 
     override fun cyclicIncreaseAt(index: UInt, i: Int) = (index + indexBase[i]).mod(indexBound)
+    override fun cyclicIncreaseToZeroAt(index: UInt, i: Int) = (index + indexBase[i]).mod(indexBound)
     override fun cyclicDecreaseAt(index: UInt, i: Int) = modMinusUnsafe(index, indexBase[i], indexBound)
     override fun increaseAt(index: UInt, i: Int): UInt = (index + indexBase[i]).mod(indexBound)
     override fun decreaseAt(index: UInt, i: Int): UInt = modMinusUnsafe(index, indexBase[i], indexBound)
 
 
-    override fun iterator(): Iterator<UInt> = object : Iterator<UInt> {
-
-        var first = true
-        val code = MutableList(bounds.size) { 0u }
+    override fun iterator(): MultiIndexIterator<UInt> = object : MultiIndexIterator<UInt>(bounds, indexBound) {
         var encode = 0u
+        override fun returnCode(): UInt = encode
 
-        private fun isAtEnd(i: Int): Boolean = code[i] == bounds[i] - 1u
+        override fun atIncrease(i: Int) {
+            encode = (encode + indexBase[i]).mod(indexBound)
+        }
 
-        override fun hasNext(): Boolean = first || !bounds.indices.all { isAtEnd(it) }
-
-        override fun next(): UInt {
-            if (first) {
-                first = false
-            } else {
-                var i = bounds.size - 1
-                var end = isAtEnd(i)
-                while (end) {
-                    code[i] = 0u
-                    encode = (encode + indexBase[i]).mod(indexBound)
-                    i--
-                    end = isAtEnd(i)
-                }
-                code[i]++
-                encode = (encode + indexBase[i]).mod(indexBound)
-            }
-            return encode
+        override fun atCyclicIncreaseToZero(i: Int) {
+            encode = (encode + indexBase[i]).mod(indexBound)
         }
     }
 
-    override fun iteratorGray(): Iterator<UInt> = object : Iterator<UInt> {
+    override fun iteratorGray(): GrayCodeIterator<UInt> = object : GrayCodeIterator<UInt>(bounds, indexBound) {
 
-        val code = MutableList(bounds.size) { 0u }
         var encode = 0u
+        override fun returnCode(): UInt = encode
 
-        var first = true
-        val reverseOrder = MutableList(bounds.size) { false }
-        var i = bounds.size - 1
-
-        private fun isAtEnd(i: Int): Boolean = if (reverseOrder[i]) code[i] == 0u else code[i] == bounds[i] - 1u
-
-        override fun hasNext(): Boolean = first || i != bounds.size - 1 || !(0..i).all { isAtEnd(it) }
-
-        override fun next(): UInt {
-            if (first) {
-                first = false
-            } else {
-                var shouldTryNext = tryNext()
-                while (shouldTryNext) {
-                    shouldTryNext = tryNext()
-                }
-            }
-            return encode
+        override fun atIncrease(i: Int) {
+            encode = modPlusUnsafe(encode, indexBase[i], indexBound)
         }
 
-        private fun tryNext(): Boolean =
-            if (reverseOrder[i]) {
-                if (code[i] == 0u) {
-                    reverseOrder[i] = !reverseOrder[i]
-                    i--
-                    true
-                } else {
-                    code[i]--
-                    encode = modMinusUnsafe(encode, indexBase[i], indexBound)
-                    i = bounds.size - 1
-                    false
-                }
-            } else {
-                if (code[i] == bounds[i] - 1u) {
-                    reverseOrder[i] = !reverseOrder[i]
-                    i--
-                    true
-                } else {
-                    code[i]++
-                    encode = modPlusUnsafe(encode, indexBase[i], indexBound)
-                    i = bounds.size - 1
-                    false
-                }
-            }
+        override fun atDecrease(i: Int) {
+            encode = modMinusUnsafe(encode, indexBase[i], indexBound)
+        }
     }
 }

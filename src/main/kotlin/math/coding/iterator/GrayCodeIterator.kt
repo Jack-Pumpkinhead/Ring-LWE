@@ -5,33 +5,40 @@ import util.stdlib.lazyAssert
 /**
  * Created by CowardlyLion at 2022/1/24 17:16
  */
-class GrayCodeIterator(val radices: List<UInt>) : Iterator<List<UInt>> {
+abstract class GrayCodeIterator<A>(val bounds: List<UInt>, val indexBound: UInt) : Iterator<A> {
 
     init {
-        require(radices.isNotEmpty())
-        lazyAssert { radices.all { it > 0u } }
+        require(bounds.isNotEmpty())
+        lazyAssert { bounds.all { it > 0u } }
     }
 
-    var first = true
-    val code = MutableList(radices.size) { 0u }
-    val reverseOrder = MutableList(radices.size) { false }
-    var i = radices.size - 1
+    var index = 0u
+    val code = MutableList(bounds.size) { 0u }
 
-    private fun isAtEnd(i: Int): Boolean = if (reverseOrder[i]) code[i] == 0u else code[i] == radices[i] - 1u
+    private val reverseOrder = MutableList(bounds.size) { false }
+    private var i = bounds.size - 1
 
-    override fun hasNext(): Boolean = first || i != radices.size - 1 || !(0..i).all { isAtEnd(it) }
+    private fun isAtEnd(i: Int): Boolean = if (reverseOrder[i]) code[i] == 0u else code[i] == bounds[i] - 1u
 
-    override fun next(): List<UInt> {
-        if (first) {
-            first = false
-        } else {
+    override fun hasNext(): Boolean = index != indexBound
+
+    /**
+     * return [code] represented by [index]
+     */
+    override fun next(): A {
+        if (index != 0u) {
             var shouldTryNext = tryNext()
             while (shouldTryNext) {
                 shouldTryNext = tryNext()
             }
         }
-        return code
+        index++
+        return returnCode()
     }
+
+    open fun atIncrease(i: Int) {}
+    open fun atDecrease(i: Int) {}
+    abstract fun returnCode(): A
 
     private fun tryNext(): Boolean =
         if (reverseOrder[i]) {
@@ -41,17 +48,19 @@ class GrayCodeIterator(val radices: List<UInt>) : Iterator<List<UInt>> {
                 true
             } else {
                 code[i]--
-                i = radices.size - 1
+                atDecrease(i)
+                i = bounds.size - 1
                 false
             }
         } else {
-            if (code[i] == radices[i] - 1u) {
+            if (code[i] == bounds[i] - 1u) {
                 reverseOrder[i] = !reverseOrder[i]
                 i--
                 true
             } else {
                 code[i]++
-                i = radices.size - 1
+                atIncrease(i)
+                i = bounds.size - 1
                 false
             }
         }
