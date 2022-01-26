@@ -7,7 +7,7 @@ import math.complex_number.complexNumber
 /**
  * Created by CowardlyLion at 2022/1/25 17:50
  */
-class FieldComplexNumber<A>(val field: Field<A>) : Field<ComplexNumber<A>> {
+open class FieldComplexNumber<A>(val field: Field<A>) : Field<ComplexNumber<A>> {
     override val descriptions: MutableSet<String> = field.descriptions.mapTo(mutableSetOf()) { "R[x]/(x^2+1) over ($it)" }
     override val zero: ComplexNumber<A> = field.complexNumber(field.zero, field.zero)
     override val one: ComplexNumber<A> = field.complexNumber(field.one, field.zero)

@@ -9,8 +9,9 @@ class CategoryOfModule {
 
     val categoryCache = mutableMapOf<Ring<*>, FiniteConcreteCategoryOfFiniteFreeModuleWithBaseOverRing<*>>()
 
-    fun <A> categoryOf(ring: Ring<A>) = categoryCache.computeIfAbsent(ring) { FiniteConcreteCategoryOfFiniteFreeModuleWithBaseOverRing(ring) }
-
+    fun <A> categoryOf(ring: Ring<A>): FiniteConcreteCategoryOfFiniteFreeModuleWithBaseOverRing<A> {
+        return categoryCache.computeIfAbsent(ring) { FiniteConcreteCategoryOfFiniteFreeModuleWithBaseOverRing(ring) } as FiniteConcreteCategoryOfFiniteFreeModuleWithBaseOverRing<A>
+    }
 
 
 }

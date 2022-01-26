@@ -16,3 +16,10 @@
 - [On Ideal Lattices and Learning with Errors Over Rings --Vadim Lyubashevsky and Chris Peikert and Oded Regev](https://eprint.iacr.org/2012/230)
 - [A Toolkit for Ring-LWE Cryptography --Vadim Lyubashevsky and Chris Peikert and Oded Regev](https://eprint.iacr.org/2013/293)
 - [Implementing a Toolkit for Ring-LWE Based Cryptography in Arbitrary Cyclotomic Number Fields --Christoph M. Mayer](https://eprint.iacr.org/2016/049)
+
+##symbols
+- ℕ
+- ℤ
+- ℝ
+- ℚ
+- ℂ

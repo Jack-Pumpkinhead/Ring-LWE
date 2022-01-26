@@ -15,6 +15,7 @@ abstract class FiniteConcreteCategory<C0, C0E, Arr : Arrow<C0, C0E>> {  //C1 = (
 
     abstract fun c0(a: C0E): C0
 
+    abstract val modules: MutableList<C0>     //contains working modules at runtime.
     abstract val arrows: MutableList<Arr>     //contains working arrows at runtime.
     abstract fun hom(source: C0, target: C0): Collection<Arr>
 

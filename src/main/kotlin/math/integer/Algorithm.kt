@@ -40,6 +40,12 @@ data class PrimePowerULong(val prime: ULong, val power: UInt, val primePower: UL
         return PrimePowerULong(prime, power - 1u, primePower / prime)
     }
 
+    fun eulerTotient(): ULong = when (power) {
+        0u   -> 1uL
+        1u   -> prime - 1uL
+        else -> (primePower / prime) * (prime - 1uL)
+    }
+
     override fun toString(): String {
         return "$prime^$power"
     }

@@ -5,3 +5,4 @@ package math.integer.modular
  */
 
 fun UInt.toUIntModular(modulus: UInt): UIntModular = UIntModular(modulus, this.mod(modulus))
+fun ULong.toULongModular(modulus: ULong): ULongModular = ULongModular(modulus, this.mod(modulus))

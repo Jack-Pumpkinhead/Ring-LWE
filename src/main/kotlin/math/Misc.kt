@@ -4,6 +4,7 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.integer.gcd
 import math.martix.AbstractMatrix
+import kotlin.math.PI
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -117,3 +118,5 @@ fun ULong.setBitAt(i: UInt, bit: Boolean): ULong {
 
 val twoPower32 = 1uL.shl(32)
 val twoPower64 = BigInteger.ONE.shl(64)
+
+const val pi2 = PI * 2

@@ -1,11 +1,12 @@
-package math.integer.modular
+package math.abstract_structure.instance
 
 import math.abstract_structure.Field
+import math.integer.modular.ULongModular
 
 /**
  * Created by CowardlyLion at 2022/1/19 23:34
  */
-class FieldULongModular(val prime: ULong) : Field<ULongModular> {
+class FieldModularULong(val prime: ULong) : Field<ULongModular> {
 
     override val descriptions: MutableSet<String> = mutableSetOf("field of integer modulo $prime")
     override val zero: ULongModular = ULongModular(prime, 0uL)
@@ -38,7 +39,7 @@ class FieldULongModular(val prime: ULong) : Field<ULongModular> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is FieldULongModular) return false
+        if (other !is FieldModularULong) return false
 
         if (prime != other.prime) return false
 

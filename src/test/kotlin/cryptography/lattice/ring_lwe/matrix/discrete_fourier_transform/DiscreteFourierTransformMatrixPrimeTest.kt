@@ -3,7 +3,7 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 import kotlinx.coroutines.runBlocking
 import math.andPrint
 import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
-import math.integer.modular.FieldULongModular
+import math.abstract_structure.instance.FieldModularULong
 import math.integer.modular.ULongModular
 import math.integer.primeFactorization
 import math.integer.primeFactorization1
@@ -29,7 +29,7 @@ internal class DiscreteFourierTransformMatrixPrimeTest {
                 val order = primeModulus - 1uL
                 val factorization = primeFactorization1(order)
                 val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeModulus)
-                val field = FieldULongModular(primeModulus)
+                val field = FieldModularULong(primeModulus)
                 val rootData = RootData(field, ULongModular(primeModulus, root), order, order.primeFactorization())
                 val dft = DiscreteFourierTransformMatrixPrime(rootData.subRootDataPrime(Random.nextUInt(rootData.orderFactorization.size.toUInt())))
                 val x = Random.randomModularULongMatrix(field, primeModulus, dft.columns..dft.columns, 1u..3u)

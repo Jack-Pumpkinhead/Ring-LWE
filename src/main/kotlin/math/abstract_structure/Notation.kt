@@ -14,5 +14,3 @@ fun <C0, C0E, Arr : Arrow<C0, C0E>> FiniteConcreteCategory<C0, C0E, Arr>.apply(a
     }
     return result
 }
-
-const val standardBase = "standard base"

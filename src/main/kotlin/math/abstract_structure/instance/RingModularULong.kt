@@ -1,11 +1,12 @@
-package math.integer.modular
+package math.abstract_structure.instance
 
 import math.abstract_structure.Ring
+import math.integer.modular.ULongModular
 
 /**
  * Created by CowardlyLion at 2022/1/19 23:30
  */
-class RingULongModular(val modulus: ULong) : Ring<ULongModular> {
+class RingModularULong(val modulus: ULong) : Ring<ULongModular> {
 
     override val descriptions: MutableSet<String> = mutableSetOf("ring of integer modulo $modulus")
     override val zero: ULongModular = ULongModular(modulus, 0uL)
@@ -43,7 +44,7 @@ class RingULongModular(val modulus: ULong) : Ring<ULongModular> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RingULongModular) return false
+        if (other !is RingModularULong) return false
 
         if (modulus != other.modulus) return false
 

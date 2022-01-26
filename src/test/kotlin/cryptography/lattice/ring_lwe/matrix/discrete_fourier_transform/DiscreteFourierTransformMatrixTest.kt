@@ -3,7 +3,7 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.primeFieldDFT
 import kotlinx.coroutines.runBlocking
 import math.andPrint
-import math.integer.modular.FieldULongModular
+import math.abstract_structure.instance.FieldModularULong
 import math.integer.primeFactorization1
 import math.integer.primeOf
 import math.martix.zeroMutableMatrix
@@ -29,7 +29,7 @@ internal class DiscreteFourierTransformMatrixTest {
 //                println("i: $i, primeModulus: $primeModulus")
                 val factorization = primeFactorization1(primeModulus - 1uL)
                 val dft = primeFieldDFT(primeModulus)
-                val x = Random.randomModularULongMatrix(FieldULongModular(primeModulus), primeModulus, dft.columns..dft.columns, 1u..3u)
+                val x = Random.randomModularULongMatrix(FieldModularULong(primeModulus), primeModulus, dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
 //                dft.andPrint()
 //                dft.underlyingMatrix.andPrint()
@@ -51,7 +51,7 @@ internal class DiscreteFourierTransformMatrixTest {
                 val primeModulus = primeOf(i)
                 val factorization = primeFactorization1(primeModulus - 1uL)
                 val dft = primeFieldDFT(primeModulus)
-                val x = Random.randomModularULongMatrix(FieldULongModular(primeModulus), primeModulus, dft.columns..dft.columns, 1u..3u)
+                val x = Random.randomModularULongMatrix(FieldModularULong(primeModulus), primeModulus, dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
 
                 val a = (dft.timesRowParallel(x)).andPrint()
@@ -69,7 +69,7 @@ internal class DiscreteFourierTransformMatrixTest {
                 val primeModulus = primeOf(i)
                 val factorization = primeFactorization1(primeModulus - 1uL)
                 val dft = primeFieldDFT(primeModulus)
-                val field = FieldULongModular(primeModulus)
+                val field = FieldModularULong(primeModulus)
                 val x = Random.randomModularULongMatrix(field, primeModulus, dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
 
@@ -90,7 +90,7 @@ internal class DiscreteFourierTransformMatrixTest {
                 val primeModulus = primeOf(i)
                 val factorization = primeFactorization1(primeModulus - 1uL)
                 val dft = primeFieldDFT(primeModulus)
-                val field = FieldULongModular(primeModulus)
+                val field = FieldModularULong(primeModulus)
                 val x = Random.randomModularULongMatrix(field, primeModulus, dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
 
