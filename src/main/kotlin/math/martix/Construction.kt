@@ -1,7 +1,5 @@
 package math.martix
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
-import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -95,7 +93,7 @@ fun <A> Ring<A>.diagonalMatrix(size: UInt, generator: (UInt) -> A) = DiagonalMat
 fun <A> Ring<A>.formalKroneckerProduct(vararg matrices: AbstractMatrix<A>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices.toList())
 fun <A> Ring<A>.formalKroneckerProduct(matrices: List<AbstractMatrix<A>>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices)
 fun <A> Ring<A>.permutationMatrix(permutation: Permutation) = PermutationMatrix(this, permutation)
-fun <A> Ring<A>.whiskered(l: BigInteger, matrix: AbstractMatrix<A>, r: BigInteger) = WhiskeredKroneckerProduct(this, l, matrix, r)
+fun <A> Ring<A>.whiskered(l: UInt, matrix: AbstractMatrix<A>, r: UInt) = WhiskeredKroneckerProduct(this, l, matrix, r)
 
 inline fun <reified A> AbstractMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> {
     return ring.mutableArrayMatrix(rows, columns) { i, j -> elementAt(i, j) }
@@ -110,17 +108,17 @@ fun <A> Ring<A>.decomposeFormalKroneckerProduct(matrices: List<AbstractMatrix<A>
     0    -> listOf(identityMatrix(1u))
     1    -> matrices
     else -> {
-        var l = BigInteger.ONE
+        var l = 1u
         for (m in matrices) {
-            l *= m.rows.toBigInteger()
+            l *= m.rows
         }
-        var r = BigInteger.ONE
+        var r = 1u
 
         val result = mutableListOf<AbstractMatrix<A>>()
         for (i in matrices.size - 1 downTo 0) {
-            l /= matrices[i].rows.toBigInteger()
+            l /= matrices[i].rows
             result += WhiskeredKroneckerProduct(this, l, matrices[i], r)
-            r *= matrices[i].columns.toBigInteger()
+            r *= matrices[i].columns
         }
         result
     }

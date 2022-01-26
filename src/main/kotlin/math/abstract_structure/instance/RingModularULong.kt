@@ -1,43 +1,43 @@
 package math.abstract_structure.instance
 
 import math.abstract_structure.Ring
-import math.integer.modular.ULongModular
+import math.integer.modular.ModularULong
 
 /**
  * Created by CowardlyLion at 2022/1/19 23:30
  */
-class RingModularULong(val modulus: ULong) : Ring<ULongModular> {
+open class RingModularULong(val modulus: ULong) : Ring<ModularULong> {
 
     override val descriptions: MutableSet<String> = mutableSetOf("ring of integer modulo $modulus")
-    override val zero: ULongModular = ULongModular(modulus, 0uL)
-    override val one: ULongModular = ULongModular(modulus, 1uL)
+    override val zero: ModularULong = ModularULong(modulus, 0uL)
+    override val one: ModularULong = ModularULong(modulus, 1uL)
 
-    override fun add(x: ULongModular, y: ULongModular): ULongModular {
+    override fun add(x: ModularULong, y: ModularULong): ModularULong {
         require(x.modulus == modulus)
         return x + y    //already checking modulus of x and y equal
     }
 
-    override fun negate(a: ULongModular): ULongModular {
+    override fun negate(a: ModularULong): ModularULong {
         require(a.modulus == modulus)
         return -a
     }
 
-    override fun subtract(x: ULongModular, y: ULongModular): ULongModular {
+    override fun subtract(x: ModularULong, y: ModularULong): ModularULong {
         require(x.modulus == modulus)
         return x - y
     }
 
-    override fun multiply(x: ULongModular, y: ULongModular): ULongModular {
+    override fun multiply(x: ModularULong, y: ModularULong): ModularULong {
         require(x.modulus == modulus)
         return x * y
     }
 
-    override fun hasInverse(a: ULongModular): Boolean {
+    override fun hasInverse(a: ModularULong): Boolean {
         require(a.modulus == modulus)
         return a.hasInverse()
     }
 
-    override fun inverse(a: ULongModular): ULongModular {
+    override fun inverse(a: ModularULong): ModularULong {
         require(a.modulus == modulus)
         return a.inverse()
     }

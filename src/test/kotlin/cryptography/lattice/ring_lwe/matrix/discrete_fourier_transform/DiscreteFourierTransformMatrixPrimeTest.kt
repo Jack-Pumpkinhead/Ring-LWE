@@ -1,16 +1,16 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
+import cryptography.lattice.ring_lwe.matrix.RootDataUInt
 import kotlinx.coroutines.runBlocking
+import math.abstract_structure.instance.PrimeFieldUInt
 import math.andPrint
 import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
-import math.abstract_structure.instance.FieldModularULong
-import math.integer.modular.ULongModular
+import math.integer.modular.ModularUInt
 import math.integer.primeFactorization
-import math.integer.primeFactorization1
 import math.integer.primeOf
 import math.operation.multiply
-import math.random.randomModularULongMatrix
-import org.junit.jupiter.api.Assertions.*
+import math.random.randomModularUIntMatrix
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 import kotlin.random.nextUInt
@@ -25,14 +25,12 @@ internal class DiscreteFourierTransformMatrixPrimeTest {
     fun primeField() {
         runBlocking {
             for (i in 1u..250u) {
-                val primeModulus = primeOf(i)
-                val order = primeModulus - 1uL
-                val factorization = primeFactorization1(order)
-                val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeModulus)
-                val field = FieldModularULong(primeModulus)
-                val rootData = RootDataULong(field, ULongModular(primeModulus, root), order, order.primeFactorization())
-                val dft = DiscreteFourierTransformMatrixPrime(rootData.subRootDataPrime(Random.nextUInt(rootData.orderFactorization.size.toUInt())))
-                val x = Random.randomModularULongMatrix(field, primeModulus, dft.columns..dft.columns, 1u..3u)
+                val primeField = PrimeFieldUInt(primeOf(i).toUInt())
+                val order = primeField.prime - 1u
+                val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeField.prime)
+                val rootData = RootDataUInt(primeField, ModularUInt(primeField.prime, root), order, order.primeFactorization())
+                val dft = DiscreteFourierTransformMatrixPrime(rootData.primeSubroot(Random.nextUInt(rootData.orderFactorization.size.toUInt())))
+                val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
                 dft.andPrint()
                 x.andPrint()

@@ -3,6 +3,7 @@ package math.martix
 import math.abstract_structure.Ring
 import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
+import util.stdlib.lazyAssert2
 
 /**
  * Created by CowardlyLion at 2022/1/14 18:06
@@ -11,8 +12,11 @@ open class FormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractMatrix<A>>
 
     init {
         require(matrices.isNotEmpty())
-        for (i in 0 until matrices.size - 1) {
-            require(matrices[i].columns == matrices[i + 1].rows)
+
+        lazyAssert2 {
+            for (i in 0 until matrices.size - 1) {
+                assert(matrices[i].columns == matrices[i + 1].rows)
+            }
         }
     }
 

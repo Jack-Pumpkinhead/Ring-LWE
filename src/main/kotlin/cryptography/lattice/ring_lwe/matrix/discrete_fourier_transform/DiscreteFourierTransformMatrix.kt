@@ -2,6 +2,7 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
 import cryptography.lattice.ring_lwe.coding.permCLInv
 import cryptography.lattice.ring_lwe.coding.permLRInv
+import cryptography.lattice.ring_lwe.matrix.RootDataUInt
 import math.integer.operation.modTimes
 import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
@@ -14,31 +15,29 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/19 17:44
  */
-class DiscreteFourierTransformMatrix<A>(val root: RootDataULong<A>) : AbstractSquareMatrix<A>(root.ring, root.order.toUInt()) {
+class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A>(root.ring, root.order) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.toUInt()))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order))
 
     val underlyingMatrix: AbstractMatrix<A> =
         if (root.orderFactorization.size == 1) {
-            val factor = root.orderFactorization[0]
-            if (factor.power == 1u) {
-                DiscreteFourierTransformMatrixPrime(root)
+            val root1 = root.toPrimePower()
+            if (root1.order.power == 1u) {
+                DiscreteFourierTransformMatrixPrime(root1.toPrime())
             } else {
-                val primeCase = DiscreteFourierTransformMatrixPrime(root.subRootData(listOf(factor.power - 1u)))
-                DiscreteFourierTransformMatrixPrimePower(root, primeCase)
+                val primeCase = DiscreteFourierTransformMatrixPrime(root1.primeSubroot())
+                DiscreteFourierTransformMatrixPrimePower(root1, primeCase)
             }
         } else {
-            val factors = root.orderFactorization.map { it.primePower.toUInt() }
+            val factors = root.orderFactorization.map { it.primePower }
             FormalProduct(
                 ring, listOf(
                     ring.permutationMatrix(permCLInv(factors)),
-                    FormalKroneckerProduct(ring, root.allSubRootDataPrimePower().map { root1 ->
-                        val power1 = root1.orderFactorization[0].power
-                        if (power1 == 1u) {
-                            DiscreteFourierTransformMatrixPrime(root1)
+                    FormalKroneckerProduct(ring, root.allPrimePowerSubroot().map { root1 ->
+                        if (root1.order.power == 1u) {
+                            DiscreteFourierTransformMatrixPrime(root1.toPrime())
                         } else {
-                            val primeCase = DiscreteFourierTransformMatrixPrime(root1.subRootData(listOf(power1 - 1u)))
-                            DiscreteFourierTransformMatrixPrimePower(root1, primeCase)
+                            DiscreteFourierTransformMatrixPrimePower(root1, DiscreteFourierTransformMatrixPrime(root1.primeSubroot()))
                         }
                     }),
                     ring.permutationMatrix(permLRInv(factors))

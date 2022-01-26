@@ -1,38 +1,41 @@
 package math.martix.tensor
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
-import math.coding.BigLadderIndex
+import math.coding.LadderIndex
 import math.martix.AbstractMatrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.zeroMutableMatrix
+import util.stdlib.lazyAssert2
 
 /**
  * Created by CowardlyLion at 2022/1/9 17:39
  *
  * represent a matrix in the form I_l ⊗ M ⊗ I_r
  */
-class WhiskeredKroneckerProduct<A>(ring: Ring<A>, l: BigInteger, val mA: AbstractMatrix<A>, r: BigInteger) : AbstractMatrix<A>(ring, (l * mA.rows.toBigInteger() * r).uintValue(true), (l * mA.columns.toBigInteger() * r).uintValue(true)) {
+class WhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A>(ring, l * mA.rows * r, l * mA.columns * r) {
 
-    val ul = l.uintValue(true)
-    val ur = r.uintValue(true)
-
-    val rowIndex = BigLadderIndex(listOf(l, mA.rows.toBigInteger(), r), super.rows.toBigInteger())  //TODO make index small
-    val columnIndex = BigLadderIndex(listOf(l, mA.columns.toBigInteger(), r), super.columns.toBigInteger())
+    val rowIndex = LadderIndex(listOf(l, mA.rows, r), super.rows)
+    val columnIndex = LadderIndex(listOf(l, mA.columns, r), super.columns)
 
     init {
-        require(rowIndex.indexBound <= UInt.MAX_VALUE)
-        require(columnIndex.indexBound <= UInt.MAX_VALUE)
+        lazyAssert2 {
+            val bigL = l.toBigInteger()
+            val bigR = r.toBigInteger()
+            val rows = bigL * mA.rows.toBigInteger() * bigR
+            val columns = bigL * mA.columns.toBigInteger() * bigR
+            assert(rows <= UInt.MAX_VALUE)
+            assert(columns <= UInt.MAX_VALUE)
+        }
     }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A {
-        val rowIndices = rowIndex.decode(row.toBigInteger())
-        val columnIndices = columnIndex.decode(column.toBigInteger())
-        return if (rowIndices[0] == columnIndices[0] && rowIndices[2] == columnIndices[2]) {
-            mA.elementAtUnsafe(rowIndices[1].uintValue(), columnIndices[1].uintValue())
+        val row1 = rowIndex.decode(row)
+        val column1 = columnIndex.decode(column)
+        return if (row1[0] == column1[0] && row1[2] == column1[2]) {
+            mA.elementAtUnsafe(row1[1], column1[1])
         } else ring.zero
     }
 
@@ -49,21 +52,21 @@ class WhiskeredKroneckerProduct<A>(ring: Ring<A>, l: BigInteger, val mA: Abstrac
     }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        for (il in 0u until ul) {
-            for (ir in 0u until ur) {
-                val submatrix = matrix.sparseSubmatrixView(il * mA.columns * ur + ir, ur, mA.columns)
-                val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * ur + ir, ur, mA.rows)
+        for (il in 0u until l) {
+            for (ir in 0u until r) {
+                val submatrix = matrix.sparseSubmatrixView(il * mA.columns * r + ir, r, mA.columns)
+                val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * r + ir, r, mA.rows)
                 mA.multiplyTo(submatrix, destSubmatrix)
             }
         }
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
-        for (il in 0u until ul) {
-            launch {    //reduce O(n^2) coroutine to O(n) coroutine improves performance, but still cannot outperform one thread algorithm.
-                for (ir in 0u until ur) {
-                    val submatrix = matrix.sparseSubmatrixView(il * mA.columns * ur + ir, ur, mA.columns)
-                    val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * ur + ir, ur, mA.rows)
+        for (il in 0u until l) {
+            launch {    //reduce O(n^2) coroutine to O(n) coroutine improves performance, but still can't outperform one thread algorithm.
+                for (ir in 0u until r) {
+                    val submatrix = matrix.sparseSubmatrixView(il * mA.columns * r + ir, r, mA.columns)
+                    val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * r + ir, r, mA.rows)
                     mA.multiplyTo(submatrix, destSubmatrix)
                 }
             }

@@ -1,5 +1,6 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
+import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrime
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -18,24 +19,14 @@ import util.stdlib.list
 /**
  * Created by CowardlyLion at 2022/1/19 18:26
  */
-class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataULong<A>) : AbstractSquareMatrix<A>(root.ring, root.order.toUInt()) {
+class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.toUInt()))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order))
 
-    val primeData: PrimeData
+    val primeWithGenerator: PrimeWithGenerator = runBlocking { PrimeWithGenerator(root.order, firstMultiplicativeGeneratorOfPrimeFieldUnsafe(root.order)) }
 
-    val rootPower: List<A>
-    val rgInv: List<A>
-
-    init {
-        require(root.orderFactorization.size == 1)
-        require(root.orderFactorization[0].power == 1u)
-        val prime = root.orderFactorization[0].prime
-
-        primeData = runBlocking { PrimeData(prime.toUInt(), firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime).toUInt()) }
-        rootPower = ring.powers(root.root, 0u until root.order.toUInt())
-        rgInv = list(prime.toUInt() - 1u) { i -> rootPower[primeData.inverseGeneratorPower(i).toInt()] }
-    }
+    val rootPower: List<A> = ring.powers(root.root, 0u until root.order)
+    val rgInv: List<A> = list(root.order - 1u) { i -> rootPower[primeWithGenerator.inverseGeneratorPower(i).toInt()] }
 
 
     fun timesImpl(vector: AbstractColumnVector<A>): ColumnVector<A> {
@@ -46,17 +37,13 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataULong<A>) : Abstr
         }
         result[0] = sum
 
-        val xg = list(primeData.primeDec) { i -> vector.vectorElementAtUnsafe(primeData.generatorPower(i)) }
-
-//        println("rgInv: $rgInv")
-//        println("gPower: ${primeData.generatorPower}")
-//        println("xg: $xg")
+        val xg = list(primeWithGenerator.primeDec) { i -> vector.vectorElementAtUnsafe(primeWithGenerator.generatorPower(i)) }
         val convolution = ring.convolution(rgInv, xg)
-//        println("convolution: $convolution")
-//        println()
+
         val v0 = vector.vectorElementAtUnsafe(0u)
+
         for (i in convolution.indices) {
-            result[primeData.inverseGeneratorPower(i.toUInt()).toInt()] = ring.add(v0, convolution[i])
+            result[primeWithGenerator.inverseGeneratorPower(i.toUInt()).toInt()] = ring.add(v0, convolution[i])
         }
         return ColumnVector(ring, result)
     }
@@ -68,12 +55,12 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataULong<A>) : Abstr
         }
         dest.setElementAtUnsafe(0u, 0u, sum)
 
-        val xg = list(primeData.primeDec) { i -> vector.vectorElementAtUnsafe(primeData.generatorPower(i)) }
+        val xg = list(primeWithGenerator.primeDec) { i -> vector.vectorElementAtUnsafe(primeWithGenerator.generatorPower(i)) }
 
         val convolution = ring.convolution(rgInv, xg)
         val v0 = vector.vectorElementAtUnsafe(0u)
         for (i in convolution.indices) {
-            dest.setElementAtUnsafe(primeData.inverseGeneratorPower(i.toUInt()), 0u, ring.add(v0, convolution[i]))
+            dest.setElementAtUnsafe(primeWithGenerator.inverseGeneratorPower(i.toUInt()), 0u, ring.add(v0, convolution[i]))
         }
     }
 

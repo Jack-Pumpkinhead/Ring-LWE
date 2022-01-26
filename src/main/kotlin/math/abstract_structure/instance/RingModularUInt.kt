@@ -1,7 +1,7 @@
 package math.abstract_structure.instance
 
 import math.abstract_structure.Ring
-import math.integer.modular.UIntModular
+import math.integer.modular.ModularUInt
 
 /**
  * Created by CowardlyLion at 2022/1/25 17:38
@@ -9,37 +9,37 @@ import math.integer.modular.UIntModular
  * may not optimal for computation, but safe.
  * UInt modulo 0 is empty set thus cannot perform any operation.
  */
-class RingModularUInt(val modulus: UInt) : Ring<UIntModular> {
+open class RingModularUInt(val modulus: UInt) : Ring<ModularUInt> {
     override val descriptions: MutableSet<String> = mutableSetOf("ring of integer modulo $modulus")
-    override val zero: UIntModular = UIntModular(modulus, 0u)
-    override val one: UIntModular = UIntModular(modulus, 1u)
+    override val zero: ModularUInt = ModularUInt(modulus, 0u)
+    override val one: ModularUInt = ModularUInt(modulus, 1u)
 
-    override fun add(x: UIntModular, y: UIntModular): UIntModular {
+    override fun add(x: ModularUInt, y: ModularUInt): ModularUInt {
         require(x.modulus == modulus)
         return x + y    //already checking modulus of x and y equal
     }
 
-    override fun negate(a: UIntModular): UIntModular {
+    override fun negate(a: ModularUInt): ModularUInt {
         require(a.modulus == modulus)
         return -a
     }
 
-    override fun subtract(x: UIntModular, y: UIntModular): UIntModular {
+    override fun subtract(x: ModularUInt, y: ModularUInt): ModularUInt {
         require(x.modulus == modulus)
         return x - y
     }
 
-    override fun multiply(x: UIntModular, y: UIntModular): UIntModular {
+    override fun multiply(x: ModularUInt, y: ModularUInt): ModularUInt {
         require(x.modulus == modulus)
         return x * y
     }
 
-    override fun hasInverse(a: UIntModular): Boolean {
+    override fun hasInverse(a: ModularUInt): Boolean {
         require(a.modulus == modulus)
         return a.hasInverse()
     }
 
-    override fun inverse(a: UIntModular): UIntModular {
+    override fun inverse(a: ModularUInt): ModularUInt {
         require(a.modulus == modulus)
         return a.inverse()
     }

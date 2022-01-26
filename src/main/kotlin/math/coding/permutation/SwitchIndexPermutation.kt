@@ -18,8 +18,9 @@ class SwitchIndexPermutation(val fromIndex: BoundedMultiIndex, val toIndex: Boun
 
     override fun inv(y: UInt): UInt = fromIndex.encode(toIndex.decode(y))
 
+    override fun toInverse(): Permutation = SwitchIndexPermutation(toIndex, fromIndex)
 
-//    override fun iterator(): Iterator<PermutationPair> = iteratorNormal()
+    //    override fun iterator(): Iterator<PermutationPair> = iteratorNormal()
     override fun iterator(): Iterator<PermutationPair> = iteratorGray()
 
     fun iteratorNormal(): MultiIndexIterator<PermutationPair> = object : MultiIndexIterator<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {

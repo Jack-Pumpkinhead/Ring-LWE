@@ -2,7 +2,7 @@ package math.operation
 
 import math.abstract_structure.instance.RingModularUInt
 import math.abstract_structure.instance.RingUInt
-import math.integer.modular.UIntModular
+import math.integer.modular.ModularUInt
 import math.integer.operation.modPowerM
 import math.integer.operation.modPowerS
 import math.integer.operation.powerM
@@ -25,8 +25,8 @@ internal class UIntOperationKtTest {
                 for (power in 0u..100u) {
                     val modPowerM = modPowerM(x, power, modulus)
                     val modPowerS = modPowerS(x, power, modulus)
-                    val modPowerRM = ringUIntModular.powerM(UIntModular(modulus, x), power)
-                    val modPowerRS = ringUIntModular.powerS(UIntModular(modulus, x), power)
+                    val modPowerRM = ringUIntModular.powerM(ModularUInt(modulus, x), power)
+                    val modPowerRS = ringUIntModular.powerS(ModularUInt(modulus, x), power)
 //                    println("$x^$power = $modpowerM, $modpowerS \t mod $modulus")
                     assertEquals(modPowerM, modPowerS)
                     assertEquals(modPowerRM, modPowerRS)

@@ -1,10 +1,10 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete
 
+import cryptography.lattice.ring_lwe.matrix.RootDataUInt
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DiscreteFourierTransformMatrix
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.RootDataULong
+import math.abstract_structure.instance.PrimeFieldUInt
 import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
-import math.abstract_structure.instance.FieldModularULong
-import math.integer.modular.ULongModular
+import math.integer.modular.ModularUInt
 import math.integer.primeFactorization
 
 /**
@@ -14,9 +14,8 @@ import math.integer.primeFactorization
 /**
  * field of ℤ/p has primitive (p-1)-th root of unity, all multiplicative element has order divide (p-1)
  */
-suspend fun primeFieldDFT(primeModulus: ULong): DiscreteFourierTransformMatrix<ULongModular> {
-    val order = primeModulus - 1uL
-    val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeModulus)
-    return DiscreteFourierTransformMatrix(RootDataULong(FieldModularULong(primeModulus), ULongModular(primeModulus, root), order, order.primeFactorization()))
+suspend fun PrimeFieldUInt.dft(): DiscreteFourierTransformMatrix<ModularUInt> {
+    val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime)
+    val order = prime - 1u
+    return DiscreteFourierTransformMatrix(RootDataUInt(this, ModularUInt(prime, root), order, order.primeFactorization()))
 }
-

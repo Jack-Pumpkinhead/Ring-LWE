@@ -1,8 +1,7 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
-import com.ionspin.kotlin.bignum.integer.toBigInteger
 import cryptography.lattice.ring_lwe.coding.LadderSwitcher
+import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrimePower
 import cryptography.lattice.ring_lwe.matrix.TwiddleMatrix
 import math.integer.operation.modTimes
 import math.martix.*
@@ -12,23 +11,21 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/19 18:09
  */
-class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataULong<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.toUInt()) {
+class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePower<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.primePower) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.toUInt()))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.primePower))
 
     val underlyingMatrix: AbstractMatrix<A>
 
     init {
-        require(root.orderFactorization.size == 1)
-        val order = root.orderFactorization[0]
-        underlyingMatrix = if (order.power == 1u) primeCase else {
-            val reduceOrder = order.reducePower()
+        underlyingMatrix = if (root.order.power == 1u) primeCase else {
+            val subRoot = root.subRootData()
             FormalProduct(
                 ring, listOf(
-                    ring.permutationMatrix(LadderSwitcher(reduceOrder.prime.toUInt(), reduceOrder.primePower.toUInt())),
-                    ring.whiskered(reduceOrder.prime.toBigInteger(), DiscreteFourierTransformMatrixPrimePower(root.subRootData(0u), primeCase), BigInteger.ONE),
-                    TwiddleMatrix(ring, reduceOrder.prime.toBigInteger(), reduceOrder.primePower.toBigInteger(), root.root),
-                    ring.whiskered(BigInteger.ONE, primeCase, reduceOrder.primePower.toBigInteger())
+                    ring.permutationMatrix(LadderSwitcher(subRoot.order.prime, subRoot.order.primePower)),
+                    ring.whiskered(subRoot.order.prime, DiscreteFourierTransformMatrixPrimePower(subRoot, primeCase), 1u),
+                    TwiddleMatrix(ring, subRoot.order.prime, subRoot.order.primePower, root.root),
+                    ring.whiskered(1u, primeCase, subRoot.order.primePower)
                 )
             )
         }

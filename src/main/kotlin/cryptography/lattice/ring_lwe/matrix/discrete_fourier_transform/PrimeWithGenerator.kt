@@ -6,7 +6,7 @@ import math.integer.operation.modUnaryMinus
 /**
  * Created by CowardlyLion at 2022/1/19 13:56
  */
-class PrimeData(val prime: UInt, val generator: UInt) {
+class PrimeWithGenerator(val prime: UInt, val generator: UInt) {
 
     val primeDec = prime - 1u
 

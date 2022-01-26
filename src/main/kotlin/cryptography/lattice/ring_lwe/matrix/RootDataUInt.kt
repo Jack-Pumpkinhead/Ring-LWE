@@ -12,15 +12,23 @@ import math.powerM
  */
 class RootDataUInt<A>(val ring: Ring<A>, val root: A, val order: UInt, val orderFactorization: List<PrimePowerUInt>) {
 
-    fun eulerTotient(): UInt = RingUInt.product(orderFactorization.map { it.eulerTotient() })
-
-    fun subRootDataPrimePower(primeIndex: UInt): RootDataUInt<A> {
-        val factor = orderFactorization[primeIndex.toInt()]
-        val subRoot = ring.powerM(root, order / factor.primePower)
-        return RootDataUInt(ring, subRoot, factor.primePower, listOf(factor))
+    fun toPrimePower(): RootDataUIntPrimePower<A> {
+        require(orderFactorization.size == 1)
+        return RootDataUIntPrimePower(ring, root, orderFactorization[0])
     }
 
-    fun subRootDataPrime(primeIndex: UInt): RootDataUInt<A> {
+    fun toPrime(): RootDataUIntPrime<A> {
+        require(orderFactorization.size == 1)
+        val factorization = orderFactorization[0]
+        require(factorization.power == 1u)
+        return RootDataUIntPrime(ring, root, factorization.prime)
+    }
+
+    fun eulerTotient(): UInt = RingUInt.product(orderFactorization.map { it.eulerTotient() })
+
+    fun primeSubroot(primeIndex: UInt): RootDataUIntPrime<A> {
+        if(orderFactorization.size==1) return this.toPrimePower().primeSubroot()
+
         val factor = orderFactorization[primeIndex.toInt()]
         var power = 1u
         for (i in orderFactorization.indices) {
@@ -31,14 +39,21 @@ class RootDataUInt<A>(val ring: Ring<A>, val root: A, val order: UInt, val order
             power *= factor.primePower / factor.prime
         }
 
-        return RootDataUInt(ring, ring.powerM(root, power), factor.prime, listOf(PrimePowerUInt(factor.prime, 1u, factor.prime)))
+        return RootDataUIntPrime(ring, ring.powerM(root, power), factor.prime)
     }
 
-    fun allSubRootDataPrimePower(): List<RootDataUInt<A>> {
-        return orderFactorization.indices.map { i -> subRootDataPrimePower(i.toUInt()) }
+    fun primePowerSubroot(primeIndex: UInt): RootDataUIntPrimePower<A> {
+        if (orderFactorization.size == 1) return this.toPrimePower()
+        val factor = orderFactorization[primeIndex.toInt()]
+        return RootDataUIntPrimePower(ring, ring.powerM(root, order / factor.primePower), factor)
     }
 
-    fun subRootData(decreaseIndex: UInt): RootDataUInt<A> {
+    fun allPrimePowerSubroot(): List<RootDataUIntPrimePower<A>> = orderFactorization.map { factor -> RootDataUIntPrimePower(ring, ring.powerM(root, order / factor.primePower), factor) }
+
+    /**
+     * reduce power by 1 at [decreaseIndex]
+     */
+    fun subroot(decreaseIndex: UInt): RootDataUInt<A> {
         val factor = orderFactorization[decreaseIndex.toInt()]
 
         val orderFactorization1: List<PrimePowerUInt>
@@ -54,7 +69,7 @@ class RootDataUInt<A>(val ring: Ring<A>, val root: A, val order: UInt, val order
     /**
      * if decreaseOrder is maximal, return 1 with order 1
      */
-    fun subRootData(decreaseOrder: List<UInt>): RootDataUInt<A> {
+    fun subroot(decreaseOrder: List<UInt>): RootDataUInt<A> {
         require(decreaseOrder.size == orderFactorization.size)
         val orderFactorization1 = mutableListOf<PrimePowerUInt>()
         var totalDividend = 1u

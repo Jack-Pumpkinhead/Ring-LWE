@@ -1,7 +1,5 @@
 package cryptography.lattice.ring_lwe.category
 
-import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrimePower
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.RootDataULong
 import math.abstract_structure.instance.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.abstract_structure.instance.RingModularUInt

@@ -80,9 +80,8 @@ suspend fun UInt.primeFactorization(): List<PrimePowerUInt> {
                 i++
                 prime = primeOf(i).toUInt()
             }
-            error("should not occur")
-//            list += PrimePowerUInt(x, 1u, x)
-//            list
+            list += PrimePowerUInt(x, 1u, x)
+            list
         }
     }
 }
@@ -112,9 +111,8 @@ suspend fun UInt.radical(): UInt {
                 i++
                 prime = primeOf(i).toUInt()
             }
-            error("should not occur")
-//            radical *= x
-//            radical
+            radical *= x
+            radical
         }
     }
 }
@@ -143,9 +141,8 @@ suspend fun UInt.eulerTotient(): UInt {
                 i++
                 prime = primeOf(i).toUInt()
             }
-            error("should not occur")
-//            eulerTotient = (eulerTotient / x) * (x - 1u)
-//            eulerTotient
+            eulerTotient = (eulerTotient / x) * (x - 1u)
+            eulerTotient
         }
     }
 }

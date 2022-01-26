@@ -14,7 +14,7 @@ abstract class Permutation(val size: UInt) : Iterable<Permutation.PermutationPai
     abstract operator fun invoke(x: UInt): UInt
     abstract fun inv(y: UInt): UInt
 
-    fun toInverse() = object : Permutation(size) {
+    open fun toInverse() = object : Permutation(size) {
         override operator fun invoke(x: UInt): UInt = this@Permutation.inv(x)
         override fun inv(y: UInt): UInt = this@Permutation(y)
         override fun iterator(): Iterator<PermutationPair> {

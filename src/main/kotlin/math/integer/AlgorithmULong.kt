@@ -54,10 +54,13 @@ data class PrimePowerULong(val prime: ULong, val power: UInt, val primePower: UL
 suspend fun primeFactorization1(a: ULong): List<PrimePowerULong> = a.primeFactorization()
 
 /**
- * since primeOf(Int.MAX_VALUE)^2 - ULong.MAX_VALUE = 50685770167^2 - 2^64 - 1 = 2569047297421947207889 - 18446744073709551615 > 0
+ * since primeOf(Int.MAX_VALUE)^2 - ULong.MAX_VALUE = 50685770167^2 - 2^64 - 1 = 2569047297421947207889 - 18446744073709551615 > 0,
  * it's ok to test primality of x by testing prime divisor less than sqrt(x).
- * But direct factorization by searching divisor within "small" primes (i.e. primeOf(0...Int.MAX_VALUE)) may not complete due to inaccessibility of large prime numbers.
- * A correct implementation should clear out divisor within small primes, then x must be a large prime (otherwise it would have a small prime divisor).
+ *
+ * Only Two cases:
+ * - one large prime factor p > sqrt(x) and other factors are small (products of other factors < sqrt(x) )
+ * - all factors are small (<=sqrt(x))
+ *
  * Realistically one may not calculate prime factorization of large ULong number in a reasonably short time by this method.
  * */
 suspend fun ULong.primeFactorization(): List<PrimePowerULong> {
@@ -109,7 +112,7 @@ suspend fun ULong.radical(): ULong {
             while (prime <= sqrt) {
                 if (x.mod(prime) == 0uL) {
                     x /= prime
-                    while (x.mod(prime) == 0uL) {       //cannot calculate radical by testing all prime divisor (it's impossible because there are large primes that out of prime cache), need to manually factorize number.
+                    while (x.mod(prime) == 0uL) {
                         x /= prime
                     }
                     radical *= prime

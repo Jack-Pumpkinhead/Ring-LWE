@@ -1,10 +1,10 @@
 package math.random
 
-import math.abstract_structure.Ring
 import math.abstract_structure.instance.RingModularUInt
+import math.abstract_structure.instance.RingModularULong
 import math.abstract_structure.instance.RingUInt
-import math.integer.modular.UIntModular
-import math.integer.modular.ULongModular
+import math.integer.modular.ModularUInt
+import math.integer.modular.ModularULong
 import math.martix.concrete.OrdinaryMatrix
 import math.martix.matrix
 import kotlin.random.Random
@@ -49,5 +49,5 @@ fun Random.randomUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange)
     }
 }
 
-fun Random.randomModularUIntMatrix(modulus: UInt, rowsRange: UIntRange, columnsRange: UIntRange) = RingModularUInt(modulus).matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> UIntModular(modulus, nextUInt(modulus)) }
-fun Random.randomModularULongMatrix(ring: Ring<ULongModular>, modulus: ULong, rowsRange: UIntRange, columnsRange: UIntRange) = ring.matrix(nextUInt(rowsRange), nextUInt(columnsRange)) { _, _ -> ULongModular(modulus, nextULong(modulus)) }
+fun RingModularULong.randomModularULongMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularULong(modulus, randomness.nextULong(modulus)) }
+fun RingModularUInt.randomModularUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
