@@ -5,17 +5,14 @@ import com.ionspin.kotlin.bignum.integer.toBigInteger
 import cryptography.lattice.ring_lwe.coding.LadderSwitcher
 import cryptography.lattice.ring_lwe.matrix.TwiddleMatrix
 import math.integer.operation.modTimes
-import math.martix.AbstractMatrix
-import math.martix.FormalProduct
+import math.martix.*
 import math.martix.mutable.AbstractMutableMatrix
-import math.martix.permutationMatrix
-import math.martix.whiskered
 import math.powerM
 
 /**
  * Created by CowardlyLion at 2022/1/19 18:09
  */
-class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootData<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : AbstractMatrix<A>(root.ring, root.order.toUInt(), root.order.toUInt()) {
+class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataULong<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.toUInt()) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.toUInt()))
 

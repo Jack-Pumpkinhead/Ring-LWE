@@ -30,7 +30,7 @@ internal class DiscreteFourierTransformMatrixPrimeTest {
                 val factorization = primeFactorization1(order)
                 val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeModulus)
                 val field = FieldModularULong(primeModulus)
-                val rootData = RootData(field, ULongModular(primeModulus, root), order, order.primeFactorization())
+                val rootData = RootDataULong(field, ULongModular(primeModulus, root), order, order.primeFactorization())
                 val dft = DiscreteFourierTransformMatrixPrime(rootData.subRootDataPrime(Random.nextUInt(rootData.orderFactorization.size.toUInt())))
                 val x = Random.randomModularULongMatrix(field, primeModulus, dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")

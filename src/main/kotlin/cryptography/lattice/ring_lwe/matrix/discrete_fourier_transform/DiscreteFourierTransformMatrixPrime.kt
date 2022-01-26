@@ -18,7 +18,7 @@ import util.stdlib.list
 /**
  * Created by CowardlyLion at 2022/1/19 18:26
  */
-class DiscreteFourierTransformMatrixPrime<A>(val root: RootData<A>) : AbstractMatrix<A>(root.ring, root.order.toUInt(), root.order.toUInt()) {
+class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataULong<A>) : AbstractSquareMatrix<A>(root.ring, root.order.toUInt()) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.toUInt()))
 

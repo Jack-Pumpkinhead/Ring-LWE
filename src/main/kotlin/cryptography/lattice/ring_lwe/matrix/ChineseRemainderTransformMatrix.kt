@@ -1,9 +1,7 @@
 package cryptography.lattice.ring_lwe.matrix
 
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.RootData
-import kotlinx.coroutines.runBlocking
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.RootDataULong
 import math.integer.coprimeElements
-import math.integer.eulerTotient
 import math.integer.operation.modTimes
 import math.martix.AbstractSquareMatrix
 import math.powerM
@@ -11,7 +9,7 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/20 14:53
  */
-class ChineseRemainderTransform<A>(val root: RootData<A>) : AbstractSquareMatrix<A>(root.ring, runBlocking { root.order.eulerTotient().toUInt() }) {
+class ChineseRemainderTransformMatrix<A>(val root: RootDataULong<A>) : AbstractSquareMatrix<A>(root.ring, root.eulerTotient().toUInt()) {
 
     val coprimeElements: List<UInt> = root.order.coprimeElements().map { it.toUInt() }
 

@@ -4,6 +4,7 @@ import cryptography.lattice.ring_lwe.coding.permCLInv
 import cryptography.lattice.ring_lwe.coding.permLRInv
 import math.integer.operation.modTimes
 import math.martix.AbstractMatrix
+import math.martix.AbstractSquareMatrix
 import math.martix.FormalProduct
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.permutationMatrix
@@ -13,7 +14,7 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/19 17:44
  */
-class DiscreteFourierTransformMatrix<A>(val root: RootData<A>) : AbstractMatrix<A>(root.ring, root.order.toUInt(), root.order.toUInt()) {
+class DiscreteFourierTransformMatrix<A>(val root: RootDataULong<A>) : AbstractSquareMatrix<A>(root.ring, root.order.toUInt()) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.toUInt()))
 
