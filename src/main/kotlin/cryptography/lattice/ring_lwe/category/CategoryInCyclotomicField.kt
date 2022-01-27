@@ -32,7 +32,7 @@ class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: U
     /**
      * ℚ(ζp^i) ⊗ ℂ
      */
-    val extendedCyclotomicFieldPowerBasis: FiniteFreeModuleWithBase<ComplexNumber<Double>> = FieldComplexNumberDouble.freeModule("${order.value}-th cyclotomic field with power basis", phiOrder)
+    val extendedCyclotomicFieldPowerBasis = FieldComplexNumberDouble.freeModule("${order.value}-th cyclotomic field with power basis", phiOrder)
 
     val standardBasis = FieldComplexNumberDouble.freeModule("standard basis", phiOrder)
 

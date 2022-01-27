@@ -10,6 +10,8 @@ import math.martix.mutable.ArrayMatrix
 import math.martix.mutable.MutableMatrix
 import math.martix.mutable.MutableSizeMatrix
 import math.martix.tensor.FormalKroneckerProduct
+import math.martix.tensor.SquareFormalKroneckerProduct
+import math.martix.tensor.SquareWhiskeredKroneckerProduct
 import math.martix.tensor.WhiskeredKroneckerProduct
 
 /**
@@ -90,10 +92,13 @@ fun <A> Ring<A>.zeroMutableSizeMatrix(rows: UInt, columns: UInt) = mutableSizeMa
 fun <A> Ring<A>.scalaMatrix(size: UInt, a: A) = DiagonalMatrix(this, List(size.toInt()) { a })
 fun <A> Ring<A>.diagonalMatrix(list: List<A>) = DiagonalMatrix(this, list)
 fun <A> Ring<A>.diagonalMatrix(size: UInt, generator: (UInt) -> A) = DiagonalMatrix(this, List(size.toInt()) { i -> generator(i.toUInt()) })
+fun <A> Ring<A>.formalKroneckerProduct(vararg matrices: AbstractSquareMatrix<A>): SquareFormalKroneckerProduct<A> = SquareFormalKroneckerProduct(this, matrices.toList())
 fun <A> Ring<A>.formalKroneckerProduct(vararg matrices: AbstractMatrix<A>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices.toList())
+fun <A> Ring<A>.formalKroneckerProduct(matrices: List<AbstractSquareMatrix<A>>): SquareFormalKroneckerProduct<A> = SquareFormalKroneckerProduct(this, matrices)
 fun <A> Ring<A>.formalKroneckerProduct(matrices: List<AbstractMatrix<A>>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices)
 fun <A> Ring<A>.permutationMatrix(permutation: Permutation) = PermutationMatrix(this, permutation)
 fun <A> Ring<A>.whiskered(l: UInt, matrix: AbstractMatrix<A>, r: UInt) = WhiskeredKroneckerProduct(this, l, matrix, r)
+fun <A> Ring<A>.whiskered(l: UInt, matrix: AbstractSquareMatrix<A>, r: UInt) = SquareWhiskeredKroneckerProduct(this, l, matrix, r)
 
 inline fun <reified A> AbstractMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> {
     return ring.mutableArrayMatrix(rows, columns) { i, j -> elementAt(i, j) }
@@ -118,6 +123,26 @@ fun <A> Ring<A>.decomposeFormalKroneckerProduct(matrices: List<AbstractMatrix<A>
         for (i in matrices.size - 1 downTo 0) {
             l /= matrices[i].rows
             result += WhiskeredKroneckerProduct(this, l, matrices[i], r)
+            r *= matrices[i].columns
+        }
+        result
+    }
+}
+
+fun <A> Ring<A>.decomposeSquareFormalKroneckerProduct(matrices: List<AbstractSquareMatrix<A>>): List<AbstractSquareMatrix<A>> = when (matrices.size) {
+    0    -> listOf(identityMatrix(1u))
+    1    -> matrices
+    else -> {
+        var l = 1u
+        for (m in matrices) {
+            l *= m.rows
+        }
+        var r = 1u
+
+        val result = mutableListOf<AbstractSquareMatrix<A>>()
+        for (i in matrices.size - 1 downTo 0) {
+            l /= matrices[i].rows
+            result += SquareWhiskeredKroneckerProduct(this, l, matrices[i], r)
             r *= matrices[i].columns
         }
         result

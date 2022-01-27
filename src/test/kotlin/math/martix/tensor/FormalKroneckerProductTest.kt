@@ -72,6 +72,21 @@ internal class FormalKroneckerProductTest {
     data class Sample(val m0: AbstractMatrix<UInt>, val m1: FormalKroneckerProduct<UInt>, val m2: OrdinaryMatrix<UInt>, val v: OrdinaryMatrix<UInt>)
 
     /**
+     * time0: 64.48300ms
+     * time0p: 117.77890ms
+     * time0b: 6010.34660ms
+     * time0bp: 6139.14530ms
+     *
+     * time1: 17.96020ms
+     * time1p: 32.36480ms
+     * time1b: 2430.95590ms
+     * time1bp: 2350.64290ms
+     *
+     * time2: 181.30520ms
+     * time2p: 217.21610ms
+     * time2b: 169.99130ms
+     * time2bp: 207.89660ms
+     *
      * This performance test shows:
      *      naive parallel algorithm offers no improvement on performance (possibly due to overhead of threading)
      * */

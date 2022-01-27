@@ -6,7 +6,7 @@ import math.martix.mutable.AbstractMutableMatrix
 /**
  * Created by CowardlyLion at 2022/1/9 22:51
  */
-class IdentityMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMatrix<A>(ring, size, size) {
+class IdentityMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(ring, size) {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (row == column) ring.one else ring.zero
 

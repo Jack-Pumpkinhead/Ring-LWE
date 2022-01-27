@@ -28,6 +28,17 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
     val rootPower: List<A> = ring.powers(root.root, 0u until root.order.value)
     val rgInv: List<A> = list(root.order.value - 1u) { i -> rootPower[primeWithGenerator.inverseGeneratorPower(i).toInt()] }
 
+    override fun determinant(): A {
+        TODO()
+    }
+
+    override fun hasInverse(): Boolean {
+        TODO()
+    }
+
+    override fun inverse(): AbstractSquareMatrix<A> {
+        TODO()
+    }
 
     fun timesImpl(vector: AbstractColumnVector<A>): ColumnVector<A> {
         val result = MutableList(vector.vectorSize.toInt()) { ring.zero }

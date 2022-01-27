@@ -23,14 +23,18 @@ class FiniteConcreteCategoryOfFiniteFreeModuleWithBaseOverRing<A>(val ring: Ring
         modules += module
     }
 
-    fun registerArrow(sourceBase: String, targetBase: String, matrix: AbstractMatrix<A>) {
-        arrows += MatrixArrow(ring.freeModule(sourceBase, matrix.columns), ring.freeModule(targetBase, matrix.rows), matrix)
+    fun registerArrow(sourceBase: String, targetBase: String, matrix: AbstractMatrix<A>): MatrixArrow<A> {
+        val arrow = MatrixArrow(ring.freeModule(sourceBase, matrix.columns), ring.freeModule(targetBase, matrix.rows), matrix)
+        arrows += arrow
+        return arrow
     }
 
-    fun registerArrow(sourceModule: FiniteFreeModuleWithBase<A>, targetModule: FiniteFreeModuleWithBase<A>, matrix: AbstractMatrix<A>) {
+    fun registerArrow(sourceModule: FiniteFreeModuleWithBase<A>, targetModule: FiniteFreeModuleWithBase<A>, matrix: AbstractMatrix<A>): MatrixArrow<A> {
         require(sourceModule.dimension == matrix.columns)
         require(targetModule.dimension == matrix.rows)
-        arrows += MatrixArrow(sourceModule, targetModule, matrix)
+        val arrow = MatrixArrow(sourceModule, targetModule, matrix)
+        arrows += arrow
+        return arrow
     }
 
     override fun id(c0: FiniteFreeModuleWithBase<A>): MatrixArrow<A> = MatrixArrow(c0, c0, ring.identityMatrix(c0.dimension))

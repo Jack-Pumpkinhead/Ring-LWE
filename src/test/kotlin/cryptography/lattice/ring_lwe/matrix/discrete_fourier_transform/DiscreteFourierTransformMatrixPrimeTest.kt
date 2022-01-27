@@ -20,7 +20,6 @@ import kotlin.random.nextUInt
  */
 internal class DiscreteFourierTransformMatrixPrimeTest {
 
-    //    TODO improve performance(implement real dft) 16s 19s (1sec 235ms??? what made it slow?)
 //   i:[1,700]  17s  18s  23s  18s
     @Test
     fun primeField() {

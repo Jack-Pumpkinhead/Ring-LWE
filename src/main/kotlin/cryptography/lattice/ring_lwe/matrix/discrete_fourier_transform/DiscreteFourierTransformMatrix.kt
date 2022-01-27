@@ -6,10 +6,10 @@ import cryptography.lattice.ring_lwe.matrix.RootDataUInt
 import math.integer.operation.modTimes
 import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
-import math.martix.FormalProduct
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.permutationMatrix
-import math.martix.tensor.FormalKroneckerProduct
+import math.martix.tensor.SquareFormalKroneckerProduct
+import math.martix.tensor.SquareFormalProduct
 import math.powerM
 
 /**
@@ -19,7 +19,7 @@ class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSqu
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
 
-    val underlyingMatrix: AbstractMatrix<A> =
+    val underlyingMatrix: AbstractSquareMatrix<A> =
         if (root.order.factors.size == 1) {
             val root1 = root.toPrimePower()
             if (root1.order.power == 1u) {
@@ -30,10 +30,10 @@ class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSqu
             }
         } else {
             val factors = root.order.factors.map { it.value }
-            FormalProduct(
+            SquareFormalProduct(
                 ring, listOf(
                     ring.permutationMatrix(permCLInv(factors)),
-                    FormalKroneckerProduct(ring, root.allPrimePowerSubroot().map { root1 ->
+                    SquareFormalKroneckerProduct(ring, root.allPrimePowerSubroot().map { root1 ->
                         if (root1.order.power == 1u) {
                             DiscreteFourierTransformMatrixPrime(root1.toPrime())
                         } else {
@@ -44,6 +44,12 @@ class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSqu
                 )
             )
         }
+
+    override fun determinant(): A = underlyingMatrix.determinant()
+
+    override fun hasInverse(): Boolean = underlyingMatrix.hasInverse()
+
+    override fun inverse(): AbstractSquareMatrix<A> = underlyingMatrix.inverse()
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = underlyingMatrix.timesImpl(matrix)
 

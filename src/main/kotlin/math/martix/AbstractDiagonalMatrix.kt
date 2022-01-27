@@ -63,6 +63,6 @@ abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSq
     override fun determinant(): A = ring.product(0u until rows) { i -> vectorElementAtUnsafe(i) }
 
     override fun hasInverse(): Boolean = (0u until rows).all { ring.hasInverse(vectorElementAtUnsafe(it)) }
-    override fun inverse(): AbstractMatrix<A> = ring.diagonalMatrix(rows) { i -> ring.inverse(vectorElementAtUnsafe(i)) }
+    override fun inverse(): AbstractSquareMatrix<A> = ring.diagonalMatrix(rows) { i -> ring.inverse(vectorElementAtUnsafe(i)) }
 
 }

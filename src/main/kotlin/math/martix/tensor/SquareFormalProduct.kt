@@ -1,21 +1,24 @@
-package math.martix
+package math.martix.tensor
 
 import math.abstract_structure.Ring
+import math.martix.AbstractMatrix
+import math.martix.AbstractSquareMatrix
 import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
+import math.operation.product
 import util.stdlib.lazyAssert2
 
 /**
- * Created by CowardlyLion at 2022/1/14 18:06
+ * Created by CowardlyLion at 2022/1/27 16:42
  */
-open class FormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractMatrix<A>>) : AbstractMatrix<A>(ring, matrices.first().rows, matrices.last().columns) {
+open class SquareFormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractSquareMatrix<A>>) : AbstractSquareMatrix<A>(ring, matrices.first().rows) {
 
     init {
-//        require(matrices.isNotEmpty())  //already checks in matrices.first()
+//        require(matrices.isNotEmpty())    //already checks in matrices.first()
 
         lazyAssert2 {
-            for (i in 0 until matrices.size - 1) {
-                assert(matrices[i].columns == matrices[i + 1].rows)
+            for (i in 1 until matrices.size) {
+                assert(matrices[i].rows == super.rows)
             }
         }
     }
@@ -33,6 +36,15 @@ open class FormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractMatrix<A>>
         }
     }
 
+    override fun determinant(): A = ring.product(matrices.map { it.determinant() })
+
+    override fun hasInverse(): Boolean {
+        return matrices.all { it.hasInverse() }
+    }
+
+    override fun inverse(): AbstractSquareMatrix<A> {
+        return SquareFormalProduct(ring, matrices.reversed().map { it.inverse() })
+    }
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
         var x = matrix

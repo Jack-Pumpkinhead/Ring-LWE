@@ -6,37 +6,47 @@ import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
 import math.coding.LadderIndex
 import math.martix.AbstractMatrix
+import math.martix.AbstractSquareMatrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.zeroMutableMatrix
 import util.stdlib.lazyAssert2
 
 /**
- * Created by CowardlyLion at 2022/1/9 17:39
+ * Created by CowardlyLion at 2022/1/27 16:30
  *
- * represent a matrix of the form I_l ⊗ M ⊗ I_r
+ * represent a square matrix of the form I_l ⊗ M ⊗ I_r for M square
  */
-class WhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A>(ring, l * mA.rows * r, l * mA.columns * r) {
+class SquareWhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractSquareMatrix<A>, val r: UInt) : AbstractSquareMatrix<A>(ring, l * mA.rows * r) {
 
-    val rowIndex = LadderIndex(listOf(l, mA.rows, r), super.rows)
-    val columnIndex = LadderIndex(listOf(l, mA.columns, r), super.columns)
+    val index = LadderIndex(listOf(l, mA.rows, r), super.rows)
 
     init {
         lazyAssert2 {
             val bigL = l.toBigInteger()
             val bigR = r.toBigInteger()
             val rows = bigL * mA.rows.toBigInteger() * bigR
-            val columns = bigL * mA.columns.toBigInteger() * bigR
             assert(rows <= UInt.MAX_VALUE)
-            assert(columns <= UInt.MAX_VALUE)
         }
     }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A {
-        val row1 = rowIndex.decode(row)
-        val column1 = columnIndex.decode(column)
+        val row1 = index.decode(row)
+        val column1 = index.decode(column)
         return if (row1[0] == column1[0] && row1[2] == column1[2]) {
             mA.elementAtUnsafe(row1[1], column1[1])
         } else ring.zero
+    }
+
+    override fun determinant(): A {
+        TODO("tensor product should have a way of calculating determinants")
+    }
+
+    override fun hasInverse(): Boolean {
+        return mA.hasInverse()
+    }
+
+    override fun inverse(): AbstractSquareMatrix<A> {
+        return SquareWhiskeredKroneckerProduct(ring, l, mA.inverse(), r)
     }
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {

@@ -5,40 +5,35 @@ import math.abstract_structure.Ring
 import math.abstract_structure.instance.RingBigInteger
 import math.abstract_structure.instance.RingUInt
 import math.coding.LadderIndex
-import math.martix.AbstractMatrix
-import math.martix.FormalProduct
-import math.martix.decomposeFormalKroneckerProduct
+import math.martix.AbstractSquareMatrix
+import math.martix.decomposeSquareFormalKroneckerProduct
 import math.operation.product
 import util.stdlib.lazyAssert2
 
 /**
- * Created by CowardlyLion at 2022/1/8 20:27
+ * Created by CowardlyLion at 2022/1/27 16:40
  */
-class FormalKroneckerProduct<A>(ring: Ring<A>, val elements: List<AbstractMatrix<A>>) : FormalProduct<A>(ring, ring.decomposeFormalKroneckerProduct(elements)) {
+class SquareFormalKroneckerProduct<A>(ring: Ring<A>, val elements: List<AbstractSquareMatrix<A>>) : SquareFormalProduct<A>(ring, ring.decomposeSquareFormalKroneckerProduct(elements)) {
 
-    val rowIndex: LadderIndex
-    val columnIndex: LadderIndex
+    val index: LadderIndex
 
     init {
         val rows = elements.map { it.rows }
-        rowIndex = LadderIndex(rows, RingUInt.product(rows))
-        val columns = elements.map { it.columns }
-        columnIndex = LadderIndex(columns, RingUInt.product(columns))
+        index = LadderIndex(rows, RingUInt.product(rows))
 
         lazyAssert2 {
             assert(elements.isNotEmpty())
             val totalRows = RingBigInteger.product(rows.map { it.toBigInteger() })
             assert(totalRows <= UInt.MAX_VALUE)
-            val totalColumns = RingBigInteger.product(columns.map { it.toBigInteger() })
-            assert(totalColumns <= UInt.MAX_VALUE)
         }
     }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A {
-        val row1 = rowIndex.decode(row)
-        val column1 = columnIndex.decode(column)
+        val row1 = index.decode(row)
+        val column1 = index.decode(column)
         return ring.product(0u until elements.size.toUInt()) { i -> elements[i.toInt()].elementAt(row1[i.toInt()], column1[i.toInt()]) }
     }
+
 
 //    over checking may slow
     /*override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when {
@@ -58,7 +53,7 @@ class FormalKroneckerProduct<A>(ring: Ring<A>, val elements: List<AbstractMatrix
     }*/
 
 
-    override fun downCast(): AbstractMatrix<A> = when (elements.size) {
+    override fun downCast(): AbstractSquareMatrix<A> = when (elements.size) {
         1    -> elements[0]
         else -> this
     }

@@ -17,7 +17,7 @@ abstract class AbstractSquareMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMatr
         return determinant() != ring.zero
     }
 
-    open fun inverse(): AbstractMatrix<A> {
+    open fun inverse(): AbstractSquareMatrix<A> {
         TODO()
     }
 
