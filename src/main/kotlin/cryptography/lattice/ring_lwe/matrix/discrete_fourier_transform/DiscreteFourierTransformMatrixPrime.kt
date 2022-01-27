@@ -19,14 +19,14 @@ import util.stdlib.list
 /**
  * Created by CowardlyLion at 2022/1/19 18:26
  */
-class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order) {
+class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.value) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
 
-    val primeWithGenerator: PrimeWithGenerator = runBlocking { PrimeWithGenerator(root.order, firstMultiplicativeGeneratorOfPrimeFieldUnsafe(root.order)) }
+    val primeWithGenerator: PrimeWithGenerator = runBlocking { PrimeWithGenerator(root.order.value, firstMultiplicativeGeneratorOfPrimeFieldUnsafe(root.order.value)) }
 
-    val rootPower: List<A> = ring.powers(root.root, 0u until root.order)
-    val rgInv: List<A> = list(root.order - 1u) { i -> rootPower[primeWithGenerator.inverseGeneratorPower(i).toInt()] }
+    val rootPower: List<A> = ring.powers(root.root, 0u until root.order.value)
+    val rgInv: List<A> = list(root.order.value - 1u) { i -> rootPower[primeWithGenerator.inverseGeneratorPower(i).toInt()] }
 
 
     fun timesImpl(vector: AbstractColumnVector<A>): ColumnVector<A> {
@@ -64,7 +64,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
         }
     }
 
-    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order <= 3uL) super.timesImpl(matrix) else
+    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order.value <= 3uL) super.timesImpl(matrix) else
         when (matrix) {
             is Constant<A>               -> matrix
             is AbstractRowVector<A>      -> matrix
@@ -85,7 +85,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
             }
         }
 
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order <= 3uL) super.timesRowParallelImpl(matrix) else
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = if (root.order.value <= 3uL) super.timesRowParallelImpl(matrix) else
         when (matrix) {
             is Constant<A>               -> matrix
             is AbstractRowVector<A>      -> matrix
@@ -108,7 +108,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
         }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        if (root.order <= 3uL) super.multiplyToImpl(matrix, dest)
+        if (root.order.value <= 3uL) super.multiplyToImpl(matrix, dest)
         else when (matrix) {
             is Constant<A>               -> dest.setUnsafe(matrix)
             is AbstractRowVector<A>      -> dest.setUnsafe(matrix)
@@ -126,7 +126,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        if (root.order <= 3uL) super.multiplyToRowParallelImpl(matrix, dest)
+        if (root.order.value <= 3uL) super.multiplyToRowParallelImpl(matrix, dest)
         else when (matrix) {
             is Constant<A>               -> dest.setUnsafeRowParallel(matrix)
             is AbstractRowVector<A>      -> dest.setUnsafeRowParallel(matrix)

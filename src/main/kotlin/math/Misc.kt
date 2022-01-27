@@ -38,12 +38,12 @@ fun <A> canMultiplyElementWise(a: List<AbstractMatrix<A>>, b: List<AbstractMatri
 }
 
 
-val enableAssertion = false
+val enableAssertion = true
 val printMatrix = false
 
-fun <A> AbstractMatrix<A>.andPrint(): AbstractMatrix<A> {
+fun <A> AbstractMatrix<A>.andPrint(info: String = ""): AbstractMatrix<A> {
     if (printMatrix) {
-        println("$this\n\n")
+        println("$info\t$this\n\n")
     }
     return this
 }

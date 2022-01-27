@@ -17,5 +17,5 @@ import math.integer.primeFactorization
 suspend fun PrimeFieldUInt.dft(): DiscreteFourierTransformMatrix<ModularUInt> {
     val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime)
     val order = prime - 1u
-    return DiscreteFourierTransformMatrix(RootDataUInt(this, ModularUInt(prime, root), order, order.primeFactorization()))
+    return DiscreteFourierTransformMatrix(RootDataUInt(this, ModularUInt(prime, root), order.primeFactorization()))
 }

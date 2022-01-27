@@ -37,7 +37,7 @@ internal class AlgorithmKtTest {
     fun primeFactorization() {
         runBlocking {
             for (i in 1uL..10000uL) {
-                val factorization = i.primeFactorization()
+                val factorization = i.primeFactorizationImpl()
                 assertEquals(i, RingULong.product(factorization.map { it.primePower }))
                 println("$i = $factorization")
             }
@@ -52,7 +52,7 @@ internal class AlgorithmKtTest {
     fun largePrimeFactorization() {
         runBlocking {
             for (i in ULong.MAX_VALUE downTo ULong.MAX_VALUE - 0uL) {
-                println("$i = ${i.primeFactorization()}")
+                println("$i = ${i.primeFactorizationImpl()}")
             }
         }
     }
@@ -62,7 +62,7 @@ internal class AlgorithmKtTest {
     fun prime() {
         runBlocking {
             for (i in 1uL..10000uL) {
-                println("$i:  ${i.eulerTotient()}, \t ${i.radical()}, \t ${i.primeFactorization()}")
+                println("$i:  ${i.eulerTotient()}, \t ${i.radical()}, \t ${i.primeFactorizationImpl()}")
             }
         }
     }

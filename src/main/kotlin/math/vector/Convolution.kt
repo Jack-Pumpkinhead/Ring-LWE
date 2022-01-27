@@ -1,7 +1,7 @@
 package math.vector
 
 import math.abstract_structure.Ring
-import math.integer.PrimePowerULong
+import math.integer.FactorizationULongPrimePower
 import math.integer.operation.modMinusUnsafe
 
 /**
@@ -48,7 +48,7 @@ fun <A> Ring<A>.convolution(a: List<A>, b: List<A>): List<A> {
 /**
  * return least 2^k satisfying 2^k >= 2[n]-1
  */
-fun nextTwoPowerForDFT(n: UInt): PrimePowerULong {
+fun nextTwoPowerForDFT(n: UInt): FactorizationULongPrimePower {
     require(n > 1u)
     var power = 1u
     var twoPower = 2uL
@@ -56,13 +56,13 @@ fun nextTwoPowerForDFT(n: UInt): PrimePowerULong {
         power++
         twoPower *= 2uL
     }
-    return if (twoPower == n.toULong()) PrimePowerULong(2uL, power, twoPower)
+    return if (twoPower == n.toULong()) FactorizationULongPrimePower(2uL, power, twoPower)
     else {
         val bound = 2uL * n.toULong() - 1uL
         while (twoPower < bound) {
             power++
             twoPower *= 2uL
         }
-        PrimePowerULong(2uL, power, twoPower)
+        FactorizationULongPrimePower(2uL, power, twoPower)
     }
 }

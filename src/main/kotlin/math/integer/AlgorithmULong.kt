@@ -33,25 +33,7 @@ suspend fun ULong.isPrime(): Boolean {
     }
 }
 
-data class PrimePowerULong(val prime: ULong, val power: UInt, val primePower: ULong) {
-
-    fun reducePower(): PrimePowerULong {
-        require(power > 1u)
-        return PrimePowerULong(prime, power - 1u, primePower / prime)
-    }
-
-    fun eulerTotient(): ULong = when (power) {
-        0u   -> 1uL
-        1u   -> prime - 1uL
-        else -> (primePower / prime) * (prime - 1uL)
-    }
-
-    override fun toString(): String {
-        return "$prime^$power"
-    }
-}
-
-suspend fun primeFactorization1(a: ULong): List<PrimePowerULong> = a.primeFactorization()
+suspend fun primeFactorization1(a: ULong): List<FactorizationULongPrimePower> = a.primeFactorizationImpl()
 
 /**
  * since primeOf(Int.MAX_VALUE)^2 - ULong.MAX_VALUE = 50685770167^2 - 2^64 - 1 = 2569047297421947207889 - 18446744073709551615 > 0,
@@ -63,14 +45,14 @@ suspend fun primeFactorization1(a: ULong): List<PrimePowerULong> = a.primeFactor
  *
  * Realistically one may not calculate prime factorization of large ULong number in a reasonably short time by this method.
  * */
-suspend fun ULong.primeFactorization(): List<PrimePowerULong> {
+suspend fun ULong.primeFactorizationImpl(): List<FactorizationULongPrimePower> {
     require(this > 0uL) { "Not a positive number" }
     return when (this) {
         1uL  -> emptyList()
-        2uL  -> listOf(PrimePowerULong(2uL, 1u, 2uL))
-        3uL  -> listOf(PrimePowerULong(3uL, 1u, 3uL))
+        2uL  -> listOf(FactorizationULongPrimePower(2uL, 1u, 2uL))
+        3uL  -> listOf(FactorizationULongPrimePower(3uL, 1u, 3uL))
         else -> {
-            val list = mutableListOf<PrimePowerULong>()
+            val list = mutableListOf<FactorizationULongPrimePower>()
             var x = this
             val sqrt = sqrt(x.toDouble()).toULong()
             var i = 0
@@ -85,13 +67,13 @@ suspend fun ULong.primeFactorization(): List<PrimePowerULong> {
                         primePower *= prime
                         x /= prime
                     }
-                    list += PrimePowerULong(prime, power, primePower)
+                    list += FactorizationULongPrimePower(prime, power, primePower)
                     if (x == 1uL) return list
                 }
                 i++
                 prime = primeOf(i)
             }
-            list += PrimePowerULong(x, 1u, x)
+            list += FactorizationULongPrimePower(x, 1u, x)
             list
         }
     }
@@ -254,7 +236,7 @@ suspend fun allMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: ULong): MutableL
         3uL  -> mutableListOf(2uL)
         else -> {
             val a = prime - 1uL
-            val factorization = a.primeFactorization()
+            val factorization = a.primeFactorizationImpl()
             val radical = RingULong.product(factorization.map { it.prime })
             val generators = mutableListOf<ULong>()
             if (radical == a) {
@@ -292,7 +274,7 @@ suspend fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: ULong): ULong 
         3uL  -> 2uL
         else -> {
             val a = prime - 1uL
-            val factorization = a.primeFactorization()
+            val factorization = a.primeFactorizationImpl()
             val radical = RingULong.product(factorization.map { it.prime })
             if (radical == a) {
                 nextNumber@ for (i in 2uL until prime) {

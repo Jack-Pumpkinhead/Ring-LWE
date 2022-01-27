@@ -1,5 +1,7 @@
 package cryptography.lattice.ring_lwe.category
 
+import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrime
+import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrimePower
 import math.abstract_structure.instance.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.abstract_structure.instance.RingModularUInt
@@ -8,20 +10,17 @@ import math.abstract_structure.module.CategoryOfModule
 import math.abstract_structure.module.FiniteFreeModuleWithBase
 import math.abstract_structure.module.freeModule
 import math.complex_number.ComplexNumber
-import math.integer.PrimePowerULong
+import math.integer.FactorizationUIntPrimePower
 
 /**
  * Created by CowardlyLion at 2022/1/26 13:36
  *
  * require [q] be prime
  */
-class CategoryInCyclotomicField(val order: PrimePowerULong, val q: UInt) {
+class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: UInt) {
 
-    init {
-        require(order.primePower <= UInt.MAX_VALUE)
-    }
 
-    val phiOrder = order.eulerTotient().toUInt()
+    val phiOrder = order.eulerTotient()
 
     val categoies = CategoryOfModule()
 
@@ -33,7 +32,7 @@ class CategoryInCyclotomicField(val order: PrimePowerULong, val q: UInt) {
     /**
      * ℚ(ζp^i) ⊗ ℂ
      */
-    val extendedCyclotomicFieldPowerBasis: FiniteFreeModuleWithBase<ComplexNumber<Double>> = FieldComplexNumberDouble.freeModule("${order.primePower}-th cyclotomic field with power basis", phiOrder)
+    val extendedCyclotomicFieldPowerBasis: FiniteFreeModuleWithBase<ComplexNumber<Double>> = FieldComplexNumberDouble.freeModule("${order.value}-th cyclotomic field with power basis", phiOrder)
 
     val standardBasis = FieldComplexNumberDouble.freeModule("standard basis", phiOrder)
 
@@ -41,7 +40,7 @@ class CategoryInCyclotomicField(val order: PrimePowerULong, val q: UInt) {
     /**
      * ℚ(ζp^i) ⊗ ℝ
      */
-    val cyclotomicFieldPowerBasis = FieldDouble.freeModule("${order.primePower}-th cyclotomic field with power basis", phiOrder)
+    val cyclotomicFieldPowerBasis = FieldDouble.freeModule("${order.value}-th cyclotomic field with power basis", phiOrder)
 
 
     /**
@@ -74,7 +73,8 @@ class CategoryInCyclotomicField(val order: PrimePowerULong, val q: UInt) {
         complexModule.registerBase(extendedCyclotomicFieldPowerBasis)
         complexModule.registerBase(standardBasis)
 
-//        complexModule.registerArrow(extendedCyclotomicFieldPowerBasis,standardBasis,ChineseRemainderTransformMatrixPrimePower(RootDataULong()))
+        val root = FieldComplexNumberDouble.rootDataPrimePower(order)
+        complexModule.registerArrow(extendedCyclotomicFieldPowerBasis,standardBasis, ChineseRemainderTransformMatrixPrimePower(root, ChineseRemainderTransformMatrixPrime(root.primeSubroot())))
 
         realModule.registerBase(cyclotomicFieldPowerBasis)
         zModule.registerBase(ringOfIntegerPowerBasis)

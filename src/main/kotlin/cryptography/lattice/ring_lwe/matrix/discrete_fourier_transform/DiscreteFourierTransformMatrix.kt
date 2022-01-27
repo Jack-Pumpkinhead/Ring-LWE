@@ -15,12 +15,12 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/19 17:44
  */
-class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A>(root.ring, root.order) {
+class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A>(root.ring, root.order.value) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
 
     val underlyingMatrix: AbstractMatrix<A> =
-        if (root.orderFactorization.size == 1) {
+        if (root.order.factors.size == 1) {
             val root1 = root.toPrimePower()
             if (root1.order.power == 1u) {
                 DiscreteFourierTransformMatrixPrime(root1.toPrime())
@@ -29,7 +29,7 @@ class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSqu
                 DiscreteFourierTransformMatrixPrimePower(root1, primeCase)
             }
         } else {
-            val factors = root.orderFactorization.map { it.primePower }
+            val factors = root.order.factors.map { it.value }
             FormalProduct(
                 ring, listOf(
                     ring.permutationMatrix(permCLInv(factors)),

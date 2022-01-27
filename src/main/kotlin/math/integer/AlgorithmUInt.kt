@@ -31,35 +31,17 @@ suspend fun UInt.isPrime(): Boolean {
     }
 }
 
-data class PrimePowerUInt(val prime: UInt, val power: UInt, val primePower: UInt) {
 
-    fun reducePower(): PrimePowerUInt {
-        require(power > 1u)
-        return PrimePowerUInt(prime, power - 1u, primePower / prime)
-    }
+suspend fun UInt.primeFactorization(): FactorizationUInt = FactorizationUInt(this, this.primeFactorizationImpl())
 
-    fun eulerTotient(): UInt = when (power) {
-        0u   -> 1u
-        1u   -> prime - 1u
-        else -> (primePower / prime) * (prime - 1u)
-    }
-
-    override fun toString(): String {
-        return "$prime^$power"
-    }
-}
-
-
-suspend fun primeFactorization1(a: UInt): List<PrimePowerUInt> = a.primeFactorization()
-
-suspend fun UInt.primeFactorization(): List<PrimePowerUInt> {
+suspend fun UInt.primeFactorizationImpl(): List<FactorizationUIntPrimePower> {
     require(this > 0u) { "Not a positive number" }
     return when (this) {
         1u   -> emptyList()
-        2u   -> listOf(PrimePowerUInt(2u, 1u, 2u))
-        3u   -> listOf(PrimePowerUInt(3u, 1u, 3u))
+        2u   -> listOf(FactorizationUIntPrimePower(2u, 2u, 1u))
+        3u   -> listOf(FactorizationUIntPrimePower(3u, 3u, 1u))
         else -> {
-            val list = mutableListOf<PrimePowerUInt>()
+            val list = mutableListOf<FactorizationUIntPrimePower>()
             var x = this
             val sqrt = sqrt(x.toDouble()).toUInt()
             var i = 0
@@ -74,13 +56,13 @@ suspend fun UInt.primeFactorization(): List<PrimePowerUInt> {
                         primePower *= prime
                         x /= prime
                     }
-                    list += PrimePowerUInt(prime, power, primePower)
+                    list += FactorizationUIntPrimePower(primePower, prime, power)
                     if (x == 1u) return list
                 }
                 i++
                 prime = primeOf(i).toUInt()
             }
-            list += PrimePowerUInt(x, 1u, x)
+            list += FactorizationUIntPrimePower(x, x, 1u)
             list
         }
     }
@@ -245,7 +227,7 @@ suspend fun allMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt): MutableLi
         3u   -> mutableListOf(2u)
         else -> {
             val a = prime - 1u
-            val factorization = a.primeFactorization()
+            val factorization = a.primeFactorizationImpl()
             val radical = RingUInt.product(factorization.map { it.prime })
             val generators = mutableListOf<UInt>()
             if (radical == a) {
@@ -283,7 +265,7 @@ suspend fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt): UInt {
         3u   -> 2u
         else -> {
             val a = prime - 1u
-            val factorization = a.primeFactorization()
+            val factorization = a.primeFactorizationImpl()
             val radical = RingUInt.product(factorization.map { it.prime })
             if (radical == a) {
                 nextNumber@ for (i in 2u until prime) {

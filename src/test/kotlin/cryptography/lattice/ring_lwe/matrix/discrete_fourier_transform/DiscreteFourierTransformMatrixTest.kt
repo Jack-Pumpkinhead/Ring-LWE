@@ -22,7 +22,7 @@ internal class DiscreteFourierTransformMatrixTest {
     @Test
     fun timesImpl() {
         runBlocking {
-            for (i in 1u..70u) {
+            for (i in 1u..100u) {
                 val primeField = PrimeFieldUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
@@ -43,7 +43,7 @@ internal class DiscreteFourierTransformMatrixTest {
     @Test
     fun timesRowParallelImpl() {
         runBlocking {
-            for (i in 1u..70u) {
+            for (i in 1u..100u) {
                 val primeField = PrimeFieldUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
@@ -60,7 +60,7 @@ internal class DiscreteFourierTransformMatrixTest {
     @Test
     fun multiplyToImpl() {
         runBlocking {
-            for (i in 1u..70u) {
+            for (i in 1u..100u) {
                 val primeField = PrimeFieldUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
@@ -79,7 +79,7 @@ internal class DiscreteFourierTransformMatrixTest {
     @Test
     fun multiplyToRowParallelImpl() {
         runBlocking {
-            for (i in 1u..70u) {
+            for (i in 1u..100u) {
                 val primeField = PrimeFieldUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)

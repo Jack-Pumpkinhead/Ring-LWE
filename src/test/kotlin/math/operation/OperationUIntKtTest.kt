@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 /**
  * Created by CowardlyLion at 2022/1/4 17:58
  */
-internal class UIntOperationKtTest {
+internal class OperationUIntKtTest {
 
     @Test
     fun modPower() {

@@ -20,22 +20,24 @@ import kotlin.random.nextUInt
  */
 internal class DiscreteFourierTransformMatrixPrimeTest {
 
-//    TODO improve performance(implement real dft) 16s 19s
+    //    TODO improve performance(implement real dft) 16s 19s (1sec 235ms??? what made it slow?)
+//   i:[1,700]  17s  18s  23s  18s
     @Test
     fun primeField() {
         runBlocking {
-            for (i in 1u..250u) {
+            for (i in 1u..700u) {
                 val primeField = PrimeFieldUInt(primeOf(i).toUInt())
                 val order = primeField.prime - 1u
                 val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeField.prime)
-                val rootData = RootDataUInt(primeField, ModularUInt(primeField.prime, root), order, order.primeFactorization())
-                val dft = DiscreteFourierTransformMatrixPrime(rootData.primeSubroot(Random.nextUInt(rootData.orderFactorization.size.toUInt())))
+                val rootData = RootDataUInt(primeField, ModularUInt(primeField.prime, root), order.primeFactorization())
+                val dft = DiscreteFourierTransformMatrixPrime(rootData.primeSubroot(Random.nextUInt(rootData.order.factors.size.toUInt())))
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
-                dft.andPrint()
-                x.andPrint()
-                val m = (dft * x).andPrint()
-                val m1 = multiply(dft, x).andPrint()
+                dft.andPrint("dft:")
+                x.andPrint("x:")
+//                println("$i\tsize: ${dft.rows}")
+                val m = (dft * x).andPrint("m:")
+                val m1 = multiply(dft, x).andPrint("m1:")
                 assertEquals(m, m1)
 //                println("-----------------------")
             }

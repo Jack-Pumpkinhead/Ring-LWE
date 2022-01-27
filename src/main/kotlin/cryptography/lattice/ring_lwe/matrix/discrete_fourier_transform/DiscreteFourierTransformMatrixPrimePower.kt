@@ -11,9 +11,9 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/19 18:09
  */
-class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePower<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.primePower) {
+class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePower<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.value) {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.primePower))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
 
     val underlyingMatrix: AbstractMatrix<A>
 
@@ -22,10 +22,10 @@ class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePow
             val subRoot = root.subRootData()
             FormalProduct(
                 ring, listOf(
-                    ring.permutationMatrix(LadderSwitcher(subRoot.order.prime, subRoot.order.primePower)),
+                    ring.permutationMatrix(LadderSwitcher(subRoot.order.prime, subRoot.order.value)),
                     ring.whiskered(subRoot.order.prime, DiscreteFourierTransformMatrixPrimePower(subRoot, primeCase), 1u),
-                    TwiddleMatrix(ring, subRoot.order.prime, subRoot.order.primePower, root.root),
-                    ring.whiskered(1u, primeCase, subRoot.order.primePower)
+                    TwiddleMatrix(ring, subRoot.order.prime, subRoot.order.value, root.root),
+                    ring.whiskered(1u, primeCase, subRoot.order.value)
                 )
             )
         }

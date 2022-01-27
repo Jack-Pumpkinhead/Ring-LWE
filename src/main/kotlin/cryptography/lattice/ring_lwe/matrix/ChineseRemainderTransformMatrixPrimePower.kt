@@ -12,7 +12,7 @@ class ChineseRemainderTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePo
     fun coprimeAt(i: UInt) = (i / (root.order.prime - 1u)) + i + 1u
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A {
-        return ring.powerM(root.root, modTimes(coprimeAt(row), column, root.order.primePower.toUInt()))
+        return ring.powerM(root.root, modTimes(coprimeAt(row), column, root.order.value))
     }
 
 }

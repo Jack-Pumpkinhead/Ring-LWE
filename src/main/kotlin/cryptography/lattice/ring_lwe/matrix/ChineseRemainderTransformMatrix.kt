@@ -10,10 +10,10 @@ import math.powerM
  */
 class ChineseRemainderTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A>(root.ring, root.eulerTotient()) {
 
-    val coprimeElements: List<UInt> = root.order.coprimeElements().map { it }
+    val coprimeElements: List<UInt> = root.order.value.coprimeElements().map { it }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A {
-        return ring.powerM(root.root, modTimes(coprimeElements[row.toInt()], column, root.order))
+        return ring.powerM(root.root, modTimes(coprimeElements[row.toInt()], column, root.order.value))
     }
 
 

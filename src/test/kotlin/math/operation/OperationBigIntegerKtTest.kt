@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.*
 /**
  * Created by CowardlyLion at 2022/1/5 17:59
  */
-internal class BigIntegerOperationKtTest {
+internal class OperationBigIntegerKtTest {
 
     @Test
     fun getMaxIndexOfOne() {
