@@ -191,6 +191,11 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
         return List(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }
     }
 
+    open fun rowMutableListAt(row: UInt): MutableList<A> {
+        require(row in 0u until rows)
+        return MutableList(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }
+    }
+
     //simplification by actual array structure is possible, but may cause problem if underlying array is mutable.
     fun rowVectorAt(row: UInt): RowVector<A> {
         require(row in 0u until rows)

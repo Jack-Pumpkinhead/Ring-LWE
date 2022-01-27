@@ -110,6 +110,7 @@ class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatr
 
 
     override fun rowListAt(row: UInt): List<A> = matrix[row.toInt()]
+    override fun rowMutableListAt(row: UInt): MutableList<A> = matrix[row.toInt()].toMutableList()
 
     override fun downCast(): AbstractMatrix<A> {
         return when {

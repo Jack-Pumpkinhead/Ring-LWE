@@ -4,6 +4,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
 import math.martix.AbstractMatrix
+import math.vector.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/8 22:21
@@ -38,6 +39,20 @@ abstract class AbstractMutableMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt
         }
     }
 
+
+    fun setRowUnsafe(row: UInt, vector: VectorLike<A>) {
+        setRowUnsafe(row) { j -> vector.vectorElementAt(j) }
+    }
+
+    fun setRowUnsafe(row: UInt, list: List<A>) {
+        setRowUnsafe(row) { j -> list[j.toInt()] }
+    }
+
+    fun setRowUnsafe(row: UInt, op: (UInt) -> A) {
+        for (j in 0u until columns) {
+            setElementAtUnsafe(row, j, op(j))
+        }
+    }
 
     fun indexedSet(op: (UInt, UInt) -> A) {
         for (i in 0u until rows) {

@@ -25,4 +25,10 @@ class RowVector<A>(ring: Ring<A>, val vector: List<A>) : AbstractRowVector<A>(ri
         require(row == 0u)
         return vector
     }
+
+    override fun rowMutableListAt(row: UInt): MutableList<A> {
+        require(row == 0u)
+        return vector.toMutableList()
+    }
+
 }
