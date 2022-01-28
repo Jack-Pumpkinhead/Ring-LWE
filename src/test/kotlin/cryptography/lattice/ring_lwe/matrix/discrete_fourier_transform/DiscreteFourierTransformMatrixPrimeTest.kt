@@ -2,7 +2,7 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
 import cryptography.lattice.ring_lwe.matrix.RootDataUInt
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.PrimeFieldUInt
+import math.abstract_structure.instance.FieldModularUInt
 import math.andPrint
 import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
 import math.integer.modular.ModularUInt
@@ -20,12 +20,12 @@ import kotlin.random.nextUInt
  */
 internal class DiscreteFourierTransformMatrixPrimeTest {
 
-//   i:[1,700]  17s  18s  23s  18s
+//   i:[1,700]  17s  18s  23s  18s  24s  19s
     @Test
     fun primeField() {
         runBlocking {
             for (i in 1u..700u) {
-                val primeField = PrimeFieldUInt(primeOf(i).toUInt())
+                val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val order = primeField.prime - 1u
                 val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeField.prime)
                 val rootData = RootDataUInt(primeField, ModularUInt(primeField.prime, root), order.primeFactorization())

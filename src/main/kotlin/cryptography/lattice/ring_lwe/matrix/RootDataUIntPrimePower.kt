@@ -38,9 +38,7 @@ class RootDataUIntPrimePower<A>(val ring: Ring<A>, val root: A, val order: Facto
 
     fun primeSubroot(): RootDataUIntPrime<A> {
         if (order.power == 1u) return this.toPrime()
-
-        val dividend = order.prime.powerM(order.power - 1u)
-        return RootDataUIntPrime(ring, ring.powerM(root, dividend), FactorizationUIntPrime(order.prime))
+        return RootDataUIntPrime(ring, ring.powerM(root, order.value/order.prime), FactorizationUIntPrime(order.prime))
     }
 
 

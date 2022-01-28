@@ -19,7 +19,7 @@ import math.operation.multiplyUnsafe
 /**
  * Created by CowardlyLion at 2022/1/7 21:22
  */
-abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns: UInt) {
+abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns: UInt) {    //TODO make all abstract matrix to interface
 
     init {
         require(rows.toInt() >= 0)  //require actural value is a non-negative integer
@@ -94,6 +94,14 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
         else                         -> ring.multiplyRowParallelUnsafe(this, matrix)
     }
 
+    fun multiplyToNewMutableMatrix(matrix: AbstractMatrix<A>): MutableMatrix<A> {
+        require(this.ring == matrix.ring)
+        require(this.columns == matrix.rows)
+        val result = ring.zeroMutableMatrix(this.rows, matrix.columns)
+        this.multiplyToImpl(matrix, result)
+        return result
+    }
+
     fun multiplyTo(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         require(this.ring == matrix.ring)
         require(this.columns == matrix.rows)
@@ -121,6 +129,14 @@ abstract class AbstractMatrix<A>(val ring: Ring<A>, val rows: UInt, val columns:
             is AbstractDiagonalMatrix<A> -> dest.indexedSet { i, j -> ring.multiply(elementAtUnsafe(i, j), matrix.vectorElementAtUnsafe(j)) }
             else                         -> ring.multiplyToUnsafe(this, matrix, dest)
         }
+    }
+
+    suspend fun multiplyToNewMutableMatrixRowParallel(matrix: AbstractMatrix<A>): MutableMatrix<A> {
+        require(this.ring == matrix.ring)
+        require(this.columns == matrix.rows)
+        val result = ring.zeroMutableMatrix(this.rows, matrix.columns)
+        this.multiplyToRowParallelImpl(matrix, result)
+        return result
     }
 
     suspend fun multiplyToRowParallel(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {

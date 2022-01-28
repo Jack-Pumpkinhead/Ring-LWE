@@ -33,7 +33,7 @@ class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSqu
             SquareFormalProduct(
                 ring, listOf(
                     ring.permutationMatrix(permCLInv(factors)),
-                    SquareFormalKroneckerProduct(ring, root.allPrimePowerSubroot().map { root1 ->
+                    SquareFormalKroneckerProduct(ring, root.allMaximalPrimePowerSubroot().map { root1 ->
                         if (root1.order.power == 1u) {
                             DiscreteFourierTransformMatrixPrime(root1.toPrime())
                         } else {

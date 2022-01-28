@@ -7,6 +7,8 @@ import math.martix.AbstractMatrix
 import math.martix.matrix
 import math.martix.matrixRowParallel
 import math.martix.mutable.AbstractMutableMatrix
+import math.martix.mutable.MutableMatrix
+import math.martix.zeroMutableMatrix
 
 /**
  * Created by CowardlyLion at 2022/1/9 18:15
@@ -29,6 +31,14 @@ fun <A> Ring<A>.multiplyUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): Ab
         }
         sum
     }.downCast()
+}
+
+fun <A> multiplyToNewMutableMatrix(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): MutableMatrix<A> {
+    require(mA.ring == mB.ring)
+    require(mA.columns == mB.rows)
+    val result = mA.ring.zeroMutableMatrix(mA.rows, mB.columns)
+    mA.ring.multiplyToUnsafe(mA, mB, result)
+    return result
 }
 
 fun <A> multiplyTo(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
@@ -68,6 +78,13 @@ suspend fun <A> Ring<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: Abs
     }.downCast()
 }
 
+suspend fun <A> multiplyToNewMutableMatrixRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): MutableMatrix<A> {
+    require(mA.ring == mB.ring)
+    require(mA.columns == mB.rows)
+    val result = mA.ring.zeroMutableMatrix(mA.rows, mB.columns)
+    mA.ring.multiplyToRowParallelUnsafe(mA, mB, result)
+    return result
+}
 
 suspend fun <A> multiplyToRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
     require(mA.ring == mB.ring)

@@ -26,4 +26,8 @@ class MutableMatrix<A>(ring: Ring<A>, val matrix: List<MutableList<A>>) : Abstra
     override fun rowListAt(row: UInt): List<A> {
         return matrix[row.toInt()].toList()
     }
+
+    override fun rowMutableListAt(row: UInt): MutableList<A> {
+        return matrix[row.toInt()].toMutableList()
+    }
 }

@@ -256,7 +256,7 @@ suspend fun allMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt): MutableLi
 }
 
 /**
- * first generator of (ℤ/([prime]))^*
+ * first generator of (ℤ/([prime]))^* (g^([prime]-1) = 1)
  * [prime] needs to be prime
  */
 suspend fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt): UInt {

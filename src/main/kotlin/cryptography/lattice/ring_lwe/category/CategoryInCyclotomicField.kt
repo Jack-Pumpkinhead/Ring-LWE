@@ -2,22 +2,20 @@ package cryptography.lattice.ring_lwe.category
 
 import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrime
 import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrimePower
-import math.abstract_structure.instance.FieldComplexNumberDouble
-import math.abstract_structure.instance.FieldDouble
-import math.abstract_structure.instance.RingModularUInt
-import math.abstract_structure.instance.RingUInt
+import cryptography.lattice.ring_lwe.matrix.LowerTriangularOneMatrix
+import math.abstract_structure.instance.*
 import math.abstract_structure.module.CategoryOfModule
-import math.abstract_structure.module.FiniteFreeModuleWithBase
 import math.abstract_structure.module.freeModule
-import math.complex_number.ComplexNumber
+import math.integer.FactorizationUInt
 import math.integer.FactorizationUIntPrimePower
+import math.martix.whiskered
 
 /**
  * Created by CowardlyLion at 2022/1/26 13:36
  *
- * require [q] be prime
+ * require [q] be prime, [q_1] = [q]-1
  */
-class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: UInt) {
+class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: UInt, val q_1: FactorizationUInt) {
 
 
     val phiOrder = order.eulerTotient()
@@ -26,8 +24,11 @@ class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: U
 
     val complexModule = categoies.categoryOf(FieldComplexNumberDouble)
     val realModule = categoies.categoryOf(FieldDouble)
-    val zModule = categoies.categoryOf(RingUInt)
+    val integerModule = categoies.categoryOf(RingUInt)
     fun modularZModule(modulus: UInt) = categoies.categoryOf(RingModularUInt(modulus))
+
+    val fieldModuloQ = FieldModularUInt(q)
+    val integerModuloQModule = categoies.categoryOf(fieldModuloQ)
 
     /**
      * ℚ(ζp^i) ⊗ ℂ
@@ -61,6 +62,10 @@ class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: U
     fun ringOfIntegerPowerBasisModulo(modulus: UInt) = RingModularUInt(modulus).freeModule("ℤ(ζp^i) modulo $modulus with power basis", phiOrder)
     fun ringOfIntegerChineseRemainderBasisModulo(modulus: UInt) = RingModularUInt(modulus).freeModule("ℤ(ζp^i) modulo $modulus with chinese remainder basis", phiOrder)
 
+    val ringOfIntegerModuloQPowerBasis = ringOfIntegerPowerBasisModulo(q)
+    val ringOfIntegerModuloQChineseRemainderBasis = ringOfIntegerChineseRemainderBasisModulo(q)
+
+
     /**
      * dual(ℤ(ζp^i)) / [modulus] * dual(ℤ(ζp^i))
      */
@@ -68,19 +73,57 @@ class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: U
     fun dualRingOfIntegerDecodingBasisModulo(modulus: UInt) = RingModularUInt(modulus).freeModule("dual(ℤ(ζp^i)) modulo $modulus with dual basis of conjugate power basis of ℤ(ζp^i)", phiOrder)
     fun dualRingOfIntegerChineseRemainderBasisModulo(modulus: UInt) = RingModularUInt(modulus).freeModule("dual(ℤ(ζp^i)) modulo $modulus with chinese remainder basis", phiOrder)
 
+    val dualRingOfIntegerModuloQPowerBasis = dualRingOfIntegerPowerBasisModulo(q)
+    val dualRingOfIntegerModuloQDecodingBasis = dualRingOfIntegerDecodingBasisModulo(q)
+    val dualRingOfIntegerModuloQChineseRemainderBasis = dualRingOfIntegerChineseRemainderBasisModulo(q)
+
 
     init {
         complexModule.registerBase(extendedCyclotomicFieldPowerBasis)
         complexModule.registerBase(standardBasis)
 
         val root = FieldComplexNumberDouble.rootDataPrimePower(order)
-        complexModule.registerArrow(extendedCyclotomicFieldPowerBasis,standardBasis, ChineseRemainderTransformMatrixPrimePower(root, ChineseRemainderTransformMatrixPrime(root.primeSubroot())))
+        complexModule.registerArrow(extendedCyclotomicFieldPowerBasis, standardBasis, ChineseRemainderTransformMatrixPrimePower(root, ChineseRemainderTransformMatrixPrime(root.primeSubroot())))
+    }
 
+    init {
         realModule.registerBase(cyclotomicFieldPowerBasis)
-        zModule.registerBase(ringOfIntegerPowerBasis)
-        zModule.registerBase(dualRingOfIntegerPowerBasis)
-        zModule.registerBase(dualRingOfIntegerDecodingBasis)
+    }
 
+
+
+    init {
+        integerModule.registerBase(ringOfIntegerPowerBasis)
+
+        integerModule.registerBase(dualRingOfIntegerPowerBasis)
+        integerModule.registerBase(dualRingOfIntegerDecodingBasis)
+
+        val decodingToPower = if (order.power == 1u) {
+            LowerTriangularOneMatrix(RingUInt, order.prime - 1u)
+        } else {
+            RingUInt.whiskered(1u, LowerTriangularOneMatrix(RingUInt, order.prime - 1u), order.value / order.prime)
+        }
+        integerModule.registerArrow(dualRingOfIntegerDecodingBasis, dualRingOfIntegerPowerBasis, decodingToPower)
+    }
+
+    init {
+        integerModuloQModule.registerBase(ringOfIntegerModuloQPowerBasis)
+        integerModuloQModule.registerBase(ringOfIntegerModuloQChineseRemainderBasis)
+        val root = fieldModuloQ.rootData(order, q_1)
+        val crt = ChineseRemainderTransformMatrixPrimePower(root, ChineseRemainderTransformMatrixPrime(root.primeSubroot()))
+        integerModuloQModule.registerArrow(ringOfIntegerModuloQPowerBasis, ringOfIntegerModuloQChineseRemainderBasis, crt)
+
+        integerModuloQModule.registerBase(dualRingOfIntegerModuloQPowerBasis)
+        integerModuloQModule.registerBase(dualRingOfIntegerModuloQDecodingBasis)
+        integerModuloQModule.registerBase(dualRingOfIntegerModuloQChineseRemainderBasis)
+
+        integerModuloQModule.registerArrow(dualRingOfIntegerModuloQPowerBasis, dualRingOfIntegerModuloQChineseRemainderBasis, crt)
+        val decodingToPower = if (order.power == 1u) {
+            LowerTriangularOneMatrix(fieldModuloQ, order.prime - 1u)
+        } else {
+            fieldModuloQ.whiskered(1u, LowerTriangularOneMatrix(fieldModuloQ, order.prime - 1u), order.value / order.prime)
+        }
+        integerModuloQModule.registerArrow(dualRingOfIntegerModuloQDecodingBasis, dualRingOfIntegerModuloQPowerBasis, decodingToPower)
 
     }
 

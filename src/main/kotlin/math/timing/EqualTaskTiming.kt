@@ -5,13 +5,9 @@ import kotlin.time.DurationUnit
 /**
  * Created by CowardlyLion at 2022/1/27 18:18
  */
-class EqualTaskTiming<Condition, A>(var printResult: Boolean = true) {
+interface EqualTaskTiming<Condition, A> {
 
-    val tasks = mutableListOf<Task<Condition, A>>()
-
-    fun registerTask(info: String, work: suspend (Condition) -> A) {
-        tasks += Task(info, work)
-    }
+    val tasks : List<Task<Condition, A>>
 
     suspend fun goAndPrint(condition: Condition, conditionInfo: String = condition.toString()) {
         if (tasks.isEmpty()) return
@@ -25,9 +21,8 @@ class EqualTaskTiming<Condition, A>(var printResult: Boolean = true) {
         }
 
         val a = results[0].result
-        if (printResult) {
-            println("result: $a")
-        }
+
+        println("result: $a")
         if (tasks.size > 1) {
             for (i in 1 until results.size) {
                 require(a == results[i].result)

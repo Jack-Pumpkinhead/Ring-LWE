@@ -2,7 +2,7 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.dft
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.PrimeFieldUInt
+import math.abstract_structure.instance.FieldModularUInt
 import math.andPrint
 import math.integer.primeOf
 import math.martix.zeroMutableMatrix
@@ -23,7 +23,7 @@ internal class DiscreteFourierTransformMatrixTest {
     fun timesImpl() {
         runBlocking {
             for (i in 1u..100u) {
-                val primeField = PrimeFieldUInt(primeOf(i).toUInt())
+                val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
@@ -44,7 +44,7 @@ internal class DiscreteFourierTransformMatrixTest {
     fun timesRowParallelImpl() {
         runBlocking {
             for (i in 1u..100u) {
-                val primeField = PrimeFieldUInt(primeOf(i).toUInt())
+                val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
@@ -61,7 +61,7 @@ internal class DiscreteFourierTransformMatrixTest {
     fun multiplyToImpl() {
         runBlocking {
             for (i in 1u..100u) {
-                val primeField = PrimeFieldUInt(primeOf(i).toUInt())
+                val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
@@ -80,7 +80,7 @@ internal class DiscreteFourierTransformMatrixTest {
     fun multiplyToRowParallelImpl() {
         runBlocking {
             for (i in 1u..100u) {
-                val primeField = PrimeFieldUInt(primeOf(i).toUInt())
+                val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
                 val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
 //                println("-------primeModulus: $primeModulus, $factorization----------------")
