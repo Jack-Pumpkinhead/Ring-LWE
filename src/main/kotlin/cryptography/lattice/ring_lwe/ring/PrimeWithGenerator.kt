@@ -1,4 +1,4 @@
-package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
+package cryptography.lattice.ring_lwe.ring
 
 import math.integer.operation.modTimesUnsafe
 import math.integer.operation.modUnaryMinus

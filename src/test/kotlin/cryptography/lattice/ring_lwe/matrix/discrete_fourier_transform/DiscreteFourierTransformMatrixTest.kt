@@ -16,30 +16,32 @@ import org.junit.jupiter.api.Test
  */
 internal class DiscreteFourierTransformMatrixTest {
 
-    //    39s
+    //    10.65s
+    // *  : average 8.69556ms, deviation 17.98244ms
     @Test
     fun multiplication() {
         runBlocking {
             val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
-            for (i in 1u..250u) {
+            for (i in 1u..200u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
-                val x = primeField.randomModularUIntMatrix(dft.columns, 1u..3u)
+                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
         }
     }
 
-    //    44s, parallel method faster than normal method now
+    // 15.61s
+    // *  : average 273.63922ms, deviation 367.84189ms
     @Test
     fun largeMultiplication() {
         runBlocking {
             val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
-            for (i in 400u..420u) {
+            for (i in 410u..420u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
-                val x = primeField.randomModularUIntMatrix(dft.columns, 1u..3u)
+                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()

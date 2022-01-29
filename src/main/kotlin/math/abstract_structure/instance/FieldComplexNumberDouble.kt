@@ -1,8 +1,8 @@
 package math.abstract_structure.instance
 
-import cryptography.lattice.ring_lwe.matrix.RootDataUInt
-import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrime
-import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrimePower
+import cryptography.lattice.ring_lwe.ring.RootDataUInt
+import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
+import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower
 import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
 import math.integer.FactorizationUInt

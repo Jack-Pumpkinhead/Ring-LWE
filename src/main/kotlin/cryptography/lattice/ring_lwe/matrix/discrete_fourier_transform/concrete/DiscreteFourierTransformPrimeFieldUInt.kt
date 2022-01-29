@@ -1,6 +1,6 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete
 
-import cryptography.lattice.ring_lwe.matrix.RootDataUInt
+import cryptography.lattice.ring_lwe.ring.RootDataUInt
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DiscreteFourierTransformMatrix
 import math.abstract_structure.instance.FieldModularUInt
 import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe

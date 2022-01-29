@@ -1,5 +1,6 @@
 package cryptography.lattice.ring_lwe.matrix
 
+import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower
 import math.abstract_structure.Ring
 import math.integer.operation.modTimes
 import math.martix.AbstractSquareMatrix

@@ -1,8 +1,8 @@
 package math.abstract_structure.instance
 
-import cryptography.lattice.ring_lwe.matrix.RootDataUInt
-import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrime
-import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrimePower
+import cryptography.lattice.ring_lwe.ring.RootDataUInt
+import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
+import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.Field
 import math.integer.FactorizationUInt

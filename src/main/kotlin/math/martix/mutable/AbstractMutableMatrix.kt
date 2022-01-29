@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import math.martix.AbstractMatrix
 import math.martix.mutable.view.MutableColumnVectorView
 import math.martix.mutable.view.MutableRowVectorView
+import math.martix.mutable.view.MutableSubmatrixView
 import math.vector.VectorLike
 
 /**
@@ -83,6 +84,8 @@ interface AbstractMutableMatrix<A> : AbstractMatrix<A> {
     fun mutableColumnVectorViewAt(column: UInt) = MutableColumnVectorView(ring, this, column)
 
     fun mutableRowVectorViewAt(row: UInt) = MutableRowVectorView(ring, this, row)
+
+    fun mutableSubmatrixViewAt(rowBase: UInt, columnBase: UInt, rows: UInt, columns: UInt) = MutableSubmatrixView(ring, this, rowBase, columnBase, rows, columns)
 
 
 }

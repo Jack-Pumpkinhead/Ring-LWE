@@ -44,6 +44,14 @@ fun <A> Ring<A>.sum(x: List<A>): A {
     return sum
 }
 
+fun <A> Ring<A>.sum(x: VectorLike<A>): A {
+    var sum = zero
+    for (i in 0u until x.size) {
+        sum = add(sum, x.vectorElementAtUnsafe(i))
+    }
+    return sum
+}
+
 fun <A> Ring<A>.sum(range: UIntRange, x: List<A>): A {
     var sum = zero
     for (i in range) {

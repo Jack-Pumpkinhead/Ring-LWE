@@ -15,7 +15,7 @@ class MutableSubmatrixView<A>(override val ring: Ring<A>, val matrix: AbstractMu
                 assert(rowBase + rows <= matrix.rows)
             }
             if (columns > 0u) {
-                assert(rowBase + columns <= matrix.columns)
+                assert(columnBase + columns <= matrix.columns)
             }
         }
     }

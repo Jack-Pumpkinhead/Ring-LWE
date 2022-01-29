@@ -2,29 +2,25 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
 import cryptography.lattice.ring_lwe.coding.permCLInv
 import cryptography.lattice.ring_lwe.coding.permLRInv
-import cryptography.lattice.ring_lwe.matrix.RootDataUInt
+import cryptography.lattice.ring_lwe.ring.RootDataUInt
 import math.abstract_structure.Ring
 import math.integer.operation.modTimes
-import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
-import math.martix.mutable.AbstractMutableMatrix
+import math.martix.BackingSquareMatrix
 import math.martix.permutationMatrix
 import math.martix.tensor.SquareFormalKroneckerProduct
 import math.martix.tensor.SquareFormalProduct
-import math.powerM
 
 /**
  * Created by CowardlyLion at 2022/1/19 17:44
  */
-class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A> {
+class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : BackingSquareMatrix<A> {
 
     override val ring: Ring<A> get() = root.ring
 
-    override val size: UInt get() = root.order.value
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = root.power(modTimes(row, column, root.order.value))
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
-
-    val underlyingMatrix: AbstractSquareMatrix<A> =
+    override val underlyingMatrix: AbstractSquareMatrix<A> =
         if (root.order.factors.size == 1) {
             val root1 = root.toPrimePower()
             if (root1.order.power == 1u) {
@@ -49,22 +45,4 @@ class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSqu
                 )
             )
         }
-
-    override fun determinant(): A = underlyingMatrix.determinant()
-
-    override fun hasInverse(): Boolean = underlyingMatrix.hasInverse()
-
-    override fun inverse(): AbstractSquareMatrix<A> = underlyingMatrix.inverse()
-
-    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = underlyingMatrix.timesImpl(matrix)
-
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = underlyingMatrix.timesRowParallelImpl(matrix)
-
-    override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        underlyingMatrix.multiplyToImpl(matrix, dest)
-    }
-
-    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        underlyingMatrix.multiplyToRowParallelImpl(matrix, dest)
-    }
 }

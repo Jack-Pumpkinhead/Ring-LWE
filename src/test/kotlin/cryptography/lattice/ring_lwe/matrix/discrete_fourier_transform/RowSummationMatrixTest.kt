@@ -1,4 +1,4 @@
-package cryptography.lattice.ring_lwe.matrix
+package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.RingUInt
@@ -12,16 +12,16 @@ import kotlin.random.Random
 import kotlin.random.nextUInt
 
 /**
- * Created by CowardlyLion at 2022/1/27 17:39
+ * Created by CowardlyLion at 2022/1/29 21:15
  */
-internal class LowerTriangularOneMatrixTest {
+internal class RowSummationMatrixTest{
 
     @Test
     fun multiply() {
         runBlocking {
             val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(1000) {
-                val m = LowerTriangularOneMatrix(RingUInt, Random.nextUInt(1u..100u)).andPrint("m:")
+                val m = RowSummationMatrix(RingUInt, Random.nextUInt(1u..100u)).andPrint("m:")
                 val x = Random.randomUIntMatrix(m.columns, 2u, 0u..100u).andPrint("x:")
                 statistic.go(TwoMatrix(m, x))
             }
