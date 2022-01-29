@@ -3,15 +3,12 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.dft
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.FieldModularUInt
-import math.andPrint
+import math.integer.modular.ModularUInt
 import math.integer.primeOf
-import math.martix.zeroMutableMatrix
-import math.operation.multiply
-import math.operation.multiplyRowParallel
-import math.operation.multiplyTo
-import math.operation.multiplyToRowParallel
 import math.random.randomModularUIntMatrix
-import org.junit.jupiter.api.Assertions.assertEquals
+import math.statistic.RepeatTaskStatistic
+import math.timing.TwoMatrix
+import math.timing.TwoMatrixMultiplicationTiming
 import org.junit.jupiter.api.Test
 
 /**
@@ -19,80 +16,35 @@ import org.junit.jupiter.api.Test
  */
 internal class DiscreteFourierTransformMatrixTest {
 
+    //    39s
     @Test
-    fun timesImpl() {
+    fun multiplication() {
         runBlocking {
-            for (i in 1u..100u) {
+            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
+            for (i in 1u..250u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
-                val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
-//                println("-------primeModulus: $primeModulus, $factorization----------------")
-//                dft.andPrint()
-//                dft.underlyingMatrix.andPrint()
-//                assertEquals(dft, dft.underlyingMatrix)
-
-                val a = (dft * x).andPrint()
-                val a1 = multiply(dft, x).andPrint()
-                assertEquals(a, a1)
-//                println("-----------------------")
+                val x = primeField.randomModularUIntMatrix(dft.columns, 1u..3u)
+                statistic.go(TwoMatrix(dft, x))
             }
-
+            statistic.printAverageAndStandardDeviation()
         }
     }
 
+    //    44s, parallel method faster than normal method now
     @Test
-    fun timesRowParallelImpl() {
+    fun largeMultiplication() {
         runBlocking {
-            for (i in 1u..100u) {
+            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
+            for (i in 400u..420u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
-                val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
-//                println("-------primeModulus: $primeModulus, $factorization----------------")
-
-                val a = (dft.timesRowParallel(x)).andPrint()
-                val a1 = multiplyRowParallel(dft, x).andPrint()
-                assertEquals(a, a1)
-//                println("-----------------------")
+                val x = primeField.randomModularUIntMatrix(dft.columns, 1u..3u)
+                statistic.go(TwoMatrix(dft, x))
             }
+            statistic.printAverageAndStandardDeviation()
         }
     }
 
-    @Test
-    fun multiplyToImpl() {
-        runBlocking {
-            for (i in 1u..100u) {
-                val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val dft = primeField.dft()
-                val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
-//                println("-------primeModulus: $primeModulus, $factorization----------------")
-
-                val a = primeField.zeroMutableMatrix(dft.rows, x.columns)
-                val a1 = primeField.zeroMutableMatrix(dft.rows, x.columns)
-                dft.multiplyToImpl(x, a)
-                multiplyTo(dft, x, a1)
-                assertEquals(a, a1)
-//                println("-----------------------")
-            }
-        }
-    }
-
-    @Test
-    fun multiplyToRowParallelImpl() {
-        runBlocking {
-            for (i in 1u..100u) {
-                val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val dft = primeField.dft()
-                val x = primeField.randomModularUIntMatrix(dft.columns..dft.columns, 1u..3u)
-//                println("-------primeModulus: $primeModulus, $factorization----------------")
-
-                val a = primeField.zeroMutableMatrix(dft.rows, x.columns)
-                val a1 = primeField.zeroMutableMatrix(dft.rows, x.columns)
-                dft.multiplyToRowParallelImpl(x, a)
-                multiplyToRowParallel(dft, x, a1)
-                assertEquals(a, a1)
-//                println("-----------------------")
-            }
-        }
-    }
 
 }

@@ -11,9 +11,11 @@ import util.stdlib.lazyAssert2
  *
  * r^(b0*b1) = 1
  */
-class TwiddleMatrix<A>(ring: Ring<A>, b0: UInt, b1: UInt, val root: A) : AbstractDiagonalMatrix<A>(ring, b0 * b1) {
+class TwiddleMatrix<A>(override val ring: Ring<A>, b0: UInt, b1: UInt, val root: A) : AbstractDiagonalMatrix<A> {
 
-    val ladderIndex = LadderIndex(listOf(b0, b1), super.vectorSize)
+    override val size: UInt = b0 * b1
+
+    val ladderIndex = LadderIndex(listOf(b0, b1), size)
 
     init {
         lazyAssert2 {

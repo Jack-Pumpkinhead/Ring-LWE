@@ -4,6 +4,7 @@ import cryptography.lattice.ring_lwe.matrix.RootDataUIntPrime
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import math.abstract_structure.Ring
 import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
 import math.integer.operation.modTimes
 import math.martix.*
@@ -19,7 +20,11 @@ import util.stdlib.list
 /**
  * Created by CowardlyLion at 2022/1/19 18:26
  */
-class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : AbstractSquareMatrix<A>(root.ring, root.order.value) {
+class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : AbstractSquareMatrix<A> {
+
+    override val ring: Ring<A> get() = root.ring
+
+    override val size: UInt get() = root.order.value
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
 
@@ -41,9 +46,9 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
     }
 
     fun timesImpl(vector: AbstractColumnVector<A>): ColumnVector<A> {
-        val result = MutableList(vector.vectorSize.toInt()) { ring.zero }
+        val result = MutableList(vector.size.toInt()) { ring.zero }
         var sum = ring.zero
-        for (i in 0u until vector.vectorSize) {
+        for (i in 0u until vector.size) {
             sum = ring.add(sum, vector.vectorElementAtUnsafe(i))
         }
         result[0] = sum
@@ -61,7 +66,7 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
 
     fun multiplyToImpl(vector: AbstractColumnVector<A>, dest: AbstractMutableMatrix<A>) {
         var sum = ring.zero
-        for (i in 0u until vector.vectorSize) {
+        for (i in 0u until vector.size) {
             sum = ring.add(sum, vector.vectorElementAtUnsafe(i))
         }
         dest.setElementAtUnsafe(0u, 0u, sum)
@@ -88,11 +93,11 @@ class DiscreteFourierTransformMatrixPrime<A>(val root: RootDataUIntPrime<A>) : A
                 val data = List(this.rows.toInt()) { mutableListOf<A>() }
                 for (vector in matrix.columnVectorViews()) {
                     val columnVector = this.timesImpl(vector)
-                    for (i in 0u until columnVector.vectorSize) {
+                    for (i in 0u until columnVector.size) {
                         data[i.toInt()] += columnVector.vectorElementAtUnsafe(i)
                     }
                 }
-                OrdinaryMatrix(ring, data)
+                OrdinaryMatrix(ring, this.rows, matrix.columns, data)
             }
         }
 

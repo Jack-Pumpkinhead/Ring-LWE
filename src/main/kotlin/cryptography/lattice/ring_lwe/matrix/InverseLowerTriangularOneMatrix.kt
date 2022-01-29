@@ -15,7 +15,7 @@ import util.stdlib.list
 /**
  * Created by CowardlyLion at 2022/1/27 17:45
  */
-class InverseLowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(ring, size) {
+class InverseLowerTriangularOneMatrix<A>(override val ring: Ring<A>, override val size: UInt) : AbstractSquareMatrix<A> {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = when (row) {
         column      -> ring.one
@@ -24,23 +24,23 @@ class InverseLowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSq
     }
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> =
-        if (this.rows == 1u) {
+        if (size == 1u) {
             matrix
         } else {
             val lists = mutableListOf<List<A>>()
             lists += matrix.rowListAt(0u)
 
-            for (i in 1u until matrix.rows) {
+            for (i in 1u until size) {
                 lists += list(matrix.columns) { j -> ring.subtract(matrix.elementAtUnsafe(i, j), matrix.elementAtUnsafe(i - 1u, j)) }
             }
-            OrdinaryMatrix(ring, lists)
+            OrdinaryMatrix(ring, size, matrix.columns, lists)
         }
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = coroutineScope {
-        if (this@InverseLowerTriangularOneMatrix.rows == 1u) {
+        if (size == 1u) {
             matrix
         } else {
-            val lists = list(matrix.rows) { i ->
+            val lists = list(size) { i ->
                 async {
                     if (i == 0u) {
                         matrix.rowListAt(i)
@@ -49,7 +49,7 @@ class InverseLowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSq
                     }
                 }
             }.awaitAll()
-            OrdinaryMatrix(ring, lists)
+            OrdinaryMatrix(ring, size, matrix.columns, lists)
         }
     }
 
@@ -58,18 +58,18 @@ class InverseLowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSq
             dest.setUnsafe(matrix)
         } else {
             dest.setRowUnsafe(0u, matrix.rowVectorViewAt(0u))
-            for (i in 1u until matrix.rows) {
+            for (i in 1u until size) {
                 dest.setRowUnsafe(i) { j -> ring.subtract(matrix.elementAtUnsafe(i, j), matrix.elementAtUnsafe(i - 1u, j)) }
             }
         }
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
-        if (this@InverseLowerTriangularOneMatrix.rows == 1u) {
+        if (size == 1u) {
             dest.setUnsafe(matrix)
         } else {
             dest.setRowUnsafe(0u, matrix.rowVectorViewAt(0u))
-            for (i in 1u until matrix.rows) {
+            for (i in 1u until size) {
                 launch {
                     dest.setRowUnsafe(i) { j -> ring.subtract(matrix.elementAtUnsafe(i, j), matrix.elementAtUnsafe(i - 1u, j)) }
                 }

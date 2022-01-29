@@ -13,5 +13,5 @@ import math.martix.columnVector
 fun quotient(coordinate: CoordinateWithBase<UInt>, modulus: UInt): CoordinateWithBase<ModularUInt> {
     require(coordinate.ring == RingUInt)
     val ring = RingModularUInt(modulus)
-    return CoordinateWithBase(ring, coordinate.base + "modulo $modulus", ring.columnVector(coordinate.coordinate.vectorSize) { coordinate.coordinate[it].toUIntModular(modulus) })
+    return CoordinateWithBase(ring, coordinate.base + "modulo $modulus", ring.columnVector(coordinate.coordinate.size) { coordinate.coordinate[it].toUIntModular(modulus) })
 }

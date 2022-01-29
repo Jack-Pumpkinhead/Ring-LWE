@@ -22,3 +22,11 @@ inline fun <T> list(size: UInt, init: (index: UInt) -> T): List<T> {
     }
     return list
 }
+
+inline fun <T> mutableList(size: UInt, init: (index: UInt) -> T): MutableList<T> {
+    val list = ArrayList<T>(size.toInt())
+    for (i in 0u until size) {
+        list.add(init(i))
+    }
+    return list
+}

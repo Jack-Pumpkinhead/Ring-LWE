@@ -31,10 +31,12 @@ data class FactorizationUIntPrimePower(val value: UInt, val prime: UInt, val pow
         return FactorizationUIntPrimePower(value / prime, prime, power - 1u)
     }
 
-    fun eulerTotient(): UInt = when (power) {
-        0u   -> 1u
-        1u   -> prime - 1u
-        else -> (value / prime) * (prime - 1u)
+    val eulerTotient: UInt by lazy {
+        when (power) {
+            0u   -> 1u
+            1u   -> prime - 1u
+            else -> (value / prime) * (prime - 1u)
+        }
     }
 
     override fun toString(): String {

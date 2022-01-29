@@ -9,13 +9,13 @@ import math.integer.operation.modMinusUnsafe
  */
 
 fun <A> Ring<A>.convolution(a: VectorLike<A>, b: VectorLike<A>): List<A> {
-    require(a.vectorSize > 0u)
-    require(a.vectorSize == b.vectorSize)
-    return if (a.vectorSize == 1u) listOf(multiply(a.vectorElementAtUnsafe(0u), b.vectorElementAtUnsafe(0u)))
-    else List(a.vectorSize.toInt()) { i ->
+    require(a.size > 0u)
+    require(a.size == b.size)
+    return if (a.size == 1u) listOf(multiply(a.vectorElementAtUnsafe(0u), b.vectorElementAtUnsafe(0u)))
+    else List(a.size.toInt()) { i ->
         var sum = zero
-        for (j in 0u until a.vectorSize) {
-            sum = add(sum, multiply(a.vectorElementAtUnsafe(modMinusUnsafe(i.toUInt(), j, a.vectorSize)), b.vectorElementAtUnsafe(j)))
+        for (j in 0u until a.size) {
+            sum = add(sum, multiply(a.vectorElementAtUnsafe(modMinusUnsafe(i.toUInt(), j, a.size)), b.vectorElementAtUnsafe(j)))
         }
         sum
     }

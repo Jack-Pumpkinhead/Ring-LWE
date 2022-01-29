@@ -15,20 +15,22 @@ class RepeatTaskStatistic<Condition, A>(val timing: EqualTaskTiming<Condition, A
     //    not record conditions to save space
     //    val conditions = mutableListOf<Condition>()
     val statistics = List<MutableList<Duration>>(timing.tasks.size) { mutableListOf() }
-    val totalTime = MutableList(timing.tasks.size) { Duration.ZERO }
+    val eachTotalTime = MutableList(timing.tasks.size) { Duration.ZERO }
+    var totalTime = Duration.ZERO
     var size = 0
 
     suspend fun go(condition: Condition) {
         val results = timing.go(condition)
         for (i in results.indices) {
             statistics[i] += results[i].time
-            totalTime[i] += results[i].time
+            eachTotalTime[i] += results[i].time
+            totalTime += results[i].time
         }
         size++
     }
 
     fun average(): List<Duration> {
-        return totalTime.map { it / size }
+        return eachTotalTime.map { it / size }
     }
 
     /**
@@ -55,6 +57,7 @@ class RepeatTaskStatistic<Condition, A>(val timing: EqualTaskTiming<Condition, A
             val (average, deviation) = info[i]
             println("${timing.tasks[i].info}: average ${average.toString(DurationUnit.MILLISECONDS, 5)}, deviation ${deviation.toString(DurationUnit.MILLISECONDS, 5)}")
         }
+        println("total: $totalTime")
     }
 
 

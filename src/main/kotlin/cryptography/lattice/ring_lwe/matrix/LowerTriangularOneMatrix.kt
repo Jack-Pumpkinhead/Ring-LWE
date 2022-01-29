@@ -10,13 +10,12 @@ import math.martix.mutable.AbstractMutableMatrix
 /**
  * Created by CowardlyLion at 2022/1/27 17:12
  */
-class LowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(ring, size) {
+class LowerTriangularOneMatrix<A>(override val ring: Ring<A>, override val size: UInt) : AbstractSquareMatrix<A> {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (column <= row) ring.one else ring.zero
 
-
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> =
-        if (this.rows == 1u) {
+        if (size == 1u) {
             matrix
         } else {
             val lists = mutableListOf<List<A>>()
@@ -28,7 +27,7 @@ class LowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMat
                 }
                 lists += row.toList()
             }
-            OrdinaryMatrix(ring, lists)
+            OrdinaryMatrix(ring, size, matrix.columns,lists)
         }
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = timesImpl(matrix)
@@ -52,7 +51,7 @@ class LowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMat
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = multiplyToImpl(matrix, dest)
 
     override fun downCast(): AbstractMatrix<A> {
-        return if (rows == 1u) IdentityMatrix(ring, 1u)
+        return if (size == 1u) IdentityMatrix(ring, 1u)
         else super.downCast()
     }
 
@@ -60,5 +59,5 @@ class LowerTriangularOneMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMat
 
     override fun hasInverse(): Boolean = true
 
-    override fun inverse(): AbstractSquareMatrix<A> = InverseLowerTriangularOneMatrix(ring, rows)
+    override fun inverse(): AbstractSquareMatrix<A> = InverseLowerTriangularOneMatrix(ring, size)
 }

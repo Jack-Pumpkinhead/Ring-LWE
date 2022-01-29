@@ -3,6 +3,7 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 import cryptography.lattice.ring_lwe.coding.permCLInv
 import cryptography.lattice.ring_lwe.coding.permLRInv
 import cryptography.lattice.ring_lwe.matrix.RootDataUInt
+import math.abstract_structure.Ring
 import math.integer.operation.modTimes
 import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
@@ -15,7 +16,11 @@ import math.powerM
 /**
  * Created by CowardlyLion at 2022/1/19 17:44
  */
-class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A>(root.ring, root.order.value) {
+class DiscreteFourierTransformMatrix<A>(val root: RootDataUInt<A>) : AbstractSquareMatrix<A> {
+
+    override val ring: Ring<A> get() = root.ring
+
+    override val size: UInt get() = root.order.value
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row, column, root.order.value))
 

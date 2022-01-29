@@ -24,5 +24,4 @@ class ULongForwardProgressionIterator(val first: ULong, val last: ULong, val ste
         return value
     }
 
-
 }

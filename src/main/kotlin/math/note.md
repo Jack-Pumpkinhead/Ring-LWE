@@ -3,6 +3,7 @@
 - if a sort of object have regular (usually combination of) properties/constructions, use encoded (short) name  
 - extend BoundedMultiIndex to support BigInteger index currently useless, because index of Array in Java/Kotlin is restricted to int, but restrict implementation for UInt needs a tedious overflow-checking (costly and error-prone).
 - no need to implement radix-2 FFt since it is equivalent to prime power case when p=2
+- after making abstract matrix to interface, implement equals method for every class is very tedious
 
 ##todo
 - R[x]/f(x) for f monic

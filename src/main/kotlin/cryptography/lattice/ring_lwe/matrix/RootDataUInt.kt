@@ -1,12 +1,10 @@
 package cryptography.lattice.ring_lwe.matrix
 
 import math.abstract_structure.Ring
-import math.abstract_structure.instance.RingUInt
 import math.integer.FactorizationUInt
 import math.integer.FactorizationUIntPrime
 import math.integer.FactorizationUIntPrimePower
 import math.integer.operation.powerM
-import math.operation.product
 import math.powerM
 
 /**
@@ -26,9 +24,7 @@ class RootDataUInt<A>(val ring: Ring<A>, val root: A, val order: FactorizationUI
         return RootDataUIntPrime(ring, root, FactorizationUIntPrime(factorization.prime))
     }
 
-    fun eulerTotient(): UInt = RingUInt.product(order.factors.map { it.eulerTotient() })
-
-    fun primeSubroot(primeIndex: UInt): RootDataUIntPrime<A>  = subroot(FactorizationUIntPrime(order.factors[primeIndex.toInt()].prime))
+    fun primeSubroot(primeIndex: UInt): RootDataUIntPrime<A> = subroot(FactorizationUIntPrime(order.factors[primeIndex.toInt()].prime))
 
     fun maximalPrimePowerSubroot(primeIndex: UInt): RootDataUIntPrimePower<A> {
         if (order.factors.size == 1) return this.toPrimePower()

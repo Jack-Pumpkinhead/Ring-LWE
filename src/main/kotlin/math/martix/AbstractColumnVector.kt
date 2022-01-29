@@ -1,17 +1,102 @@
 package math.martix
 
-import math.abstract_structure.Ring
+import math.martix.concrete.*
+import math.martix.mutable.AbstractMutableMatrix
 import math.vector.VectorLike
+import util.stdlib.list
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:48
  */
-abstract class AbstractColumnVector<A>(ring: Ring<A>, rows: UInt) : AbstractMatrix<A>(ring, rows, 1u), VectorLike<A> {
+interface AbstractColumnVector<A> : AbstractMatrix<A>, VectorLike<A> {
 
-    override val vectorSize: UInt = rows
+    override val rows: UInt get() = size
+    override val columns: UInt get() = 1u
 
-    override fun vectorElementAt(index: UInt): A = elementAt(index, 0u)
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = vectorElementAtUnsafe(row)
 
-    override fun vectorElementAtUnsafe(index: UInt): A = elementAtUnsafe(index, 0u)
+    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> =
+        when (matrix) {
+            is ScalarMatrix<A>         -> {  //a->1->1
+                ColumnVector(ring, list(size) { i -> ring.multiply(vectorElementAtUnsafe(i), matrix.value) })
+            }
+            is AbstractColumnVector<A> -> {  //a->1->1
+                val value = matrix.vectorElementAtUnsafe(0u)
+                ColumnVector(ring, list(size) { i -> ring.multiply(vectorElementAtUnsafe(i), value) })
+            }
+            is AbstractRowVector<A>    -> {   //a->1->b
+                ring.matrix(rows, matrix.columns) { i, j ->
+                    ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(j))
+                }
+            }
+            else                       -> { //a->1->b
+                ring.matrix(rows, matrix.columns) { i, j ->
+                    ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(0u, j))
+                }
+            }
+        }
 
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when (matrix) {
+        is ScalarMatrix<A>         -> {  //a->1->1
+            ColumnVector(ring, list(size) { i -> ring.multiply(vectorElementAtUnsafe(i), matrix.value) })
+        }
+        is AbstractColumnVector<A> -> {  //a->1->1
+            val value = matrix.vectorElementAtUnsafe(0u)
+            ColumnVector(ring, list(size) { i -> ring.multiply(vectorElementAtUnsafe(i), value) })
+        }
+        is AbstractRowVector<A>    -> {   //a->1->b
+            ring.matrixRowParallel(rows, matrix.columns) { i, j ->
+                ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(j))
+            }
+        }
+        else                       -> { //a->1->b
+            ring.matrixRowParallel(rows, matrix.columns) { i, j ->
+                ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(0u, j))
+            }
+        }
+    }
+
+    override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        when (matrix) {
+            is ScalarMatrix<A>         -> {  //a->1->1
+                dest.setColumnUnsafe(0u) { i -> ring.multiply(vectorElementAtUnsafe(i), matrix.value) }
+            }
+            is AbstractColumnVector<A> -> {  //a->1->1
+                val value = matrix.vectorElementAtUnsafe(0u)
+                dest.setColumnUnsafe(0u) { i -> ring.multiply(vectorElementAtUnsafe(i), value) }
+            }
+            is AbstractRowVector<A>    -> {   //a->1->b
+                dest.set { i, j ->
+                    ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(j))
+                }
+            }
+            else                       -> { //a->1->b
+                dest.set { i, j ->
+                    ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(0u, j))
+                }
+            }
+        }
+    }
+
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        when (matrix) {
+            is ScalarMatrix<A>         -> {  //a->1->1
+                dest.setColumnUnsafe(0u) { i -> ring.multiply(vectorElementAtUnsafe(i), matrix.value) }
+            }
+            is AbstractColumnVector<A> -> {  //a->1->1
+                val value = matrix.vectorElementAtUnsafe(0u)
+                dest.setColumnUnsafe(0u) { i -> ring.multiply(vectorElementAtUnsafe(i), value) }
+            }
+            is AbstractRowVector<A>    -> {   //a->1->b
+                dest.setRowParallel { i, j ->
+                    ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(j))
+                }
+            }
+            else                       -> { //a->1->b
+                dest.setRowParallel { i, j ->
+                    ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(0u, j))
+                }
+            }
+        }
+    }
 }

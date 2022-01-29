@@ -6,7 +6,7 @@ import math.martix.mutable.AbstractMutableMatrix
 /**
  * Created by CowardlyLion at 2022/1/9 22:51
  */
-class IdentityMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(ring, size) {
+class IdentityMatrix<A>(override val ring: Ring<A>, override val size: UInt) : AbstractSquareMatrix<A> {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (row == column) ring.one else ring.zero
 
@@ -21,4 +21,8 @@ class IdentityMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(rin
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         dest.setUnsafe(matrix)
     }
+
+    override fun determinant(): A = ring.one
+    override fun inverse(): AbstractSquareMatrix<A> = this
+
 }

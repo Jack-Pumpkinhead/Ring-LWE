@@ -9,6 +9,7 @@ import math.martix.matrixRowParallel
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.martix.zeroMutableMatrix
+import util.stdlib.list
 
 /**
  * Created by CowardlyLion at 2022/1/9 18:15
@@ -109,3 +110,41 @@ suspend fun <A> Ring<A>.multiplyToRowParallelUnsafe(mA: AbstractMatrix<A>, mB: A
         }
     }
 }
+
+fun <A> matrixEquals(m1: AbstractMatrix<A>, m2: AbstractMatrix<A>): Boolean {
+    if (m1 === m2) return true
+
+    if (m1.ring != m2.ring) return false
+    if (m1.rows != m2.rows) return false
+    if (m1.columns != m2.columns) return false
+    for (i in 0u until m1.rows) {
+        for (j in 0u until m1.columns) {
+            if (m1.elementAtUnsafe(i, j) != m2.elementAtUnsafe(i, j)) return false
+        }
+    }
+    return true
+}
+
+fun <A> matrixHashCode(matrix: AbstractMatrix<A>): Int {
+    var result = matrix.ring.hashCode()
+    result = 31 * result + matrix.rows.hashCode()
+    result = 31 * result + matrix.columns.hashCode()
+    for (i in 0u until matrix.rows) {
+        for (j in 0u until matrix.columns) {
+            result = 31 * result + matrix.elementAtUnsafe(i, j).hashCode()
+        }
+    }
+    return result
+}
+
+/**
+ * compatible with Mathematica's matrix notation
+ * */
+fun <A> matrixToString(matrix: AbstractMatrix<A>): String =
+    list(matrix.rows) { i ->
+        list(matrix.columns) { j ->
+            matrix.elementAtUnsafe(i, j)
+        }
+    }.joinToString(",\n", "{\n", "}") { row ->
+        row.joinToString(", ", "{", "}") { it.toString() }
+    }

@@ -1,6 +1,5 @@
 package math.martix
 
-import math.abstract_structure.Ring
 import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
 import math.operation.product
@@ -9,9 +8,7 @@ import math.vector.VectorLike
 /**
  * Created by CowardlyLion at 2022/1/17 11:54
  */
-abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSquareMatrix<A>(ring, size), VectorLike<A> {
-
-    override val vectorSize: UInt = size
+interface AbstractDiagonalMatrix<A> : AbstractSquareMatrix<A>, VectorLike<A> {
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (row != column) ring.zero else vectorElementAtUnsafe(row)
 
@@ -36,22 +33,22 @@ abstract class AbstractDiagonalMatrix<A>(ring: Ring<A>, size: UInt) : AbstractSq
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
             is Constant<A>             -> dest.setElementAtUnsafe(0u, 0u, ring.multiply(this.vectorElementAtUnsafe(0u), matrix.value))
-            is AbstractRowVector<A>    -> dest.indexedSet { _, j -> ring.multiply(this.vectorElementAtUnsafe(0u), matrix.vectorElementAtUnsafe(j)) }
-            is AbstractColumnVector<A> -> dest.indexedSet { i, _ -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
+            is AbstractRowVector<A>    -> dest.set { _, j -> ring.multiply(this.vectorElementAtUnsafe(0u), matrix.vectorElementAtUnsafe(j)) }
+            is AbstractColumnVector<A> -> dest.set { i, _ -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
             is IdentityMatrix<A>       -> dest.setUnsafe(this)
-            is ZeroMatrix<A>           -> dest.indexedSet { _, _ -> ring.zero }
-            else                       -> dest.indexedSet { i, j -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(i, j)) }
+            is ZeroMatrix<A>           -> dest.set { _, _ -> ring.zero }
+            else                       -> dest.set { i, j -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(i, j)) }
         }
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
         when (matrix) {
             is Constant<A>             -> dest.setElementAtUnsafe(0u, 0u, ring.multiply(this.vectorElementAtUnsafe(0u), matrix.value))
-            is AbstractRowVector<A>    -> dest.indexedSetRowParallel { _, j -> ring.multiply(this.vectorElementAtUnsafe(0u), matrix.vectorElementAtUnsafe(j)) }
-            is AbstractColumnVector<A> -> dest.indexedSetRowParallel { i, _ -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
+            is AbstractRowVector<A>    -> dest.setRowParallel { _, j -> ring.multiply(this.vectorElementAtUnsafe(0u), matrix.vectorElementAtUnsafe(j)) }
+            is AbstractColumnVector<A> -> dest.setRowParallel { i, _ -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.vectorElementAtUnsafe(i)) }
             is IdentityMatrix<A>       -> dest.setUnsafeRowParallel(this)
-            is ZeroMatrix<A>           -> dest.indexedSetRowParallel { _, _ -> ring.zero }
-            else                       -> dest.indexedSetRowParallel { i, j -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(i, j)) }
+            is ZeroMatrix<A>           -> dest.setRowParallel { _, _ -> ring.zero }
+            else                       -> dest.setRowParallel { i, j -> ring.multiply(this.vectorElementAtUnsafe(i), matrix.elementAtUnsafe(i, j)) }
         }
     }
 

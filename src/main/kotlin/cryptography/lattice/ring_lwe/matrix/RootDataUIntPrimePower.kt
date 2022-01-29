@@ -16,8 +16,6 @@ class RootDataUIntPrimePower<A>(val ring: Ring<A>, val root: A, val order: Facto
         return RootDataUIntPrime(ring, root, FactorizationUIntPrime(order.prime))
     }
 
-    fun eulerTotient(): UInt = order.eulerTotient()
-
     /**
      * reduce power by 1
      */

@@ -8,7 +8,8 @@ import math.martix.AbstractColumnVector
  */
 class CoordinateWithBase<A>(val ring: Ring<A>, val base: String, val coordinate: AbstractColumnVector<A>) {
 
-    val dimension get() = coordinate.vectorSize
+    val dimension get() = coordinate.size
+
     val moduleSignature get() = FiniteFreeModuleWithBase(ring, base, dimension)
 
 }

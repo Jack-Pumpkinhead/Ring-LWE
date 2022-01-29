@@ -5,8 +5,11 @@ package math.vector
  */
 interface VectorLike<A> {   //TODO it's possible to directly implement List<A>
 
-    val vectorSize: UInt
-    fun vectorElementAt(index: UInt): A
+    val size: UInt
+    fun vectorElementAt(index: UInt): A {
+        require(index < size)
+        return vectorElementAtUnsafe(index)
+    }
     fun vectorElementAtUnsafe(index: UInt): A
 
     operator fun get(index: UInt) = vectorElementAtUnsafe(index)

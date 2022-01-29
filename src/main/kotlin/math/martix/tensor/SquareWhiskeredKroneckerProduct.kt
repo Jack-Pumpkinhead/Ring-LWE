@@ -1,6 +1,7 @@
 package math.martix.tensor
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
@@ -10,21 +11,24 @@ import math.martix.AbstractSquareMatrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.zeroMutableMatrix
 import util.stdlib.lazyAssert2
+import util.stdlib.stepForward
 
 /**
  * Created by CowardlyLion at 2022/1/27 16:30
  *
  * represent a square matrix of the form I_l ⊗ M ⊗ I_r for M square
  */
-class SquareWhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractSquareMatrix<A>, val r: UInt) : AbstractSquareMatrix<A>(ring, l * mA.rows * r) {
+class SquareWhiskeredKroneckerProduct<A>(override val ring: Ring<A>, val l: UInt, val mA: AbstractSquareMatrix<A>, val r: UInt) : AbstractSquareMatrix<A> {
 
-    val index = LadderIndex(listOf(l, mA.rows, r), super.rows)
+    override val size: UInt = l * mA.size * r
+
+    val index = LadderIndex(listOf(l, mA.size, r), size)
 
     init {
         lazyAssert2 {
             val bigL = l.toBigInteger()
             val bigR = r.toBigInteger()
-            val rows = bigL * mA.rows.toBigInteger() * bigR
+            val rows = bigL * mA.size.toBigInteger() * bigR
             assert(rows <= UInt.MAX_VALUE)
         }
     }
@@ -62,23 +66,23 @@ class SquareWhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: Abs
     }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        for (il in 0u until l) {
-            for (ir in 0u until r) {
-                val submatrix = matrix.sparseSubmatrixView(il * mA.columns * r + ir, r, mA.columns)
-                val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * r + ir, r, mA.rows)
-                mA.multiplyTo(submatrix, destSubmatrix)
+        for (i1 in 0u until size stepForward mA.size * r) {
+            for (i2 in i1 until i1 + r) {
+                mA.multiplyTo(matrix.rowSparseSubmatrixView(i2, r, mA.size), dest.mutableRowSparseSubmatrixView(i2, r, mA.size))
             }
         }
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
-        for (il in 0u until l) {
-            launch {    //reduce O(n^2) coroutine to O(n) coroutine improves performance, but still can't outperform one thread algorithm.
-                for (ir in 0u until r) {
-                    val submatrix = matrix.sparseSubmatrixView(il * mA.columns * r + ir, r, mA.columns)
-                    val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * r + ir, r, mA.rows)
-                    mA.multiplyTo(submatrix, destSubmatrix)
-                }
+        for (i1 in 0u until size stepForward mA.size * r) {
+            launchSubmatrixEdition(this, i1, matrix, dest)
+        }
+    }
+
+    private fun launchSubmatrixEdition(scope: CoroutineScope, i1: UInt, matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        scope.launch {
+            for (i2 in i1 until i1 + r) {
+                mA.multiplyTo(matrix.rowSparseSubmatrixView(i2, r, mA.size), dest.mutableRowSparseSubmatrixView(i2, r, mA.size))
             }
         }
     }

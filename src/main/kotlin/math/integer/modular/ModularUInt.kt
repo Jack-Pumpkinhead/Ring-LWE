@@ -6,6 +6,8 @@ import math.integer.operation.*
 
 /**
  * Created by CowardlyLion at 2022/1/4 15:20
+ *
+ * no overflow of multiplication would occur
  */
 class ModularUInt(val modulus: UInt, val residue: UInt) {
 

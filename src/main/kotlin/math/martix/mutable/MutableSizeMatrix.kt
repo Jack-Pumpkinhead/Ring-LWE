@@ -3,23 +3,23 @@ package math.martix.mutable
 import math.abstract_structure.Ring
 import math.operation.expand
 import math.operation.shrink
+import util.stdlib.lazyAssert2
+import util.stdlib.mutableList
 
 /**
  * Created by CowardlyLion at 2022/1/10 10:52
  *
- * Can dynamically expand/shrink to a suitable size.
+ * can dynamically expand/shrink to a suitable size
+ *
+ * directly manipulate on [matrix]
  */
-class MutableSizeMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt, val matrix: MutableList<MutableList<A>>) : AbstractMutableMatrix<A>(ring, rows, columns) {
+class MutableSizeMatrix<A>(override val ring: Ring<A>, override var rows: UInt, override var columns: UInt, val matrix: MutableList<MutableList<A>>) : AbstractMutableMatrix<A> {
 
     init {
-        checkSize()
-    }
-
-    fun checkSize() {
-        require(rows <= matrix.size.toUInt())
-        if (rows != 0u) {
-            for (row in matrix) {
-                require(columns <= row.size.toUInt())
+        lazyAssert2 {
+            assert(matrix.size.toUInt() >= rows)
+            matrix.forEach {
+                assert(it.size.toUInt() >= columns)
             }
         }
     }
@@ -31,30 +31,25 @@ class MutableSizeMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt, val matrix:
     }
 
 
-    /**
-     * @return matrix that have same underlying data as this, with size changed (possibly filled with a given data)
-     * */
-    fun expand(rows: UInt, columns: UInt, defaultElement: A = ring.zero): MutableSizeMatrix<A> {
-        matrix.expand(rows, MutableList(columns.toInt()) { defaultElement })
+    fun expand(rows: UInt, columns: UInt, defaultElement: A = ring.zero) {
         if (columns > this.columns) {
             for (row in matrix) {
                 row.expand(columns, defaultElement)
             }
         }
-        return MutableSizeMatrix(ring, rows, columns, matrix)
+        matrix.expand(rows, mutableList(columns) { defaultElement })
+        this.rows = rows
+        this.columns = columns
     }
 
-    fun expandRow(rows: UInt, defaultElement: A = ring.zero): MutableSizeMatrix<A> {
-        matrix.expand(rows, MutableList(columns.toInt()) { defaultElement })
-        return MutableSizeMatrix(ring, rows, columns, matrix)
+    fun expandRow(rows: UInt, defaultElement: A = ring.zero) {
+        matrix.expand(rows, mutableList(columns) { defaultElement })
+        this.rows = rows
     }
 
-    /**
-     * @return new matrix that make a copy of underlying data with given rows.
-     * */
-    fun shrinkRow(rows: UInt): MutableSizeMatrix<A> {
-        val m = matrix.shrink(rows)
-        return MutableSizeMatrix(ring, rows, columns, m)
+    fun shrinkRow(rows: UInt) {
+        matrix.shrink(rows)
+        this.rows = rows
     }
 
 

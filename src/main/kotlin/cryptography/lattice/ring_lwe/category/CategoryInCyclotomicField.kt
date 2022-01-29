@@ -18,7 +18,7 @@ import math.martix.whiskered
 class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: UInt, val q_1: FactorizationUInt) {
 
 
-    val phiOrder = order.eulerTotient()
+    val phiOrder = order.eulerTotient
 
     val categoies = CategoryOfModule()
 

@@ -11,14 +11,14 @@ import util.stdlib.lazyAssert2
 /**
  * Created by CowardlyLion at 2022/1/27 16:42
  */
-open class SquareFormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractSquareMatrix<A>>) : AbstractSquareMatrix<A>(ring, matrices.first().rows) {
+open class SquareFormalProduct<A>(override val ring: Ring<A>, val matrices: List<AbstractSquareMatrix<A>>) : AbstractSquareMatrix<A> {
+
+    override val size: UInt get() = matrices.first().size
 
     init {
-//        require(matrices.isNotEmpty())    //already checks in matrices.first()
-
         lazyAssert2 {
             for (i in 1 until matrices.size) {
-                assert(matrices[i].rows == super.rows)
+                assert(matrices[i].size == size)
             }
         }
     }
@@ -61,7 +61,6 @@ open class SquareFormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractSqua
         }
         return x
     }
-
 
     //    TODO move (and correct) memory-saving code in (History)FormalKroneckerProduct to here.
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {

@@ -6,13 +6,15 @@ import kotlinx.coroutines.coroutineScope
 import math.abstract_structure.Ring
 import math.coding.permutation.Permutation
 import math.martix.concrete.*
-import math.martix.mutable.ArrayMatrix
+import math.martix.mutable.MutableColumnVector
 import math.martix.mutable.MutableMatrix
+import math.martix.mutable.MutableRowVector
 import math.martix.mutable.MutableSizeMatrix
 import math.martix.tensor.FormalKroneckerProduct
 import math.martix.tensor.SquareFormalKroneckerProduct
 import math.martix.tensor.SquareWhiskeredKroneckerProduct
 import math.martix.tensor.WhiskeredKroneckerProduct
+import util.stdlib.mutableList
 
 /**
  * Created by CowardlyLion at 2022/1/8 13:31
@@ -74,20 +76,24 @@ suspend fun <A> Ring<A>.rowVectorParallel(columns: UInt, generator: (UInt) -> A)
 fun <A> Ring<A>.columnVector(rows: UInt, generator: (UInt) -> A) = ColumnVector(this, List(rows.toInt()) { i -> generator(i.toUInt()) })
 suspend fun <A> Ring<A>.columnVectorParallel(rows: UInt, generator: (UInt) -> A) = ColumnVector(this, listParallel(rows, generator))
 
-fun <A> Ring<A>.matrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = OrdinaryMatrix(this, nestedLL(rows, columns, generator))
-fun <A> Ring<A>.mutableMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableMatrix(this, nestedLML(rows, columns, generator))
+fun <A> Ring<A>.matrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = OrdinaryMatrix(this, rows, columns, nestedLL(rows, columns, generator))
+fun <A> Ring<A>.squareMatrix(size: UInt, generator: (UInt, UInt) -> A) = OrdinarySquareMatrix(this, size, nestedLL(size, size, generator))
+fun <A> Ring<A>.mutableMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableMatrix(this, rows, columns, nestedLML(rows, columns, generator))
+fun <A> Ring<A>.mutableColumnVector(size: UInt, generator: (UInt) -> A) = MutableColumnVector(this, mutableList(size, generator))
+fun <A> Ring<A>.mutableRowVector(size: UInt, generator: (UInt) -> A) = MutableRowVector(this, mutableList(size, generator))
 fun <A> Ring<A>.mutableSizeMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableSizeMatrix(this, rows, columns, nestedMLML(rows, columns, generator))
-inline fun <reified A> Ring<A>.mutableArrayMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = ArrayMatrix(this, nestedLA(rows, columns, generator))
 
-suspend fun <A> Ring<A>.matrixRowParallel(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = OrdinaryMatrix(this, nestedLLRP(rows, columns, generator))
-suspend fun <A> Ring<A>.mutableMatrixRowParallel(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableMatrix(this, nestedLMLRP(rows, columns, generator))
-suspend inline fun <reified A> Ring<A>.mutableArrayMatrixRowParallel(rows: UInt, columns: UInt, crossinline generator: (UInt, UInt) -> A) = ArrayMatrix(this, nestedLARP(rows, columns, generator))
+suspend fun <A> Ring<A>.matrixRowParallel(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = OrdinaryMatrix(this, rows, columns, nestedLLRP(rows, columns, generator))
+suspend fun <A> Ring<A>.mutableMatrixRowParallel(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableMatrix(this, rows, columns, nestedLMLRP(rows, columns, generator))
 
 fun <A> Ring<A>.constantMatrix(a: A) = Constant(this, a)
+fun <A> Ring<A>.scalarMatrix(size: UInt, a: A) = ScalarMatrix(this, size, a)
 fun <A> Ring<A>.identityMatrix(size: UInt) = IdentityMatrix(this, size)
 fun <A> Ring<A>.identityOrdinaryMatrix(size: UInt) = matrix(size, size) { i, j -> if (i == j) one else zero }
 fun <A> Ring<A>.zeroMatrix(rows: UInt, columns: UInt) = ZeroMatrix(this, rows, columns)
 fun <A> Ring<A>.zeroMutableMatrix(rows: UInt, columns: UInt) = mutableMatrix(rows, columns) { _, _ -> zero }
+fun <A> Ring<A>.zeroMutableColumnVector(size: UInt) = mutableColumnVector(size) { _ -> zero }
+fun <A> Ring<A>.zeroMutableRowVector(size: UInt) = mutableRowVector(size) { _ -> zero }
 fun <A> Ring<A>.zeroMutableSizeMatrix(rows: UInt, columns: UInt) = mutableSizeMatrix(rows, columns) { _, _ -> zero }
 fun <A> Ring<A>.scalaMatrix(size: UInt, a: A) = DiagonalMatrix(this, List(size.toInt()) { a })
 fun <A> Ring<A>.diagonalMatrix(list: List<A>) = DiagonalMatrix(this, list)
@@ -100,13 +106,6 @@ fun <A> Ring<A>.permutationMatrix(permutation: Permutation) = PermutationMatrix(
 fun <A> Ring<A>.whiskered(l: UInt, matrix: AbstractMatrix<A>, r: UInt) = WhiskeredKroneckerProduct(this, l, matrix, r)
 fun <A> Ring<A>.whiskered(l: UInt, matrix: AbstractSquareMatrix<A>, r: UInt) = SquareWhiskeredKroneckerProduct(this, l, matrix, r)
 
-inline fun <reified A> AbstractMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> {
-    return ring.mutableArrayMatrix(rows, columns) { i, j -> elementAt(i, j) }
-}
-
-inline fun <reified A> OrdinaryMatrix<A>.toMutableArrayMatrix(): ArrayMatrix<A> {
-    return ArrayMatrix(ring, matrix.map { row -> row.toTypedArray() })
-}
 
 //    there are (matrices.size)! ways (permutations) of decomposition, use one that compute m0 first.
 fun <A> Ring<A>.decomposeFormalKroneckerProduct(matrices: List<AbstractMatrix<A>>): List<AbstractMatrix<A>> = when (matrices.size) {

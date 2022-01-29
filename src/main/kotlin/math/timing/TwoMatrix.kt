@@ -5,4 +5,4 @@ import math.martix.AbstractMatrix
 /**
  * Created by CowardlyLion at 2022/1/28 10:59
  */
-data class TwoMatrixUInt(val m: AbstractMatrix<UInt>, val x: AbstractMatrix<UInt>)
+data class TwoMatrix<A>(val m: AbstractMatrix<A>, val x: AbstractMatrix<A>)

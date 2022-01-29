@@ -1,112 +1,26 @@
 package math.martix.concrete
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
-import math.isRectangular
 import math.martix.AbstractMatrix
 import math.martix.EmptyMatrix
-import math.martix.matrix
-import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
-import math.operation.innerProduct
-import math.sizeOfFirstRowOrZero
-import util.stdlib.lazyAssert
+import util.stdlib.lazyAssert2
 
 /**
  * Created by CowardlyLion at 2022/1/7 21:35
  */
-class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatrix<A>(ring, matrix.size.toUInt(), sizeOfFirstRowOrZero(matrix)) {
+open class OrdinaryMatrix<A>(override val ring: Ring<A>, override val rows: UInt, override val columns: UInt, val matrix: List<List<A>>) : AbstractMatrix<A> {
 
     init {
-        lazyAssert { isRectangular(matrix) }
+        lazyAssert2 {
+            assert(matrix.size.toUInt() >= rows)
+            matrix.forEach {
+                assert(it.size.toUInt() >= columns)
+            }
+        }
     }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = matrix[row.toInt()][column.toInt()]
-
-    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
-        return when (matrix) {
-            is Constant<A>     -> { //n->1->1
-                ColumnVector(ring, List(rows.toInt()) { i -> ring.multiply(this.matrix[i][0], matrix.value) })
-            }
-            is ColumnVector<A> -> { //a->b->1
-                ColumnVector(ring, List(rows.toInt()) { i -> ring.innerProduct(this.matrix[i], matrix.vector) })
-            }
-            is RowVector<A>    -> {  //a->1->b
-                ring.matrix(rows, matrix.columns) { i, j ->
-                    ring.multiply(this.matrix[i.toInt()][0], matrix.vector[j.toInt()])
-                }
-            }
-            else               -> super.timesImpl(matrix)
-        }
-    }
-
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
-        return when (matrix) {
-            is ColumnVector<A> -> { //a->b->1
-                ColumnVector(ring, List(rows.toInt()) { i -> ring.innerProduct(this.matrix[i], matrix.vector) })
-            }
-            is RowVector<A>    -> {  //a->1->b
-                ring.matrix(rows, matrix.columns) { i, j ->
-                    ring.multiply(this.matrix[i.toInt()][0], matrix.vector[j.toInt()])
-                }
-            }
-            else               -> super.timesRowParallelImpl(matrix)
-        }
-    }
-
-
-    override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        when (matrix) {
-            is Constant<A>     -> { //n->1->1
-                for (i in 0u until rows) {
-                    dest.setElementAt(i, 0u, ring.multiply(this.matrix[i.toInt()][0], matrix.value))
-                }
-            }
-            is ColumnVector<A> -> { //a->b->1
-                for (i in 0u until rows) {
-                    dest.setElementAt(i, 0u, ring.innerProduct(this.matrix[i.toInt()], matrix.vector))
-                }
-            }
-            is RowVector<A>    -> {  //a->1->b
-                for (i in 0u until rows) {
-                    for (j in 0u until matrix.columns) {
-                        dest.setElementAt(i, j, ring.multiply(this.matrix[i.toInt()][0], matrix.vector[j.toInt()]))
-                    }
-                }
-            }
-            else               -> super.multiplyToImpl(matrix, dest)
-        }
-    }
-
-    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
-        when (matrix) {
-            is Constant<A>     -> { //n->1->1
-                for (i in 0u until this@OrdinaryMatrix.rows) {
-                    launch {
-                        dest.setElementAt(i, 0u, ring.multiply(this@OrdinaryMatrix.matrix[i.toInt()][0], matrix.value))
-                    }
-                }
-            }
-            is ColumnVector<A> -> { //a->b->1
-                for (i in 0u until this@OrdinaryMatrix.rows) {
-                    launch {
-                        dest.setElementAt(i, 0u, ring.innerProduct(this@OrdinaryMatrix.matrix[i.toInt()], matrix.vector))
-                    }
-                }
-            }
-            is RowVector<A>    -> {  //a->1->b
-                for (i in 0u until this@OrdinaryMatrix.rows) {
-                    launch {
-                        for (j in 0u until matrix.columns) {
-                            dest.setElementAt(i, j, ring.multiply(this@OrdinaryMatrix.matrix[i.toInt()][0], matrix.vector[j.toInt()]))
-                        }
-                    }
-                }
-            }
-            else               -> super.multiplyToRowParallelImpl(matrix, dest)
-        }
-    }
 
 
     override fun rowListAt(row: UInt): List<A> = matrix[row.toInt()]
@@ -122,12 +36,39 @@ class OrdinaryMatrix<A>(ring: Ring<A>, val matrix: List<List<A>>) : AbstractMatr
         }
     }
 
-    override fun toMutableMatrix(): MutableMatrix<A> = MutableMatrix(ring, matrix.map { row -> row.toMutableList() })
+    override fun toMutableMatrix(): MutableMatrix<A> = MutableMatrix(ring, rows, columns, matrix.map { row -> row.toMutableList() })
 
 
     override fun toString(): String {
         return matrix.joinToString(",\n", "{\n", "}") { row ->
             row.joinToString(", ", "{", "}") { it.toString() }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AbstractMatrix<*>) return false
+
+        if (ring != other.ring) return false
+        if (rows != other.rows) return false
+        if (columns != other.columns) return false
+        for (i in 0u until rows) {
+            for (j in 0u until columns) {
+                if (this.elementAtUnsafe(i, j) != other.elementAtUnsafe(i, j)) return false
+            }
+        }
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ring.hashCode()
+        result = 31 * result + rows.hashCode()
+        result = 31 * result + columns.hashCode()
+        for (i in 0u until rows) {
+            for (j in 0u until columns) {
+                result = 31 * result + elementAtUnsafe(i, j).hashCode()
+            }
+        }
+        return result
     }
 }

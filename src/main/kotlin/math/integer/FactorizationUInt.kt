@@ -2,6 +2,7 @@ package math.integer
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.abstract_structure.instance.RingBigInteger
+import math.abstract_structure.instance.RingUInt
 import math.operation.product
 import util.stdlib.lazyAssert2
 
@@ -20,6 +21,8 @@ data class FactorizationUInt(val value: UInt, val factors: List<FactorizationUIn
             }
         }
     }
+
+    val eulerTotient: UInt by lazy { RingUInt.product(factors.map { it.eulerTotient }) }
 
     fun toPrimePower(): FactorizationUIntPrimePower {
         require(factors.size == 1)

@@ -2,22 +2,23 @@ package math.martix.mutable
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.Ring
 import math.martix.AbstractMatrix
+import math.martix.mutable.view.MutableColumnVectorView
+import math.martix.mutable.view.MutableRowVectorView
 import math.vector.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/8 22:21
  */
-abstract class AbstractMutableMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt) : AbstractMatrix<A>(ring, rows, columns) {
+interface AbstractMutableMatrix<A> : AbstractMatrix<A> {
 
     fun setElementAt(row: UInt, column: UInt, a: A) {
-        require(row in 0u until rows)
-        require(column in 0u until columns)
+        require(row < rows)
+        require(column < columns)
         setElementAtUnsafe(row, column, a)
     }
 
-    abstract fun setElementAtUnsafe(row: UInt, column: UInt, a: A)
+    fun setElementAtUnsafe(row: UInt, column: UInt, a: A)
 
     fun set(matrix: AbstractMatrix<A>) {
         require(this.rows == matrix.rows)
@@ -39,6 +40,24 @@ abstract class AbstractMutableMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt
         }
     }
 
+    fun set(op: (UInt, UInt) -> A) {
+        for (i in 0u until rows) {
+            for (j in 0u until columns) {
+                setElementAtUnsafe(i, j, op(i, j))
+            }
+        }
+    }
+
+    suspend fun setRowParallel(op: (UInt, UInt) -> A) = coroutineScope {
+        for (i in 0u until rows) {
+            launch {
+                for (j in 0u until columns) {
+                    setElementAtUnsafe(i, j, op(i, j))
+                }
+            }
+        }
+    }
+
 
     fun setRowUnsafe(row: UInt, vector: VectorLike<A>) {
         setRowUnsafe(row) { j -> vector.vectorElementAt(j) }
@@ -54,33 +73,16 @@ abstract class AbstractMutableMatrix<A>(ring: Ring<A>, rows: UInt, columns: UInt
         }
     }
 
-    fun indexedSet(op: (UInt, UInt) -> A) {
+    fun setColumnUnsafe(column: UInt, op: (UInt) -> A) {
         for (i in 0u until rows) {
-            for (j in 0u until columns) {
-                setElementAtUnsafe(i, j, op(i, j))
-            }
+            setElementAtUnsafe(i, column, op(i))
         }
     }
 
-    suspend fun indexedSetRowParallel(op: (UInt, UInt) -> A) = coroutineScope {
-        for (i in 0u until rows) {
-            launch {
-                for (j in 0u until columns) {
-                    setElementAtUnsafe(i, j, op(i, j))
-                }
-            }
-        }
-    }
 
-    fun mutableColumnVectorViewAt(column: UInt): AbstractMutableMatrix<A> {
-        require(column in 0u until columns)
-        return MutableSubmatrixView(ring, this, 0u, column, this.rows, 1u)
-    }
+    fun mutableColumnVectorViewAt(column: UInt) = MutableColumnVectorView(ring, this, column)
 
-    fun mutableRowVectorViewAt(rows: UInt): AbstractMutableMatrix<A> {
-        require(rows in 0u until columns)
-        return MutableSubmatrixView(ring, this, rows, 0u, 1u, this.columns)
-    }
+    fun mutableRowVectorViewAt(row: UInt) = MutableRowVectorView(ring, this, row)
 
 
 }

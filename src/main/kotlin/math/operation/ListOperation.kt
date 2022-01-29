@@ -3,6 +3,7 @@ package math.operation
 import math.abstract_structure.Monoid
 import math.abstract_structure.Ring
 import math.powerM
+import math.vector.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/8 16:33
@@ -13,6 +14,24 @@ fun <A> Ring<A>.innerProduct(x: List<A>, y: List<A>): A {
     var sum = zero
     for (i in x.indices) {
         sum = add(sum, multiply(x[i], y[i]))
+    }
+    return sum
+}
+
+fun <A> Ring<A>.innerProduct(x: List<A>, y: VectorLike<A>): A {
+    require(x.size.toUInt() == y.size)
+    var sum = zero
+    for (i in x.indices) {
+        sum = add(sum, multiply(x[i], y.vectorElementAtUnsafe(i.toUInt())))
+    }
+    return sum
+}
+
+fun <A> Ring<A>.innerProduct(x: VectorLike<A>, y: VectorLike<A>): A {
+    require(x.size == y.size)
+    var sum = zero
+    for (i in 0u until x.size) {
+        sum = add(sum, multiply(x.vectorElementAtUnsafe(i), y.vectorElementAtUnsafe(i)))
     }
     return sum
 }
@@ -119,16 +138,17 @@ fun <A> Monoid<A>.product(range: UIntRange, x: (UInt) -> A): A {
 /**
  * make list's size not less than a given number. (list.size >= size)
  * */
-fun <A> MutableList<A>.expand(size: UInt, defaultElement: A): MutableList<A> {
+fun <A> MutableList<A>.expand(size: UInt, defaultElement: A) {
     while (size > this.size.toUInt()) {
         this.add(defaultElement)
     }
-    return this
 }
 
-fun <A> MutableList<A>.shrink(size: UInt): MutableList<A> {
+fun <A> MutableList<A>.shrink(size: UInt) {
     require(size <= this.size.toUInt())
-    return subList(0, size.toInt()).toMutableList()
+    while (size != this.size.toUInt()) {
+        removeLast()
+    }
 }
 
 

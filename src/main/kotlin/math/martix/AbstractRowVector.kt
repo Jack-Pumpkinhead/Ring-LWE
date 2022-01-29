@@ -1,31 +1,47 @@
 package math.martix
 
-import math.abstract_structure.Ring
+import math.martix.concrete.Constant
+import math.martix.mutable.AbstractMutableMatrix
+import math.operation.innerProduct
 import math.vector.VectorLike
 
 /**
  * Created by CowardlyLion at 2022/1/8 17:03
  */
-abstract class AbstractRowVector<A>(ring: Ring<A>, columns: UInt) : AbstractMatrix<A>(ring, 1u, columns), VectorLike<A> {
+interface AbstractRowVector<A> : AbstractMatrix<A>, VectorLike<A> {
 
-    override val vectorSize: UInt = columns
+    override val rows: UInt get() = 1u
+    override val columns: UInt get() = size
 
-    override fun vectorElementAt(index: UInt): A {
-        return elementAt(0u, index)
-    }
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = vectorElementAtUnsafe(column)
 
-    override fun vectorElementAtUnsafe(index: UInt): A {
-        return elementAtUnsafe(0u, index)
-    }
-
-
-    fun innerProduct(vector: AbstractColumnVector<A>): A {
-        require(this.columns == vector.rows)
-        var sum = ring.zero
-        for (i in 0u until columns) {
-            sum = ring.add(sum, ring.multiply(this.elementAtUnsafe(0u, i), vector.elementAtUnsafe(i, 0u)))
+    override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> =
+        when (matrix) {
+            is Constant<A>             -> Constant(ring, ring.multiply(vectorElementAtUnsafe(0u), matrix.value))    //1->1->1
+            is AbstractColumnVector<A> -> Constant(ring, ring.innerProduct(this, matrix)) //1->a->1
+            else                       -> super.timesImpl(matrix)   //1->a->b
         }
-        return sum
+
+    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> =
+        when (matrix) {
+            is Constant<A>             -> Constant(ring, ring.multiply(vectorElementAtUnsafe(0u), matrix.value))    //1->1->1
+            is AbstractColumnVector<A> -> Constant(ring, ring.innerProduct(this, matrix)) //1->a->1
+            else                       -> super.timesRowParallelImpl(matrix)   //1->a->b
+        }
+
+    override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        when (matrix) {
+            is Constant<A>             -> dest.setElementAt(0u, 0u, ring.multiply(vectorElementAtUnsafe(0u), matrix.value))    //1->1->1
+            is AbstractColumnVector<A> -> dest.setElementAt(0u, 0u, ring.innerProduct(this, matrix)) //1->a->1
+            else                       -> super.multiplyToImpl(matrix, dest)   //1->a->b
+        }
     }
 
+    override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        when (matrix) {
+            is Constant<A>             -> dest.setElementAt(0u, 0u, ring.multiply(vectorElementAtUnsafe(0u), matrix.value))    //1->1->1
+            is AbstractColumnVector<A> -> dest.setElementAt(0u, 0u, ring.innerProduct(this, matrix)) //1->a->1
+            else                       -> super.multiplyToRowParallelImpl(matrix, dest)   //1->a->b
+        }
+    }
 }

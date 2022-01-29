@@ -38,5 +38,4 @@ class ULongForwardProgression(start: ULong, endInclusive: ULong, val step: ULong
         return result
     }
 
-
 }

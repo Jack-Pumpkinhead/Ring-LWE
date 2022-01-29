@@ -5,9 +5,11 @@ import kotlin.time.DurationUnit
 /**
  * Created by CowardlyLion at 2022/1/27 18:18
  */
-interface EqualTaskTiming<Condition, A> {
+interface EqualTaskTiming<Condition, Result> {
 
-    val tasks : List<Task<Condition, A>>
+    val tasks: List<Task<Condition, Result>>
+
+    fun equals(a: Result, b: Result): Boolean
 
     suspend fun goAndPrint(condition: Condition, conditionInfo: String = condition.toString()) {
         if (tasks.isEmpty()) return
@@ -25,20 +27,20 @@ interface EqualTaskTiming<Condition, A> {
         println("result: $a")
         if (tasks.size > 1) {
             for (i in 1 until results.size) {
-                require(a == results[i].result)
+                require(equals(a, results[i].result))
             }
         }
 
     }
 
-    suspend fun go(condition: Condition): List<TaskResult<Condition, A>> {
+    suspend fun go(condition: Condition): List<TaskResult<Condition, Result>> {
         if (tasks.isEmpty()) return emptyList()
         val results = tasks.map { it.go(condition) }
 
         val a = results[0].result
         if (tasks.size > 1) {
             for (i in 1 until results.size) {
-                require(a == results[i].result)
+                require(equals(a, results[i].result))
             }
         }
         return results

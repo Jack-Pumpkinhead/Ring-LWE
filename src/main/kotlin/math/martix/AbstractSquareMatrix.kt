@@ -1,24 +1,21 @@
 package math.martix
 
-import math.abstract_structure.Ring
-
 /**
  * Created by CowardlyLion at 2022/1/20 15:00
  */
-abstract class AbstractSquareMatrix<A>(ring: Ring<A>, size: UInt) : AbstractMatrix<A>(ring, size, size) {
+interface AbstractSquareMatrix<A> : AbstractMatrix<A> {
+
+    val size: UInt
+
+    override val rows: UInt get() = size
+    override val columns: UInt get() = size
 
     override fun isSquareMatrix(): Boolean = true
 
-    open fun determinant(): A {
-        TODO()
-    }
+    fun determinant(): A
 
-    open fun hasInverse(): Boolean {
-        return determinant() != ring.zero
-    }
+    fun hasInverse(): Boolean = ring.hasInverse(determinant())
 
-    open fun inverse(): AbstractSquareMatrix<A> {
-        TODO()
-    }
+    fun inverse(): AbstractSquareMatrix<A>
 
 }

@@ -2,14 +2,12 @@ package math.martix
 
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.RingUInt
-import math.abstract_structure.instance.categoryUIntMatrix
 import math.andPrint
-import math.operation.*
 import math.random.randomMultiplicableUIntMatrices
 import math.random.randomUIntMatrix
+import math.statistic.RepeatTaskStatistic
+import math.timing.*
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import kotlin.random.Random
 
 /**
@@ -19,78 +17,48 @@ internal class OrdinaryMatrixTest {
 
     @Test
     fun identityMatrix() {
-        repeat(1000) {
-            val m = Random.randomUIntMatrix(1u..100u, 1u..100u, 0u..100u).andPrint()
-            val ml = RingUInt.identityOrdinaryMatrix(m.rows).andPrint()
-            val mr = RingUInt.identityOrdinaryMatrix(m.columns).andPrint()
-            val m1 = categoryUIntMatrix.composeAllPrefixedWithIdentity(listOf(ml, m)).andPrint()
-            val m2 = categoryUIntMatrix.composeAllPrefixedWithIdentity(listOf(m, mr)).andPrint()
-//            val m1 = (ml * m).andPrint()
-//            val m2 = (m * mr).andPrint()
-            assertEquals(m, m1)
-            assertEquals(m, m2)
+        runBlocking {
+            val statistic = RepeatTaskStatistic(
+                ThreeMatrixMultiplicationTiming<UInt>(
+                    Task("     m") { (_, m, _) -> m },
+                    Task("id * m") { (a, m, _) -> a * m },
+                    Task("m * id") { (_, m, b) -> m * b },
+                )
+            )
+            repeat(1000) {
+                val m = Random.randomUIntMatrix(1u..100u, 1u..100u, 0u..100u).andPrint()
+                val a = RingUInt.identityOrdinaryMatrix(m.rows).andPrint()
+                val b = RingUInt.identityOrdinaryMatrix(m.columns).andPrint()
+                statistic.go(ThreeMatrix(a, m, b))
+            }
+            statistic.printAverageAndStandardDeviation()
         }
     }
 
     @Test
-    fun timesImpl() {
+    fun multiplication() {
         //make sure optimized-multiplication agree with standard multiplication
-        repeat(1000) {
-            val m = Random.randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
-            m[0].andPrint()
-            m[1].andPrint()
-            val m1 = categoryUIntMatrix.composeAllPrefixedWithIdentity(m).andPrint()
-            val m2 = multiply(m[0], m[1]).andPrint()
-            assertEquals(m1, m2)
-        }
-    }
-
-    @Test
-    fun timesRowParallelImpl() {
         runBlocking {
+            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(1000) {
                 val m = Random.randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
-                m[0].andPrint()
-                m[1].andPrint()
-                val m1 = (m[0].timesRowParallel(m[1])).andPrint()
-                val m2 = multiplyRowParallel(m[0], m[1]).andPrint()
-                assertEquals(m1, m2)
+                statistic.go(TwoMatrix(m[0], m[1]))
             }
+            statistic.printAverageAndStandardDeviation()
         }
     }
 
-
+//    total 32s
     @Test
-    fun multiplyToImpl() {
-        repeat(1000) {
-            val m = Random.randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
-            m[0].andPrint()
-            m[1].andPrint()
-            val m0 = (m[0] * m[1]).andPrint()
-            val m01 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-            val m02 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-            m[0].multiplyTo(m[1], m01)
-            multiplyTo(m[0], m[1], m02)
-            assertEquals(m0, m01)
-            assertEquals(m0, m02)
-        }
-    }
-
-    @Test
-    fun multiplyToParallelImpl() {
+    fun largeMultiplication() {
         runBlocking {
-            repeat(1000) {
-                val m = Random.randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
-                m[0].andPrint()
-                m[1].andPrint()
-                val m0 = (m[0] * m[1]).andPrint()
-                val m01 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-                val m02 = RingUInt.zeroMutableMatrix(m[0].rows, m[1].columns)
-                m[0].multiplyToRowParallel(m[1], m01)
-                multiplyToRowParallel(m[0], m[1], m02)
-                assertEquals(m0, m01)
-                assertEquals(m0, m02)
+            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            repeat(50) {
+                val m = Random.randomMultiplicableUIntMatrices(2u, 200u..210u, 0u..100u)
+                statistic.go(TwoMatrix(m[0], m[1]))
             }
+            statistic.printAverageAndStandardDeviation()
         }
     }
+
 }

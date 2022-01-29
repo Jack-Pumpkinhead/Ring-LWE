@@ -8,11 +8,12 @@ import util.stdlib.lazyAssert2
 /**
  * Created by CowardlyLion at 2022/1/14 18:06
  */
-open class FormalProduct<A>(ring: Ring<A>, val matrices: List<AbstractMatrix<A>>) : AbstractMatrix<A>(ring, matrices.first().rows, matrices.last().columns) {
+open class FormalProduct<A>(override val ring: Ring<A>, val matrices: List<AbstractMatrix<A>>) : AbstractMatrix<A> {
+
+    override val rows: UInt get() = matrices.first().rows
+    override val columns: UInt get() = matrices.last().columns
 
     init {
-//        require(matrices.isNotEmpty())  //already checks in matrices.first()
-
         lazyAssert2 {
             for (i in 0 until matrices.size - 1) {
                 assert(matrices[i].columns == matrices[i + 1].rows)

@@ -8,6 +8,7 @@ import math.martix.concrete.Constant
 import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.RowVector
 import math.martix.mutable.AbstractMutableMatrix
+import util.stdlib.mutableList
 
 /**
  * Created by CowardlyLion at 2022/1/16 16:42
@@ -15,7 +16,9 @@ import math.martix.mutable.AbstractMutableMatrix
  * define matrix F of permutation f satisfying A^i = (FA)^f(i)
  * i.e. F^f(i)_i = 1 and other entry has value 0
  */
-open class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractSquareMatrix<A>(ring, f.size) {
+open class PermutationMatrix<A>(override val ring: Ring<A>, val f: Permutation) : AbstractSquareMatrix<A> {
+
+    override val size: UInt get() = f.size
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = if (f(column) == row) ring.one else ring.zero
 
@@ -28,20 +31,20 @@ open class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractSqu
         is RowVector<A>            -> matrix
         is AbstractRowVector<A>    -> matrix
         is AbstractColumnVector<A> -> {
-            val result = ring.zeroMutableMatrix(this.rows, 1u)  //TODO replaced by zero mutable column matrix
-            for ((x, fx) in f) {
-                result.setElementAtUnsafe(fx, 0u, matrix.vectorElementAtUnsafe(x))
+            val result = ring.zeroMutableColumnVector(this.rows)
+            for ((i, fi) in f) {
+                result.setVectorElementAtUnsafe(fi, matrix.vectorElementAtUnsafe(i))
             }
             result
         }
         is IdentityMatrix<A>       -> this
         is ZeroMatrix<A>           -> ZeroMatrix(ring, this.rows, matrix.columns)
         else                       -> {
-            val list = MutableList<List<A>>(this.rows.toInt()) { emptyList() }
-            for ((x, fx) in f) {
-                list[fx.toInt()] = matrix.rowListAt(x)
+            val list = mutableList<List<A>>(this.rows) { emptyList() }
+            for ((i, fi) in f) {
+                list[fi.toInt()] = matrix.rowListAt(i)
             }
-            OrdinaryMatrix(ring, list)
+            OrdinaryMatrix(ring, this.rows, matrix.columns, list)
         }
     }
 
@@ -54,16 +57,16 @@ open class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractSqu
             is RowVector<A>            -> dest.setUnsafe(matrix)
             is AbstractRowVector<A>    -> dest.setUnsafe(matrix)
             is AbstractColumnVector<A> -> {
-                for ((x, fx) in f) {
-                    dest.setElementAtUnsafe(fx, 0u, matrix.vectorElementAtUnsafe(x))
+                for ((i, fi) in f) {
+                    dest.setElementAtUnsafe(fi, 0u, matrix.vectorElementAtUnsafe(i))
                 }
             }
             is IdentityMatrix<A>       -> dest.setUnsafe(this)
-            is ZeroMatrix<A>           -> dest.indexedSet { _, _ -> ring.zero }
+            is ZeroMatrix<A>           -> dest.set { _, _ -> ring.zero }
             else                       -> {
-                for ((x, fx) in f) {
+                for ((i, fi) in f) {
                     for (j in 0u until matrix.columns) {
-                        dest.setElementAtUnsafe(fx, j, matrix.elementAtUnsafe(x, j))
+                        dest.setElementAtUnsafe(fi, j, matrix.elementAtUnsafe(i, j))
                     }
                 }
             }
@@ -76,17 +79,17 @@ open class PermutationMatrix<A>(ring: Ring<A>, val f: Permutation) : AbstractSqu
             is RowVector<A>            -> dest.setUnsafe(matrix)
             is AbstractRowVector<A>    -> dest.setUnsafe(matrix)
             is AbstractColumnVector<A> -> {
-                for ((x, fx) in f) {
-                    dest.setElementAtUnsafe(fx, 0u, matrix.vectorElementAtUnsafe(x))
+                for ((i, fi) in f) {
+                    dest.setElementAtUnsafe(fi, 0u, matrix.vectorElementAtUnsafe(i))
                 }
             }
             is IdentityMatrix<A>       -> dest.setUnsafe(this@PermutationMatrix)
-            is ZeroMatrix<A>           -> dest.indexedSet { _, _ -> ring.zero }
+            is ZeroMatrix<A>           -> dest.set { _, _ -> ring.zero }
             else                       -> {
-                for ((x, fx) in f) {
+                for ((i, fi) in f) {
                     launch {
                         for (j in 0u until matrix.columns) {
-                            dest.setElementAtUnsafe(fx, j, matrix.elementAtUnsafe(x, j))
+                            dest.setElementAtUnsafe(fi, j, matrix.elementAtUnsafe(i, j))
                         }
                     }
                 }

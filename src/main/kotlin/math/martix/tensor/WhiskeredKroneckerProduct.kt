@@ -1,6 +1,7 @@
 package math.martix.tensor
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
@@ -15,18 +16,20 @@ import util.stdlib.lazyAssert2
  *
  * represent a matrix of the form I_l ⊗ M ⊗ I_r
  */
-class WhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A>(ring, l * mA.rows * r, l * mA.columns * r) {
+class WhiskeredKroneckerProduct<A>(override val ring: Ring<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A> {
 
-    val rowIndex = LadderIndex(listOf(l, mA.rows, r), super.rows)
-    val columnIndex = LadderIndex(listOf(l, mA.columns, r), super.columns)
+    override val rows: UInt = l * mA.rows * r
+    override val columns: UInt = l * mA.columns * r
+    val rowIndex = LadderIndex(listOf(l, mA.rows, r), rows)
+    val columnIndex = LadderIndex(listOf(l, mA.columns, r), columns)
 
     init {
         lazyAssert2 {
             val bigL = l.toBigInteger()
             val bigR = r.toBigInteger()
             val rows = bigL * mA.rows.toBigInteger() * bigR
-            val columns = bigL * mA.columns.toBigInteger() * bigR
             assert(rows <= UInt.MAX_VALUE)
+            val columns = bigL * mA.columns.toBigInteger() * bigR
             assert(columns <= UInt.MAX_VALUE)
         }
     }
@@ -52,23 +55,48 @@ class WhiskeredKroneckerProduct<A>(ring: Ring<A>, val l: UInt, val mA: AbstractM
     }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        for (il in 0u until l) {
-            for (ir in 0u until r) {
-                val submatrix = matrix.sparseSubmatrixView(il * mA.columns * r + ir, r, mA.columns)
-                val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * r + ir, r, mA.rows)
+        var ic1 = 0u
+        var ir1 = 0u
+        val cStep = mA.columns * r
+        val rStep = mA.rows * r
+        while (ic1 < columns) {
+            var ic2 = ic1
+            var ir2 = ir1
+            while (ic2 < ic1 + r) {
+                val submatrix = matrix.rowSparseSubmatrixView(ic2, r, mA.columns)
+                val destSubmatrix = dest.mutableRowSparseSubmatrixView(ir2, r, mA.rows)
                 mA.multiplyTo(submatrix, destSubmatrix)
+                ic2++
+                ir2++
             }
+            ic1 += cStep
+            ir1 += rStep
         }
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
-        for (il in 0u until l) {
-            launch {    //reduce O(n^2) coroutine to O(n) coroutine improves performance, but still can't outperform one thread algorithm.
-                for (ir in 0u until r) {
-                    val submatrix = matrix.sparseSubmatrixView(il * mA.columns * r + ir, r, mA.columns)
-                    val destSubmatrix = dest.mutableSparseSubmatrixView(il * mA.rows * r + ir, r, mA.rows)
-                    mA.multiplyTo(submatrix, destSubmatrix)
-                }
+        var ic1 = 0u
+        var ir1 = 0u
+        val cStep = mA.columns * r
+        val rStep = mA.rows * r
+        while (ic1 < columns) {
+            launchSubmatrixEdition(this, ic1, ir1, matrix, dest)
+            ic1 += cStep
+            ir1 += rStep
+        }
+    }
+
+    //launch naively result in wrong behaviour, should keep ic1/ir1 not changed.
+    private fun launchSubmatrixEdition(scope: CoroutineScope, ic1: UInt, ir1: UInt, matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
+        scope.launch {
+            var ic2 = ic1
+            var ir2 = ir1
+            while (ic2 < ic1 + r) {
+                val submatrix = matrix.rowSparseSubmatrixView(ic2, r, mA.columns)
+                val destSubmatrix = dest.mutableRowSparseSubmatrixView(ir2, r, mA.rows)
+                mA.multiplyTo(submatrix, destSubmatrix)
+                ic2++
+                ir2++
             }
         }
     }
