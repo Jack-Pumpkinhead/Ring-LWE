@@ -1,6 +1,7 @@
 package math.integer
 
 import kotlinx.coroutines.runBlocking
+import math.abstract_structure.instance.FieldModularUInt
 import util.stdlib.lazyAssert2
 
 /**
@@ -15,5 +16,11 @@ class FactorizationUIntPrime(val value: UInt) {
             }
         }
     }
+
+    val primeField get() = FieldModularUInt(value)
+
+    val eulerTotient: UInt get() = value - 1u
+    val radical: UInt get() = value
+
 
 }

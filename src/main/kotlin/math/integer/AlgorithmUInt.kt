@@ -1,6 +1,7 @@
 package math.integer
 
 import math.abstract_structure.instance.RingUInt
+import math.integer.modular.ModularUInt
 import math.integer.operation.modPowerS
 import math.operation.product
 import kotlin.math.sqrt
@@ -292,3 +293,57 @@ suspend fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt): UInt {
     }
 }
 
+/**
+ * first generator of (ℤ/([prime]))^* (g^([prime]-1) = 1)
+ * [prime] needs to be prime, [primeMinusOne] = [prime] - 1
+ */
+fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt, primeMinusOne: FactorizationUInt): ModularUInt {
+    return when (prime) {
+        2u   -> ModularUInt(prime, 1u)
+        3u   -> ModularUInt(prime, 2u)
+        else -> {
+            if (primeMinusOne.radical == primeMinusOne.value) {
+                nextNumber@ for (i in 2u until prime) {
+                    for (factor in primeMinusOne.factors) {
+                        val exp1 = modPowerS(i, primeMinusOne.radical / factor.prime, prime)
+                        if (exp1 == 1u) continue@nextNumber
+                    }
+                    return ModularUInt(prime, i)
+                }
+            } else {
+                val radicalComplement = primeMinusOne.value / primeMinusOne.radical
+                nextNumber@ for (i in 2u until prime) {
+                    val exp = modPowerS(i, radicalComplement, prime)
+                    if (exp == 1u) continue
+                    for (factor in primeMinusOne.factors) {
+                        val exp1 = modPowerS(exp, primeMinusOne.radical / factor.prime, prime)
+                        if (exp1 == 1u) continue@nextNumber
+                    }
+                    return ModularUInt(prime, i)
+                }
+            }
+            error("unknown error, make sure input $prime is prime")
+        }
+    }
+}
+
+fun UInt.floorLog2(): Int {
+    require(this != 0u)
+    return 31 - this.countLeadingZeroBits()
+}
+
+fun UInt.ceilLog2(): Int {
+    require(this != 0u)
+    return 32 - (this - 1u).countLeadingZeroBits()
+}
+
+/**
+ * return least 2^k satisfying 2^k >= [n], k>=0
+ */
+fun nextTwoPower(n: UInt): FactorizationUIntPrimePower {
+    if (n == 0u || n == 1u) return FactorizationUIntPrimePower(1u, 2u, 0u)
+    require(n <= Int.MAX_VALUE.toUInt())
+    val power = n.ceilLog2()
+//    require(power != 32)
+    return FactorizationUIntPrimePower(1u shl power, 2u, power.toUInt())
+}

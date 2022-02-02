@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.RingUInt
 import math.andPrint
 import math.random.randomUIntMatrix
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
 import math.timing.TwoMatrixMultiplicationTiming
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ internal class RowSummationMatrixTest{
     @Test
     fun multiply() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(1000) {
                 val m = RowSummationMatrix(RingUInt, Random.nextUInt(1u..100u)).andPrint("m:")
                 val x = Random.randomUIntMatrix(m.columns, 2u, 0u..100u).andPrint("x:")

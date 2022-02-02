@@ -5,7 +5,7 @@ import math.abstract_structure.instance.RingUInt
 import math.andPrint
 import math.random.randomMultiplicableUIntMatrices
 import math.random.randomUIntMatrix
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.*
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -18,7 +18,7 @@ internal class OrdinaryMatrixTest {
     @Test
     fun identityMatrix() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(
+            val statistic = TaskTimingStatistic(
                 ThreeMatrixMultiplicationTiming<UInt>(
                     Task("     m") { (_, m, _) -> m },
                     Task("id * m") { (a, m, _) -> a * m },
@@ -39,7 +39,7 @@ internal class OrdinaryMatrixTest {
     fun multiplication() {
         //make sure optimized-multiplication agree with standard multiplication
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(1000) {
                 val m = Random.randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
                 statistic.go(TwoMatrix(m[0], m[1]))
@@ -52,7 +52,7 @@ internal class OrdinaryMatrixTest {
     @Test
     fun largeMultiplication() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(50) {
                 val m = Random.randomMultiplicableUIntMatrices(2u, 200u..210u, 0u..100u)
                 statistic.go(TwoMatrix(m[0], m[1]))

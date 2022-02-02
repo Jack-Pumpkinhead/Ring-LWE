@@ -6,7 +6,7 @@ import math.abstract_structure.instance.FieldModularUInt
 import math.integer.modular.ModularUInt
 import math.integer.primeOf
 import math.random.randomModularUIntMatrix
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
 import math.timing.TwoMatrixMultiplicationTiming
 import org.junit.jupiter.api.Test
@@ -21,7 +21,7 @@ internal class DiscreteFourierTransformMatrixTest {
     @Test
     fun multiplication() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
             for (i in 1u..200u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()
@@ -37,7 +37,7 @@ internal class DiscreteFourierTransformMatrixTest {
     @Test
     fun largeMultiplication() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
             for (i in 410u..420u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.dft()

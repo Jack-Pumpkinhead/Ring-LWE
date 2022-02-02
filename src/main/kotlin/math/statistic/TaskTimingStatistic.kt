@@ -1,6 +1,6 @@
 package math.statistic
 
-import math.timing.EqualTaskTiming
+import math.timing.TaskTiming
 import kotlin.math.sqrt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -10,27 +10,27 @@ import kotlin.time.toDuration
 /**
  * Created by CowardlyLion at 2022/1/27 18:47
  */
-class RepeatTaskStatistic<Condition, A>(val timing: EqualTaskTiming<Condition, A>) {
+class TaskTimingStatistic<Condition, Result>(val timing: TaskTiming<Condition, Result>) {
 
     //    not record conditions to save space
     //    val conditions = mutableListOf<Condition>()
-    val statistics = List<MutableList<Duration>>(timing.tasks.size) { mutableListOf() }
+    val timingStatistic = List<MutableList<Duration>>(timing.tasks.size) { mutableListOf() }
     val eachTotalTime = MutableList(timing.tasks.size) { Duration.ZERO }
     var totalTime = Duration.ZERO
-    var size = 0
+    var samples = 0
 
     suspend fun go(condition: Condition) {
         val results = timing.go(condition)
         for (i in results.indices) {
-            statistics[i] += results[i].time
+            timingStatistic[i] += results[i].time
             eachTotalTime[i] += results[i].time
             totalTime += results[i].time
         }
-        size++
+        samples++
     }
 
     fun average(): List<Duration> {
-        return eachTotalTime.map { it / size }
+        return eachTotalTime.map { it / samples }
     }
 
     /**
@@ -38,16 +38,16 @@ class RepeatTaskStatistic<Condition, A>(val timing: EqualTaskTiming<Condition, A
      */
     @OptIn(ExperimentalTime::class)
     fun averageAndStandardDeviation(): List<Pair<Duration, Duration>> {
-        require(size > 1)
+        require(samples > 1)
         val averages = average()
 
-        return averages.zip(statistics).map { (average, durations) ->
+        return averages.zip(timingStatistic).map { (average, durations) ->
             var sum = 0.0
             durations.forEach { duration ->
                 val difference = duration.toDouble(DurationUnit.MILLISECONDS) - average.toDouble(DurationUnit.MILLISECONDS)
                 sum += difference * difference
             }
-            average to sqrt(sum / (size - 1)).toDuration(DurationUnit.MILLISECONDS)
+            average to sqrt(sum / (samples - 1)).toDuration(DurationUnit.MILLISECONDS)
         }
     }
 

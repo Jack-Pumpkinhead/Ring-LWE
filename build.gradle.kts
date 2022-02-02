@@ -10,10 +10,11 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation("com.ionspin.kotlin:bignum:0.3.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+
+    implementation("com.github.microsoft:TSS.Java:0.3.0")
 }
 
 tasks.named<Test>("test") {

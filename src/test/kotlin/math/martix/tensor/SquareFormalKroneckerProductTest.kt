@@ -7,7 +7,7 @@ import math.martix.constantMatrix
 import math.martix.formalKroneckerProduct
 import math.random.randomSquareUIntMatrices
 import math.random.randomUIntMatrix
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.*
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -20,7 +20,7 @@ internal class SquareFormalKroneckerProductTest {
     @Test
     fun multiplication() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(
+            val statistic = TaskTimingStatistic(
                 ManyMatricesMultiplicationTiming<UInt>(
                     Task(" ((a*b)*c)") { m -> m.matrices[0] * m.matrices.last() },
                     Task("    a*b*c ") { m -> m.matrices[1] * m.matrices.last() },
@@ -45,7 +45,7 @@ internal class SquareFormalKroneckerProductTest {
     @Test
     fun multiplication1() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(100) {
                 val m = Random.randomSquareUIntMatrices(5u, 1u..4u, 0u..20u)
                 val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractSquareMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
@@ -60,7 +60,7 @@ internal class SquareFormalKroneckerProductTest {
     @Test
     fun multiplication2() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
             repeat(100) {
                 val m = Random.randomSquareUIntMatrices(5u, 1u..4u, 0u..20u)
                 val m1: SquareFormalKroneckerProduct<UInt> = RingUInt.formalKroneckerProduct(m)

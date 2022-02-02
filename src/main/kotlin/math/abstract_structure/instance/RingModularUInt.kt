@@ -10,6 +10,7 @@ import math.integer.modular.ModularUInt
  * UInt modulo 0 is empty set thus cannot perform any operation.
  */
 open class RingModularUInt(val modulus: UInt) : Ring<ModularUInt> {
+
     override val descriptions: MutableSet<String> = mutableSetOf("ring of integer modulo $modulus")
     override val zero: ModularUInt = ModularUInt(modulus, 0u)
     override val one: ModularUInt = ModularUInt(modulus, 1u)

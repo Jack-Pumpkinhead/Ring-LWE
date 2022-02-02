@@ -1,14 +1,12 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
-import cryptography.lattice.ring_lwe.ring.RootDataUInt
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.FieldModularUInt
-import math.integer.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
+import math.integer.FactorizationUIntPrime
 import math.integer.modular.ModularUInt
-import math.integer.primeFactorization
 import math.integer.primeOf
 import math.random.randomModularUIntMatrix
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
 import math.timing.TwoMatrixMultiplicationTiming
 import org.junit.jupiter.api.Test
@@ -30,13 +28,11 @@ internal class DiscreteFourierTransformMatrixPrimeTest {
     @Test
     fun primeField() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
             for (i in 1u..500u) {
-                val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val order = primeField.prime - 1u
-                val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeField.prime)
-                val rootData = RootDataUInt(primeField, ModularUInt(primeField.prime, root), order.primeFactorization())
-                val dft = DiscreteFourierTransformMatrixPrime(rootData.primeSubroot(Random.nextUInt(rootData.order.factors.size.toUInt())))
+                val primeField = FactorizationUIntPrime(primeOf(i).toUInt()).primeField
+                val root = primeField.firstGenerator
+                val dft = DiscreteFourierTransformMatrixPrime(root.primeSubroot(Random.nextUInt(root.order.factors.size.toUInt())))
                 val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
@@ -53,13 +49,11 @@ internal class DiscreteFourierTransformMatrixPrimeTest {
     @Test
     fun largePrimeField() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
+            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<ModularUInt>())
             for (i in 1500u..1520u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val order = primeField.prime - 1u
-                val root = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(primeField.prime)
-                val rootData = RootDataUInt(primeField, ModularUInt(primeField.prime, root), order.primeFactorization())
-                val dft = DiscreteFourierTransformMatrixPrime(rootData.primeSubroot(Random.nextUInt(rootData.order.factors.size.toUInt())))
+                val root =  primeField.firstGenerator
+                val dft = DiscreteFourierTransformMatrixPrime(root.primeSubroot(Random.nextUInt(root.order.factors.size.toUInt())))
                 val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }

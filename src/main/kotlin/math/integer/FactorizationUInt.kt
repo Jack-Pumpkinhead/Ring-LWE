@@ -23,6 +23,7 @@ data class FactorizationUInt(val value: UInt, val factors: List<FactorizationUIn
     }
 
     val eulerTotient: UInt by lazy { RingUInt.product(factors.map { it.eulerTotient }) }
+    val radical: UInt by lazy { RingUInt.product(factors.map { it.prime }) }
 
     fun toPrimePower(): FactorizationUIntPrimePower {
         require(factors.size == 1)

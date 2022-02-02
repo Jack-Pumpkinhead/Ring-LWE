@@ -8,7 +8,7 @@ import math.martix.identityMatrix
 import math.operation.composeAll
 import math.operation.composeAllPrefixedWithIdentity
 import math.random.randomMultiplicableUIntMatrices
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.ManyMatrices
 import math.timing.ManyMatricesMultiplicationTiming
 import math.timing.Task
@@ -27,7 +27,7 @@ internal class CategoryInstanceKtTest {
     @Test
     fun multiplication() {
         runBlocking {
-            val statistic = RepeatTaskStatistic(
+            val statistic = TaskTimingStatistic(
                 ManyMatricesMultiplicationTiming<UInt>(
                     Task("c ") { m -> categoryUIntMatrix.composeAll(m.matrices) },
                     Task("ci") { m -> categoryUIntMatrix.composeAllPrefixedWithIdentity(m.matrices) },

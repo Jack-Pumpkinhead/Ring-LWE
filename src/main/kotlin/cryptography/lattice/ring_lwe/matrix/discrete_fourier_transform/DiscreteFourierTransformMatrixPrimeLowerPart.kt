@@ -5,6 +5,7 @@ import math.abstract_structure.Ring
 import math.integer.operation.modTimes
 import math.martix.AbstractMatrix
 import math.powerM
+import util.stdlib.list
 
 /**
  * Created by CowardlyLion at 2022/1/29 21:17
@@ -19,5 +20,17 @@ class DiscreteFourierTransformMatrixPrimeLowerPart<A>(val root: RootDataUIntPrim
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = ring.powerM(root.root, modTimes(row + 1u, column, root.order.value))
 
+    val g = root.order.primeField.firstGenerator
+    val rgInv:List<A> = list(root.order.value-1u){i->root.power(g.inversePower(i).residue)}
+
+
+
+
+
+//    val dft:DiscreteFourierTransformMatrixPrimePower<FieldComplexNumberDouble>
+
+    init {
+
+    }
 
 }

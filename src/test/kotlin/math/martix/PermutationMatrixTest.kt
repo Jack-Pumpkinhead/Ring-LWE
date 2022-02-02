@@ -9,7 +9,7 @@ import math.coding.permutation.SwitchIndexPermutation
 import math.isPairwiseCoprimeUInt
 import math.operation.product
 import math.random.randomUIntMatrix
-import math.statistic.RepeatTaskStatistic
+import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
 import math.timing.TwoMatrixMultiplicationTiming
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ internal class PermutationMatrixTest {
 
             suspend fun testPermutation(permutation: (List<UInt>) -> SwitchIndexPermutation, name: String) {
                 println("permutation $name")
-                val statistic = RepeatTaskStatistic(TwoMatrixMultiplicationTiming<UInt>())
+                val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
                 for ((bound, x) in samples) {
                     statistic.go(TwoMatrix(PermutationMatrix(RingUInt, permutation(bound)), x))
                 }

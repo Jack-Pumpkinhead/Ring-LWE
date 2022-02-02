@@ -39,6 +39,8 @@ data class FactorizationUIntPrimePower(val value: UInt, val prime: UInt, val pow
         }
     }
 
+    val radical: UInt get() = prime
+
     override fun toString(): String {
         return "$prime^$power"
     }

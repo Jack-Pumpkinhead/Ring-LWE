@@ -46,10 +46,11 @@ fun <A> Ring<A>.convolution(a: List<A>, b: List<A>): List<A> {
 }*/
 
 /**
- * return least 2^k satisfying 2^k >= 2[n]-1
+ * return [n] if [n] = 2^k, or least 2^k satisfying 2^k >= 2[n]-1
  */
+@Deprecated("aaa")
 fun nextTwoPowerForDFT(n: UInt): FactorizationULongPrimePower {
-    require(n > 1u)
+    require(n != 0u)
     var power = 1u
     var twoPower = 2uL
     while (twoPower < n) {

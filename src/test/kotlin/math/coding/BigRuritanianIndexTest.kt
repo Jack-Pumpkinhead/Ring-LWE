@@ -22,12 +22,12 @@ internal class BigRuritanianIndexTest {
             repeat(length * 100 + length * length * 10) {
                 val bounds = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
                 if (bounds.isPairwiseCoprimeBigInteger()) {
-                    println("bound: ${bounds.joinToString(", ", "[", "]")}")
+//                    println("bound: ${bounds.joinToString(", ", "[", "]")}")
                     val index = BigRuritanianIndex(bounds, RingBigInteger.product(bounds))
                     repeat(1000) {
                         val i = List(length) { Random.nextUInt(index.bounds[it].uintValue()).toBigInteger() }
                         val c = index.encode(i)
-                        println("${i.joinToString(", ", "[", "]")} = $c")
+//                        println("${i.joinToString(", ", "[", "]")} = $c")
                         assertEquals(i, index.decode(c))
                     }
                 }
@@ -41,12 +41,12 @@ internal class BigRuritanianIndexTest {
             repeat(length * 100 + length * length * 10) {
                 val bounds = List(length) { Random.nextUInt(2u..100u).toBigInteger() }
                 if (bounds.isPairwiseCoprimeBigInteger()) {
-                    println("bound: ${bounds.joinToString(", ", "[", "]")}")
+//                    println("bound: ${bounds.joinToString(", ", "[", "]")}")
                     val index = BigRuritanianIndex(bounds, RingBigInteger.product(bounds))
                     repeat(1000) {
                         val c = Random.nextULong(nonNegMin(index.indexBound, ULong.MAX_VALUE)).toBigInteger()
                         val i = index.decode(c)
-                        println("$c = ${i.joinToString(", ", "[", "]")}")
+//                        println("$c = ${i.joinToString(", ", "[", "]")}")
                         assertEquals(c, index.encode(i))
                     }
                 }
