@@ -1,8 +1,5 @@
 package test
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
-import org.junit.jupiter.api.Test
-
 /**
  * Created by CowardlyLion at 2022/1/5 17:23
  */
@@ -15,5 +12,14 @@ internal class Test {
             println("$i.numberOfDecimalDigits() = ${x.numberOfDecimalDigits()}")
         }
     }*/
+
+
+    /*@Test
+    fun testTPM() {
+        val tpm = TpmFactory.platformTpm()
+        val randomBytes = tpm.GetRandom(10)!!
+        println(randomBytes.joinToString())
+    }*/
+
 
 }
