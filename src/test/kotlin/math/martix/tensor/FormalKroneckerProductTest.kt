@@ -22,7 +22,7 @@ internal class FormalKroneckerProductTest {
     fun multiplication() {
         runBlocking {
             val statistic = TaskTimingStatistic(
-                ManyMatricesMultiplicationTiming<UInt>(
+                EqualManyMatricesMultiplicationTiming<UInt>(
                     Task(" ((a*b)*c)") { m -> m.matrices[0] * m.matrices.last() },
                     Task("    a*b*c ") { m -> m.matrices[1] * m.matrices.last() },
                     Task("o((a*b)*c)") { m -> m.matrices[2] * m.matrices.last() },
@@ -47,7 +47,7 @@ internal class FormalKroneckerProductTest {
     @Test
     fun multiplication1() {
         runBlocking {
-            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
             repeat(100) {
                 val m = Random.randomUIntMatrices(6u, 1u..5u, 0u..20u)
                 val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
@@ -62,7 +62,7 @@ internal class FormalKroneckerProductTest {
     @Test
     fun multiplication2() {
         runBlocking {
-            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
             repeat(100) {
                 val m = Random.randomUIntMatrices(6u, 1u..5u, 0u..20u)
                 val m1 = RingUInt.formalKroneckerProduct(m)

@@ -58,5 +58,17 @@ open class RingModularUInt(val modulus: UInt) : Ring<ModularUInt> {
         return modulus.hashCode()
     }
 
+    override fun ofInteger(a: UInt): ModularUInt = ModularUInt(modulus, a.mod(modulus))
+
+    override fun ofInteger(a: Int): ModularUInt =
+        if (a >= 0) {
+            ModularUInt(modulus, a.toUInt().mod(modulus))
+        } else if (modulus <= Int.MAX_VALUE.toULong()) {
+            ModularUInt(modulus, a.mod(modulus.toInt()).toUInt())
+        } else if (a == Int.MIN_VALUE) {
+            ModularUInt(modulus, modulus - Int.MAX_VALUE.toUInt() - 1u)
+        } else {
+            ModularUInt(modulus, modulus - (-a).toUInt())
+        }
 
 }

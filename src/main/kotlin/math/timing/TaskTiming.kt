@@ -7,6 +7,6 @@ interface TaskTiming<Condition, Result> {
 
     val tasks: List<Task<Condition, Result>>
 
-    suspend fun go(condition: Condition): List<TaskResult<Condition, Result>> = tasks.map { it.go(condition) }
+    suspend fun go(condition: Condition): List<TaskInfo<Condition, Result>> = tasks.map { it.goAndMeasureTime(condition) }
 
 }

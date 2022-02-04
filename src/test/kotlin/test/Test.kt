@@ -21,5 +21,33 @@ internal class Test {
         println(randomBytes.joinToString())
     }*/
 
+    /*@Test
+    fun launch() {
+        runBlocking {
+            //launch don't freeze captured variable
+            *//*var i = 0u
+            launch {
+                delay(5L)
+                println(i)
+            }
+            delay(5L)
+            i++*//*
 
+            *//*for (i in 0u..10u) {
+                launch {
+                    delay(10 - i.toLong())  //10,9,8,7,6,5,4,3,2,0,1
+                    println(i)
+                }
+            }*//*
+
+            //[i] is val, so would not change
+            for (i in 0u..10u) {
+                launch {
+                    delay((10 - i.toLong()) * 1000)  //10,9,8,7,6,5,4,3,2,0,1
+                    println(i)
+                }
+            }
+
+        }
+    }*/
 }

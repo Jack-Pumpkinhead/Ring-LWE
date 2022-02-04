@@ -1,5 +1,9 @@
 package math.abstract_structure.instance
 
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPrimePower
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.DftMatrixComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.DftMatrixPrimeComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.DftMatrixPrimePowerComplexDouble
 import cryptography.lattice.ring_lwe.ring.RootDataUInt
 import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
 import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower
@@ -27,20 +31,32 @@ object FieldComplexNumberDouble : FieldComplexNumber<Double>(FieldDouble) {
      */
     fun primitiveRootOfUnity(order: UInt): ComplexNumber<Double> = expI(pi2 / order.toDouble())
 
-    fun rootData(order: FactorizationUInt): RootDataUInt<ComplexNumber<Double>> {
+    /**
+     * primitive [order]-th root of unity
+     */
+    fun root(order: FactorizationUInt): RootDataUInt<ComplexNumber<Double>> {
         val root = expI(pi2 / order.value.toDouble())
         return RootDataUInt(this, root, order)
     }
 
-    fun rootDataPrimePower(order: FactorizationUIntPrimePower): RootDataUIntPrimePower<ComplexNumber<Double>> {
+    fun root(order: FactorizationUIntPrimePower): RootDataUIntPrimePower<ComplexNumber<Double>> {
         val root = expI(pi2 / order.value.toDouble())
         return RootDataUIntPrimePower(this, root, order)
     }
 
-    fun rootDataPrime(order: FactorizationUIntPrime): RootDataUIntPrime<ComplexNumber<Double>> {
+    fun root(order: FactorizationUIntPrime): RootDataUIntPrime<ComplexNumber<Double>> {
         val root = expI(pi2 / order.value.toDouble())
         return RootDataUIntPrime(this, root, order)
     }
+
+    fun dft(order: FactorizationUInt) = DftMatrixComplexDouble(root(order))
+
+    fun dft(order: FactorizationUIntPrimePower): DftMatrixPrimePower<ComplexNumber<Double>> {
+        val root = root(order)
+        return DftMatrixPrimePowerComplexDouble(root, DftMatrixPrimeComplexDouble(root.primeSubroot()))
+    }
+
+    fun dft(order: FactorizationUIntPrime) = DftMatrixPrimeComplexDouble(root(order))
 
 
 }

@@ -43,5 +43,7 @@ open class ComplexNumber<A>(val ring: Ring<A>, val real: A, val imaginary: A) {
         return ComplexNumber(ring, ring.multiply(real, lengthSquareInversed), ring.negate(ring.multiply(imaginary, lengthSquareInversed)))
     }
 
-
+    override fun toString(): String {
+        return "$real + i $imaginary"
+    }
 }

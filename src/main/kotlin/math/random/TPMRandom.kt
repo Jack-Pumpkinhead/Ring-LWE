@@ -50,4 +50,19 @@ object TPMRandom : Random() {
         return nextBits(bitCount.toInt()).toUInt()
     }
 
+    override fun nextBytes(array: ByteArray, fromIndex: Int, toIndex: Int): ByteArray {
+        require(fromIndex >= 0)
+        require(toIndex >= 0)
+        require(toIndex > fromIndex)
+        val size = toIndex - fromIndex
+        val bytes = tpm.GetRandom(size)!!
+        return bytes.copyInto(array, fromIndex)
+    }
+
+    override fun nextBytes(array: ByteArray): ByteArray {
+        val bytes = tpm.GetRandom(array.size)
+        return bytes.copyInto(array)
+    }
+
+    override fun nextBytes(size: Int): ByteArray = tpm.GetRandom(size)!!
 }

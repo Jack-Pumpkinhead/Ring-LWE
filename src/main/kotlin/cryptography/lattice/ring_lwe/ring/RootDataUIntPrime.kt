@@ -4,6 +4,7 @@ import math.abstract_structure.Ring
 import math.abstract_structure.instance.*
 import math.integer.FactorizationUIntPrime
 import math.integer.operation.modUnaryMinus
+import math.powerM
 import util.stdlib.lazyAssert2
 
 /**
@@ -21,6 +22,8 @@ class RootDataUIntPrime<A>(val ring: Ring<A>, val root: A, val order: Factorizat
             }
         }
     }
+
+    fun conjugate() = RootDataUIntPrime(ring, ring.powerM(root, order.value - 1u), order)
 
     private val powers: List<A> by lazy {
         if (order.value == 1u) listOf(ring.one)

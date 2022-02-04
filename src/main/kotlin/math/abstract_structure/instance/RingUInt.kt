@@ -22,4 +22,7 @@ object RingUInt : Ring<UInt> {
 
     override fun hasInverse(a: UInt): Boolean = a.bitAt(0u)
     override fun inverse(a: UInt): UInt = a.toULong().modInverse(twoPower32).toUInt()
+
+    override fun ofInteger(a: UInt): UInt = a
+    override fun ofInteger(a: Int): UInt = a.toUInt()
 }

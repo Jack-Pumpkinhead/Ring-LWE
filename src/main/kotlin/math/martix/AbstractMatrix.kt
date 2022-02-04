@@ -202,6 +202,9 @@ interface AbstractMatrix<A> {
         return List(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }
     }
 
+    /**
+     * copy of row
+     */
     fun rowMutableListAt(row: UInt): MutableList<A> {
         require(row < rows)
         return MutableList(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }

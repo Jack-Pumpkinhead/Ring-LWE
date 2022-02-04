@@ -15,4 +15,7 @@ object FieldDouble : Field<Double> {
     override fun negate(a: Double): Double = -a
     override fun multiply(x: Double, y: Double): Double = x * y
     override fun inverse(a: Double): Double = 1.0 / a
+
+    override fun ofInteger(a: UInt): Double = a.toDouble()
+    override fun ofInteger(a: Int): Double = a.toDouble()
 }

@@ -55,5 +55,17 @@ open class RingModularULong(val modulus: ULong) : Ring<ModularULong> {
         return modulus.hashCode()
     }
 
+    override fun ofInteger(a: UInt): ModularULong = ModularULong(modulus, a.mod(modulus))
+
+    override fun ofInteger(a: Int): ModularULong =
+        if (a >= 0) {
+            ModularULong(modulus, a.toUInt().mod(modulus))
+        } else if (modulus <= Long.MAX_VALUE.toULong()) {
+            ModularULong(modulus, a.mod(modulus.toLong()).toULong())
+        } else if (a == Int.MIN_VALUE) {
+            ModularULong(modulus, modulus - Int.MAX_VALUE.toULong() - 1uL)
+        } else {
+            ModularULong(modulus, modulus - (-a).toULong())
+        }
 
 }

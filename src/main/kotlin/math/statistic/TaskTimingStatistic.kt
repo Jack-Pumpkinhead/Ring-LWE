@@ -1,5 +1,6 @@
 package math.statistic
 
+import math.timing.TaskInfo
 import math.timing.TaskTiming
 import kotlin.math.sqrt
 import kotlin.time.Duration
@@ -10,7 +11,7 @@ import kotlin.time.toDuration
 /**
  * Created by CowardlyLion at 2022/1/27 18:47
  */
-class TaskTimingStatistic<Condition, Result>(val timing: TaskTiming<Condition, Result>) {
+open class TaskTimingStatistic<Condition, Result>(val timing: TaskTiming<Condition, Result>) {
 
     //    not record conditions to save space
     //    val conditions = mutableListOf<Condition>()
@@ -21,12 +22,16 @@ class TaskTimingStatistic<Condition, Result>(val timing: TaskTiming<Condition, R
 
     suspend fun go(condition: Condition) {
         val results = timing.go(condition)
+        extractInformationFromResults(results)
+        samples++
+    }
+
+    open fun extractInformationFromResults(results: List<TaskInfo<Condition, Result>>) {
         for (i in results.indices) {
             timingStatistic[i] += results[i].time
             eachTotalTime[i] += results[i].time
             totalTime += results[i].time
         }
-        samples++
     }
 
     fun average(): List<Duration> {

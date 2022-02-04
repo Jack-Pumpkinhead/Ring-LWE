@@ -19,7 +19,7 @@ internal class OrdinaryMatrixTest {
     fun identityMatrix() {
         runBlocking {
             val statistic = TaskTimingStatistic(
-                ThreeMatrixMultiplicationTiming<UInt>(
+                EqualThreeMatrixMultiplicationTiming<UInt>(
                     Task("     m") { (_, m, _) -> m },
                     Task("id * m") { (a, m, _) -> a * m },
                     Task("m * id") { (_, m, b) -> m * b },
@@ -39,7 +39,7 @@ internal class OrdinaryMatrixTest {
     fun multiplication() {
         //make sure optimized-multiplication agree with standard multiplication
         runBlocking {
-            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
             repeat(1000) {
                 val m = Random.randomMultiplicableUIntMatrices(2u, 1u..100u, 0u..100u)
                 statistic.go(TwoMatrix(m[0], m[1]))
@@ -52,7 +52,7 @@ internal class OrdinaryMatrixTest {
     @Test
     fun largeMultiplication() {
         runBlocking {
-            val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
+            val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
             repeat(50) {
                 val m = Random.randomMultiplicableUIntMatrices(2u, 200u..210u, 0u..100u)
                 statistic.go(TwoMatrix(m[0], m[1]))

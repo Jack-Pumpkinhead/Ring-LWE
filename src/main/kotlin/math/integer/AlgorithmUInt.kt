@@ -337,6 +337,15 @@ fun UInt.ceilLog2(): Int {
     return 32 - (this - 1u).countLeadingZeroBits()
 }
 
+fun isTwoPower(n: UInt): Boolean = nextTwoPowerDirect(n) == n
+
+fun nextTwoPowerDirect(n: UInt): UInt {
+    if (n == 0u || n == 1u) return 1u
+    require(n <= Int.MAX_VALUE.toUInt())
+    val power = n.ceilLog2()
+    return 1u shl power
+}
+
 /**
  * return least 2^k satisfying 2^k >= [n], k>=0
  */

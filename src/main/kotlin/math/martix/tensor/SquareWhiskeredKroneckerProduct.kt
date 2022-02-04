@@ -1,7 +1,6 @@
 package math.martix.tensor
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
@@ -75,15 +74,12 @@ class SquareWhiskeredKroneckerProduct<A>(override val ring: Ring<A>, val l: UInt
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) = coroutineScope {
         for (i1 in 0u until size stepForward mA.size * r) {
-            launchSubmatrixEdition(this, i1, matrix, dest)
-        }
-    }
-
-    private fun launchSubmatrixEdition(scope: CoroutineScope, i1: UInt, matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {
-        scope.launch {
-            for (i2 in i1 until i1 + r) {
-                mA.multiplyTo(matrix.rowSparseSubmatrixView(i2, r, mA.size), dest.mutableRowSparseSubmatrixView(i2, r, mA.size))
+            launch {    //safe here
+                for (i2 in i1 until i1 + r) {
+                    mA.multiplyTo(matrix.rowSparseSubmatrixView(i2, r, mA.size), dest.mutableRowSparseSubmatrixView(i2, r, mA.size))
+                }
             }
         }
     }
+
 }

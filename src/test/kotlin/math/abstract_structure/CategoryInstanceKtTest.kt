@@ -10,7 +10,7 @@ import math.operation.composeAllPrefixedWithIdentity
 import math.random.randomMultiplicableUIntMatrices
 import math.statistic.TaskTimingStatistic
 import math.timing.ManyMatrices
-import math.timing.ManyMatricesMultiplicationTiming
+import math.timing.EqualManyMatricesMultiplicationTiming
 import math.timing.Task
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -28,7 +28,7 @@ internal class CategoryInstanceKtTest {
     fun multiplication() {
         runBlocking {
             val statistic = TaskTimingStatistic(
-                ManyMatricesMultiplicationTiming<UInt>(
+                EqualManyMatricesMultiplicationTiming<UInt>(
                     Task("c ") { m -> categoryUIntMatrix.composeAll(m.matrices) },
                     Task("ci") { m -> categoryUIntMatrix.composeAllPrefixedWithIdentity(m.matrices) },
                     Task("d ") { m -> FormalProduct(RingUInt, m.matrices) * RingUInt.identityMatrix(m.matrices.last().columns) }

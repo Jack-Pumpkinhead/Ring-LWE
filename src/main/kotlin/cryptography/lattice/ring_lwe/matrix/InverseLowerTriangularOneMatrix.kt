@@ -70,7 +70,7 @@ class InverseLowerTriangularOneMatrix<A>(override val ring: Ring<A>, override va
         } else {
             dest.setRowUnsafe(0u, matrix.rowVectorViewAt(0u))
             for (i in 1u until size) {
-                launch {
+                launch {    //safe here since [i] is val
                     dest.setRowUnsafe(i) { j -> ring.subtract(matrix.elementAtUnsafe(i, j), matrix.elementAtUnsafe(i - 1u, j)) }
                 }
             }

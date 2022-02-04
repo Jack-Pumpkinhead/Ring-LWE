@@ -1,6 +1,7 @@
 package math.abstract_structure.instance
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.abstract_structure.Ring
 
 /**
@@ -25,4 +26,9 @@ object RingBigInteger : Ring<BigInteger> {
             return a
         } else error("integer $a has no multiplicative inverse")
     }
+
+    override fun ofInteger(a: UInt): BigInteger = a.toBigInteger()
+
+    override fun ofInteger(a: Int): BigInteger = a.toBigInteger()
+
 }

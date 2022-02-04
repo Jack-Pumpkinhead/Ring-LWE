@@ -9,14 +9,14 @@ class TaskResultStatistic<Condition, Result>(val timing: TaskTiming<Condition, R
 
     val resultStatistic = List<MutableList<Result>>(timing.tasks.size) { mutableListOf() }
 
-    var sample = 0
+    var samples = 0
 
     suspend fun go(condition: Condition) {
         val results = timing.go(condition)
         for (i in results.indices) {
             resultStatistic[i] += results[i].result
         }
-        sample++
+        samples++
     }
 
 }

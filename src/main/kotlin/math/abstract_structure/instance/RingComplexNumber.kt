@@ -3,11 +3,13 @@ package math.abstract_structure.instance
 import math.abstract_structure.Ring
 import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
+import math.complex_number.realComplexNumber
 
 /**
  * Created by CowardlyLion at 2022/1/25 17:42
  */
-class RingComplexNumber<A>(val ring: Ring<A>) : Ring<ComplexNumber<A>> {
+open class RingComplexNumber<A>(val ring: Ring<A>) : Ring<ComplexNumber<A>> {
+
     override val descriptions: MutableSet<String> = ring.descriptions.mapTo(mutableSetOf()) { "R[x]/(x^2+1) over {$it}" }
     override val zero: ComplexNumber<A> = ring.complexNumber(ring.zero, ring.zero)
     override val one: ComplexNumber<A> = ring.complexNumber(ring.one, ring.zero)
@@ -55,5 +57,8 @@ class RingComplexNumber<A>(val ring: Ring<A>) : Ring<ComplexNumber<A>> {
         return ring.hashCode()
     }
 
+    override fun ofInteger(a: UInt): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
+
+    override fun ofInteger(a: Int): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
 
 }

@@ -14,4 +14,8 @@ object FieldBigDecimal : Field<BigDecimal> {
     override fun negate(a: BigDecimal): BigDecimal = -a
     override fun multiply(x: BigDecimal, y: BigDecimal): BigDecimal = x * y
     override fun inverse(a: BigDecimal): BigDecimal = BigDecimal.ONE / a
+
+    override fun ofInteger(a: UInt): BigDecimal = BigDecimal.fromUInt(a)
+    override fun ofInteger(a: Int): BigDecimal = BigDecimal.fromInt(a)
+
 }

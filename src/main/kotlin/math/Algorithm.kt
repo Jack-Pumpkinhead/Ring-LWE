@@ -99,6 +99,16 @@ fun <A> Monoid<A>.powerS(x: A, power: UInt): A {
     return y
 }
 
+fun <A> Monoid<A>.power(x: A, power: UInt): A {
+    if (power == 0u) return this.one
+    if (power == 1u) return x
+    var xPow = x
+    for (i in 1u until power) {
+        xPow = multiply(xPow, x)
+    }
+    return xPow
+}
+
 /**
  * square version of fast power
  * @return [x]^[power]

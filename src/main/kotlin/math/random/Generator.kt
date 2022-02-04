@@ -1,12 +1,8 @@
 package math.random
 
-import math.abstract_structure.instance.RingModularUInt
-import math.abstract_structure.instance.RingModularULong
-import math.abstract_structure.instance.RingUInt
-import math.integer.FactorizationUInt
-import math.integer.FactorizationUIntPrimePower
-import math.integer.ceilLog2
-import math.integer.isPrime
+import math.abstract_structure.instance.*
+import math.complex_number.ComplexNumber
+import math.integer.*
 import math.integer.modular.ModularUInt
 import math.integer.modular.ModularULong
 import math.martix.concrete.OrdinaryMatrix
@@ -14,6 +10,7 @@ import math.martix.concrete.OrdinarySquareMatrix
 import math.martix.matrix
 import math.martix.squareMatrix
 import math.twoPower32
+import util.stdlib.shr
 import kotlin.random.Random
 import kotlin.random.nextUInt
 import kotlin.random.nextULong
@@ -82,15 +79,44 @@ fun RingModularUInt.randomModularUIntMatrix(rowsRange: UIntRange, columns: UInt,
 fun RingModularUInt.randomModularUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
 
 /**
+ * return a random complex number that within range [-bound, bound)
+ */
+fun Random.randomComplexNumberDouble(bound: Double): ComplexNumber<Double> = ComplexNumber(FieldDouble, nextDouble(-bound, bound), nextDouble(-bound, bound))
+
+fun FieldComplexNumberDouble.randomMatrix(rows: UInt, columns: UInt, bound: Double, randomness: Random = Random): OrdinaryMatrix<ComplexNumber<Double>> = this.matrix(rows, columns) { _, _ -> randomness.randomComplexNumberDouble(bound) }
+
+/**
  * Fast Dice Roller algorithm by Jérémie Lumbroso
  *
  * n = 2^k, r uniformly distributed in [0, n-1]
+ *
+ * return integer uniformly distributed in [0, [bound]-1]
  */
 fun Random.nextUIntFDR(bound: UInt): UInt {
+    require(bound != 0u)
+    if (bound == 1u) return 0u
     if (bound <= Int.MAX_VALUE.toUInt()) {
-        val log = bound.ceilLog2()
+        val log = bound.ceilLog2()  //log>=1
         var n = 1u shl log
-        var r = this.nextBits(log).toUInt()
+
+        var randomUInt = this.nextUInt()        //make every input (including 2^k) has nearly same performance.
+        var r = randomUInt.mod(n)
+        randomUInt = randomUInt shr n
+        var bits = 32u - n
+
+        fun nextBit(): UInt =
+            if (bits != 0u) {
+                val result = randomUInt.mod(2u)
+                randomUInt = randomUInt shr 1
+                bits--
+                result
+            } else {
+                randomUInt = this.nextUInt()
+                val result = randomUInt.mod(2u)
+                randomUInt = randomUInt shr 1
+                bits = 31u
+                result
+            }
         while (true) {
             if (n >= bound) {
                 if (r < bound) {
@@ -101,11 +127,28 @@ fun Random.nextUIntFDR(bound: UInt): UInt {
                 }
             }
             n = n.shl(1)
-            r = r.shl(1) + this.nextBits(1).toUInt()
+            r = r.shl(1) + nextBit()
         }
     } else {
         var n = twoPower32
         var r = this.nextUInt()
+
+        var randomUInt = 0u        //make every input (including 2^k) has nearly same performance.
+        var bits = 0u
+        fun nextBit(): UInt =
+            if (bits != 0u) {
+                val result = randomUInt.mod(2u)
+                randomUInt = randomUInt shr 1
+                bits--
+                result
+            } else {
+                randomUInt = this.nextUInt()
+                val result = randomUInt.mod(2u)
+                randomUInt = randomUInt shr 1
+                bits = 31u
+                result
+            }
+
         while (true) {
             if (n >= bound) {
                 if (r < bound) {
@@ -116,7 +159,7 @@ fun Random.nextUIntFDR(bound: UInt): UInt {
                 }
             }
             n = n.shl(1)
-            r = r.shl(1) + this.nextBits(1).toUInt()
+            r = r.shl(1) + nextBit()
         }
     }
 }
@@ -139,7 +182,7 @@ fun Random.nextUIntFDR(range: UIntRange): UInt {
  *
  * TODO implement a fast isPrime() then remove `suspend`
  */
-suspend fun Random.randomFactoredNumber(n: UInt): FactorizationUInt {
+suspend fun Random.randomFactoredNumberFDR(n: UInt): FactorizationUInt {
     require(n != 0u)
     val factors = mutableListOf<FactorizationUIntPrimePower>()
     var lastPrime = 0u
@@ -148,6 +191,55 @@ suspend fun Random.randomFactoredNumber(n: UInt): FactorizationUInt {
     var r = 1uL     //prevent overflow
 
     var a = this.nextUIntFDR(1u..n)
+    while (a != 1u) {
+        if (a.isPrime()) {
+            r *= a
+            if (r > n) return this.randomFactoredNumberFDR(n)
+            if (lastPrime == a) {
+                lastPower++
+                lastPrimePower *= a
+            } else {
+                if (lastPrime == 0u) {
+                    lastPrime = a
+                    lastPrimePower = a
+                } else {
+                    factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)
+                    lastPrime = a
+                    lastPower = 1u
+                    lastPrimePower = a
+                }
+            }
+        }
+        a = this.nextUIntFDR(1u..a)
+    }
+
+    return if (this.nextUIntFDR(n) < r) {   //with probability r/n
+
+        if (lastPrime != 0u) {
+            factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)
+        }
+        factors.reverse()
+        FactorizationUInt(r.toUInt(), factors)
+
+    } else this.randomFactoredNumberFDR(n)
+}
+
+/**
+ * generating random factored number algorithm by Adam Kalai
+ *
+ * return a uniformly random integer in 1..n with it's factorization
+ *
+ * TODO implement a fast isPrime() then remove `suspend`
+ */
+suspend fun Random.randomFactoredNumber(n: UInt): FactorizationUInt {
+    require(n != 0u)
+    val factors = mutableListOf<FactorizationUIntPrimePower>()
+    var lastPrime = 0u
+    var lastPower = 1u  //power may not be too big in general, using manual multiplication permits early rejection and safe multiplication
+    var lastPrimePower = 0u
+    var r = 1uL     //prevent overflow
+
+    var a = this.nextUInt(1u..n)
     while (a != 1u) {
         if (a.isPrime()) {
             r *= a
@@ -170,7 +262,7 @@ suspend fun Random.randomFactoredNumber(n: UInt): FactorizationUInt {
         a = this.nextUInt(1u..a)
     }
 
-    return if (this.nextUIntFDR(n) < r) {   //with probability r/n
+    return if (this.nextUInt(n) < r) {   //with probability r/n
 
         if (lastPrime != 0u) {
             factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)

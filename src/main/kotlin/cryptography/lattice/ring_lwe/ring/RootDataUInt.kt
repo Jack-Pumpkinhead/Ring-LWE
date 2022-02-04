@@ -18,7 +18,7 @@ class RootDataUInt<A>(val ring: Ring<A>, val root: A, val order: FactorizationUI
     init {
         lazyAssert2 {
             require(order.value != 0u)
-            if (order.value == 1u) {
+            if ((ring is FieldModularUInt || ring is FieldModularULong || ring is RingModularUInt || ring is RingModularUInt) && order.value == 1u) {
                 require(root == ring.one)
             }
         }
@@ -88,6 +88,8 @@ class RootDataUInt<A>(val ring: Ring<A>, val root: A, val order: FactorizationUI
         require(order.value.mod(suborder.value) == 0u)
         return RootDataUIntPrime(ring, ring.powerM(root, order.value / suborder.value), suborder)
     }
+
+    fun conjugate() = RootDataUInt(ring, ring.powerM(root, order.value - 1u), order)
 
 
     override fun toString(): String {

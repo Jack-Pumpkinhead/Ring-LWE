@@ -13,4 +13,7 @@ object FieldFloat : Field<Float> {
     override fun negate(a: Float): Float = -a
     override fun multiply(x: Float, y: Float): Float = x * y
     override fun inverse(a: Float): Float = 1.0F / a
+
+    override fun ofInteger(a: UInt): Float = a.toFloat()
+    override fun ofInteger(a: Int): Float = a.toFloat()
 }

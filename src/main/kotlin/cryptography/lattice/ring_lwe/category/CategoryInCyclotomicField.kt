@@ -73,7 +73,7 @@ class CategoryInCyclotomicField(val order: FactorizationUIntPrimePower, val q: F
         complexModule.registerBase(extendedCyclotomicFieldPowerBasis)
         complexModule.registerBase(standardBasis)
 
-        val root = FieldComplexNumberDouble.rootDataPrimePower(order)
+        val root = FieldComplexNumberDouble.root(order)
         complexModule.registerArrow(extendedCyclotomicFieldPowerBasis, standardBasis, ChineseRemainderTransformMatrixPrimePower(root, ChineseRemainderTransformMatrixPrime(root.primeSubroot())))
     }
 

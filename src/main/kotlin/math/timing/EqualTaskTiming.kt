@@ -30,7 +30,7 @@ interface EqualTaskTiming<Condition, Result> : TaskTiming<Condition, Result> {
         }
     }
 
-    override suspend fun go(condition: Condition): List<TaskResult<Condition, Result>> {
+    override suspend fun go(condition: Condition): List<TaskInfo<Condition, Result>> {
         val results = super.go(condition)
         if (results.isNotEmpty()) {
             val a = results[0].result

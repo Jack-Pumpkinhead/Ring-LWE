@@ -11,7 +11,7 @@ import math.operation.product
 import math.random.randomUIntMatrix
 import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
-import math.timing.TwoMatrixMultiplicationTiming
+import math.timing.EqualTwoMatrixMultiplicationTiming
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 import kotlin.random.nextUInt
@@ -40,7 +40,7 @@ internal class PermutationMatrixTest {
 
             suspend fun testPermutation(permutation: (List<UInt>) -> SwitchIndexPermutation, name: String) {
                 println("permutation $name")
-                val statistic = TaskTimingStatistic(TwoMatrixMultiplicationTiming<UInt>())
+                val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
                 for ((bound, x) in samples) {
                     statistic.go(TwoMatrix(PermutationMatrix(RingUInt, permutation(bound)), x))
                 }

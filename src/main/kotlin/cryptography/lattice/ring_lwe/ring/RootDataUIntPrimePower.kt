@@ -51,6 +51,8 @@ class RootDataUIntPrimePower<A>(val ring: Ring<A>, val root: A, val order: Facto
         return RootDataUIntPrime(ring, ring.powerM(root, order.value/order.prime), FactorizationUIntPrime(order.prime))
     }
 
+    fun conjugate() = RootDataUIntPrimePower(ring, ring.powerM(root, order.value - 1u), order)
+
     /**
      * previous method should not reference to here
      */

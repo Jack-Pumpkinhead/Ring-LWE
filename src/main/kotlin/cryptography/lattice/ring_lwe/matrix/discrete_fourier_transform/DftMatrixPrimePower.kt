@@ -5,18 +5,15 @@ import cryptography.lattice.ring_lwe.matrix.TwiddleMatrix
 import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower
 import math.abstract_structure.Ring
 import math.integer.operation.modTimes
-import math.martix.AbstractSquareMatrix
-import math.martix.BackingSquareMatrix
-import math.martix.permutationMatrix
+import math.martix.*
 import math.martix.tensor.SquareFormalProduct
-import math.martix.whiskered
 
 /**
  * Created by CowardlyLion at 2022/1/19 18:09
  */
-class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePower<A>, primeCase: DiscreteFourierTransformMatrixPrime<A>) : BackingSquareMatrix<A> {
+open class DftMatrixPrimePower<A>(val root: RootDataUIntPrimePower<A>, primeCase: DftMatrixPrime<A> = DftMatrixPrime(root.primeSubroot())) : BackingSquareMatrix<A> {
 
-    override val ring: Ring<A> get() = root.ring
+    final override val ring: Ring<A> get() = root.ring
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A = root.power(modTimes(row, column, root.order.value))
 
@@ -26,12 +23,16 @@ class DiscreteFourierTransformMatrixPrimePower<A>(val root: RootDataUIntPrimePow
             SquareFormalProduct(
                 ring, listOf(
                     ring.permutationMatrix(LadderSwitcher(subRoot.order.prime, subRoot.order.value)),
-                    ring.whiskered(subRoot.order.prime, DiscreteFourierTransformMatrixPrimePower(subRoot, primeCase), 1u),
+                    ring.whiskered(subRoot.order.prime, DftMatrixPrimePower(subRoot, primeCase), 1u),
                     TwiddleMatrix(ring, subRoot.order.prime, subRoot.order.value, root.root),
                     ring.whiskered(1u, primeCase, subRoot.order.value)
                 )
             )
         }
 
+    override fun hasInverse(): Boolean = ring.hasInverse(ring.ofInteger(size))
 
+    override fun inverse(): AbstractSquareMatrix<A> {
+        return ring.formalProduct(DftMatrixPrimePower(root.conjugate()), ring.scalarMatrix(size, ring.inverse(ring.ofInteger(size))))
+    }
 }

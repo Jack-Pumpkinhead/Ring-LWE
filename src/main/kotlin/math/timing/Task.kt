@@ -9,12 +9,12 @@ import kotlin.time.measureTime
 class Task<Condition, Result>(val info: String, val work: suspend (Condition) -> Result) {
 
     @OptIn(ExperimentalTime::class)
-    suspend fun go(condition: Condition): TaskResult<Condition, Result> {
+    suspend fun goAndMeasureTime(condition: Condition): TaskInfo<Condition, Result> {
         val result: Result
         val time = measureTime {
             result = work(condition)
         }
-        return TaskResult(this, condition, result, time)
+        return TaskInfo(this, condition, result, time)
     }
 
 }

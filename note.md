@@ -12,6 +12,7 @@
 
 ##debug  
 - test 的命名空间与 main相同，避免重名
+- make sure variables captured by launch{} is val (e.g. in a for() loop)
 
 ##references
 - (2013) [Optimal Discrete Uniform Generation from Coin Flips, and Applications --Jérémie Lumbroso](https://arxiv.org/abs/1304.1916)

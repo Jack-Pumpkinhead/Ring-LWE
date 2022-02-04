@@ -41,5 +41,14 @@ internal class AlgorithmUIntKtTest {
         }
     }
 
+    @Test
+    fun isTwoPower() {
+        for (i in 0u..123456u) {
+            if (isTwoPower(i)) {
+                println(i)
+            }
+        }
+    }
+
 
 }

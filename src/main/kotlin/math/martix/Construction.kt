@@ -10,10 +10,7 @@ import math.martix.mutable.MutableColumnVector
 import math.martix.mutable.MutableMatrix
 import math.martix.mutable.MutableRowVector
 import math.martix.mutable.MutableSizeMatrix
-import math.martix.tensor.FormalKroneckerProduct
-import math.martix.tensor.SquareFormalKroneckerProduct
-import math.martix.tensor.SquareWhiskeredKroneckerProduct
-import math.martix.tensor.WhiskeredKroneckerProduct
+import math.martix.tensor.*
 import util.stdlib.mutableList
 
 /**
@@ -95,9 +92,11 @@ fun <A> Ring<A>.zeroMutableMatrix(rows: UInt, columns: UInt) = mutableMatrix(row
 fun <A> Ring<A>.zeroMutableColumnVector(size: UInt) = mutableColumnVector(size) { _ -> zero }
 fun <A> Ring<A>.zeroMutableRowVector(size: UInt) = mutableRowVector(size) { _ -> zero }
 fun <A> Ring<A>.zeroMutableSizeMatrix(rows: UInt, columns: UInt) = mutableSizeMatrix(rows, columns) { _, _ -> zero }
-fun <A> Ring<A>.scalaMatrix(size: UInt, a: A) = DiagonalMatrix(this, List(size.toInt()) { a })
+fun <A> Ring<A>.scalarDiagonalMatrix(size: UInt, a: A) = DiagonalMatrix(this, List(size.toInt()) { a })
 fun <A> Ring<A>.diagonalMatrix(list: List<A>) = DiagonalMatrix(this, list)
 fun <A> Ring<A>.diagonalMatrix(size: UInt, generator: (UInt) -> A) = DiagonalMatrix(this, List(size.toInt()) { i -> generator(i.toUInt()) })
+fun <A> Ring<A>.formalProduct(vararg matrices: AbstractMatrix<A>): FormalProduct<A> = FormalProduct(this, matrices.toList())
+fun <A> Ring<A>.formalProduct(vararg matrices: AbstractSquareMatrix<A>): SquareFormalProduct<A> = SquareFormalProduct(this, matrices.toList())
 fun <A> Ring<A>.formalKroneckerProduct(vararg matrices: AbstractSquareMatrix<A>): SquareFormalKroneckerProduct<A> = SquareFormalKroneckerProduct(this, matrices.toList())
 fun <A> Ring<A>.formalKroneckerProduct(vararg matrices: AbstractMatrix<A>): FormalKroneckerProduct<A> = FormalKroneckerProduct(this, matrices.toList())
 fun <A> Ring<A>.formalKroneckerProduct(matrices: List<AbstractSquareMatrix<A>>): SquareFormalKroneckerProduct<A> = SquareFormalKroneckerProduct(this, matrices)

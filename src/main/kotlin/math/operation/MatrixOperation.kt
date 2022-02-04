@@ -3,6 +3,7 @@ package math.operation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
+import math.complex_number.ComplexNumber
 import math.martix.AbstractMatrix
 import math.martix.matrix
 import math.martix.matrixRowParallel
@@ -10,6 +11,7 @@ import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.martix.zeroMutableMatrix
 import util.stdlib.list
+import kotlin.math.sqrt
 
 /**
  * Created by CowardlyLion at 2022/1/9 18:15
@@ -148,3 +150,17 @@ fun <A> matrixToString(matrix: AbstractMatrix<A>): String =
     }.joinToString(",\n", "{\n", "}") { row ->
         row.joinToString(", ", "{", "}") { it.toString() }
     }
+
+fun maxAbsoluteDistance(m1: AbstractMatrix<ComplexNumber<Double>>, m2: AbstractMatrix<ComplexNumber<Double>>): Double {
+    require(m1.rows == m2.rows)
+    require(m1.columns == m2.columns)
+
+    var maxDistance = 0.0
+    m1.indexed { i, j ->
+        val distance = sqrt((m1.elementAtUnsafe(i, j) - m2.elementAtUnsafe(i, j)).lengthSquared())
+        if (distance > maxDistance) {
+            maxDistance = distance
+        }
+    }
+    return maxDistance
+}

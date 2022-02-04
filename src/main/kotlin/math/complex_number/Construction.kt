@@ -7,4 +7,6 @@ import math.abstract_structure.Ring
  */
 
 fun <A> Ring<A>.complexNumber(real: A, imaginary: A) = ComplexNumber(this, real, imaginary)
+fun <A> Ring<A>.realComplexNumber(real: A) = RealComplexNumber(this, real)
+fun <A> Ring<A>.imaginaryComplexNumber(imaginary: A) = ImaginaryComplexNumber(this, imaginary)
 
