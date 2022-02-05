@@ -25,4 +25,6 @@ object RingULong : Ring<ULong> {
 
     override fun ofInteger(a: UInt): ULong = a.toULong()
     override fun ofInteger(a: Int): ULong = a.toULong()
+    override fun ofInteger(a: ULong): ULong = a
+    override fun ofInteger(a: Long): ULong = a.toULong()
 }

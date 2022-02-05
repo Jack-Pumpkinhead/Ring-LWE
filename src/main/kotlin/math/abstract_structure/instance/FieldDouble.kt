@@ -8,6 +8,7 @@ import math.abstract_structure.Field
  * behave roughly like a field under 1.79769313486231570e+308
  */
 object FieldDouble : Field<Double> {
+
     override val zero = 0.0
     override val one = 1.0
     override val descriptions: MutableSet<String> = mutableSetOf("field of Double")
@@ -18,4 +19,7 @@ object FieldDouble : Field<Double> {
 
     override fun ofInteger(a: UInt): Double = a.toDouble()
     override fun ofInteger(a: Int): Double = a.toDouble()
+    override fun ofInteger(a: ULong): Double = a.toDouble()    //have rounding error
+    override fun ofInteger(a: Long): Double = a.toDouble()
+
 }

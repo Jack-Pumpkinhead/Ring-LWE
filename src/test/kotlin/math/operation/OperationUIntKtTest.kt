@@ -7,8 +7,8 @@ import math.integer.operation.modPowerM
 import math.integer.operation.modPowerS
 import math.integer.operation.powerM
 import math.integer.operation.powerS
-import math.powerM
-import math.powerS
+import math.abstract_structure.algorithm.powerM
+import math.abstract_structure.algorithm.powerS
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

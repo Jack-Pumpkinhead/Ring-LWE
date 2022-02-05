@@ -7,7 +7,7 @@ import math.integer.FactorizationUIntPrime
 import math.integer.FactorizationUIntPrimePower
 import math.integer.operation.modUnaryMinus
 import math.integer.operation.powerM
-import math.powerM
+import math.abstract_structure.algorithm.powerM
 import util.stdlib.lazyAssert2
 
 /**

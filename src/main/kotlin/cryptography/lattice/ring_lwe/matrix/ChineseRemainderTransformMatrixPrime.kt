@@ -4,7 +4,7 @@ import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
 import math.abstract_structure.Ring
 import math.integer.operation.modTimes
 import math.martix.AbstractSquareMatrix
-import math.powerM
+import math.abstract_structure.algorithm.powerM
 
 /**
  * Created by CowardlyLion at 2022/1/26 16:26

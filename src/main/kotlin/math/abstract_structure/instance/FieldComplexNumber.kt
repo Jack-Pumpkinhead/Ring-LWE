@@ -3,7 +3,6 @@ package math.abstract_structure.instance
 import math.abstract_structure.Field
 import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
-import math.complex_number.realComplexNumber
 
 /**
  * Created by CowardlyLion at 2022/1/25 17:50
@@ -53,9 +52,5 @@ open class FieldComplexNumber<A>(ring: Field<A>) : RingComplexNumber<A>(ring), F
     override fun hashCode(): Int {
         return ring.hashCode()
     }
-
-    override fun ofInteger(a: UInt): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
-
-    override fun ofInteger(a: Int): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
 
 }

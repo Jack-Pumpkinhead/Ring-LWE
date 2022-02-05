@@ -68,4 +68,17 @@ open class RingModularULong(val modulus: ULong) : Ring<ModularULong> {
             ModularULong(modulus, modulus - (-a).toULong())
         }
 
+    override fun ofInteger(a: ULong): ModularULong = ModularULong(modulus, a.mod(modulus))
+
+    override fun ofInteger(a: Long): ModularULong =
+        if (a >= 0) {
+            ModularULong(modulus, a.toULong().mod(modulus))
+        } else if (modulus <= Long.MAX_VALUE.toULong()) {
+            ModularULong(modulus, a.mod(modulus.toLong()).toULong())
+        } else if (a == Long.MIN_VALUE) {
+            ModularULong(modulus, modulus - Long.MAX_VALUE.toULong() - 1uL)
+        } else {
+            ModularULong(modulus, modulus - (-a).toULong())
+        }
+
 }

@@ -17,5 +17,7 @@ object FieldBigDecimal : Field<BigDecimal> {
 
     override fun ofInteger(a: UInt): BigDecimal = BigDecimal.fromUInt(a)
     override fun ofInteger(a: Int): BigDecimal = BigDecimal.fromInt(a)
+    override fun ofInteger(a: ULong): BigDecimal = BigDecimal.fromULong(a)
+    override fun ofInteger(a: Long): BigDecimal = BigDecimal.fromLong(a)
 
 }

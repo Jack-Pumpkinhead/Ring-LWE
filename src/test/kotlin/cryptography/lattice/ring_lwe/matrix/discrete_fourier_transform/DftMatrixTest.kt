@@ -15,12 +15,12 @@ import org.junit.jupiter.api.Test
  */
 internal class DftMatrixTest {
 
-    // *  : average 8.89614ms, deviation 18.64866ms
-    // *p : average 8.91292ms, deviation 18.03492ms
-    // * t: average 8.88337ms, deviation 18.81482ms
-    // *pt: average 10.14590ms, deviation 18.61726ms
-    //d*  : average 17.18974ms, deviation 17.03461ms
-    //total: 10.805615700s
+    // *  : average 8.76939ms, deviation 18.15522ms
+    // *p : average 9.02094ms, deviation 18.02072ms
+    // * t: average 8.79241ms, deviation 18.32357ms
+    // *pt: average 10.24140ms, deviation 18.27370ms
+    //d*  : average 17.09975ms, deviation 16.79598ms
+    //total: 10.784778411s
     @Test
     fun multiplication() {
         runBlocking {
@@ -35,12 +35,12 @@ internal class DftMatrixTest {
         }
     }
 
-    // *  : average 273.90904ms, deviation 366.09402ms
-    // *p : average 265.17641ms, deviation 363.14921ms
-    // * t: average 263.79704ms, deviation 369.35522ms
-    // *pt: average 271.46791ms, deviation 362.20674ms
-    //d*  : average 319.00025ms, deviation 5.81205ms
-    //total: 15.326857100s
+    // *  : average 274.66916ms, deviation 367.08094ms
+    // *p : average 268.31002ms, deviation 368.17655ms
+    // * t: average 266.93755ms, deviation 373.58580ms
+    // *pt: average 279.44295ms, deviation 375.23690ms
+    //d*  : average 332.57835ms, deviation 9.08284ms
+    //total: 15.641318297s
     @Test
     fun largeMultiplication() {
         runBlocking {

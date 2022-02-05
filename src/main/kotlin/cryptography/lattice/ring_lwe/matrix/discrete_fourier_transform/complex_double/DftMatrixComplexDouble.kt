@@ -1,4 +1,4 @@
-package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete
+package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double
 
 import cryptography.lattice.ring_lwe.coding.permCLInv
 import cryptography.lattice.ring_lwe.coding.permLRInv

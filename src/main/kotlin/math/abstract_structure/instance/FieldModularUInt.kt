@@ -1,6 +1,7 @@
 package math.abstract_structure.instance
 
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrix
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.modular_uint.DftMatrixModularUInt
 import cryptography.lattice.ring_lwe.ring.RootDataUInt
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.Field
@@ -33,6 +34,7 @@ class FieldModularUInt(val prime: UInt) : RingModularUInt(prime), Field<ModularU
      * field of ℤ/p has primitive (p-1)-th root of unity, all multiplicative element has order divide (p-1)
      */
     fun firstFullDft(): DftMatrix<ModularUInt> = DftMatrix(firstGenerator)
+    fun firstFullDftFast(): DftMatrix<ModularUInt> = DftMatrixModularUInt(firstGenerator)
 
 
 

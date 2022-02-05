@@ -40,6 +40,7 @@ fun <A> canMultiplyElementWise(a: List<AbstractMatrix<A>>, b: List<AbstractMatri
 
 val enableAssertion = true
 val printMatrix = false
+val roundingErrorDouble = 0.3
 
 fun <A> AbstractMatrix<A>.andPrint(info: String = ""): AbstractMatrix<A> {
     if (printMatrix) {

@@ -1,4 +1,4 @@
-package math
+package math.abstract_structure.algorithm
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import math.abstract_structure.Monoid
@@ -99,14 +99,18 @@ fun <A> Monoid<A>.powerS(x: A, power: UInt): A {
     return y
 }
 
-fun <A> Monoid<A>.power(x: A, power: UInt): A {
-    if (power == 0u) return this.one
-    if (power == 1u) return x
+fun <A> Monoid<A>.powerS(x: A, power: ULong): A {
     var xPow = x
-    for (i in 1u until power) {
-        xPow = multiply(xPow, x)
+    var y = one
+    var pow = power
+    while (pow != 0uL) {
+        if (pow % 2uL == 1uL) {
+            y = multiply(y, xPow)
+        }
+        xPow = multiply(xPow, xPow)
+        pow = pow shr 1
     }
-    return xPow
+    return y
 }
 
 /**
@@ -125,4 +129,24 @@ fun <A> Monoid<A>.powerS(x: A, power: BigInteger): A {
         pow = pow shr 1
     }
     return y
+}
+
+fun <A> Monoid<A>.power(x: A, power: UInt): A {
+    if (power == 0u) return this.one
+    if (power == 1u) return x
+    var xPow = x
+    for (i in 1u until power) {
+        xPow = multiply(xPow, x)
+    }
+    return xPow
+}
+
+fun <A> Monoid<A>.power(x: A, power: ULong): A {
+    if (power == 0uL) return this.one
+    if (power == 1uL) return x
+    var xPow = x
+    for (i in 1uL until power) {
+        xPow = multiply(xPow, x)
+    }
+    return xPow
 }

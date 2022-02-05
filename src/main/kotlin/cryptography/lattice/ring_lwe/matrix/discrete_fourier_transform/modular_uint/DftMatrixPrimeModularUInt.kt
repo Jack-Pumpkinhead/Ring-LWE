@@ -1,10 +1,10 @@
-package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete
+package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.modular_uint
 
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPrime
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.RowSummationMatrix
 import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
-import math.abstract_structure.instance.FieldComplexNumberDouble
-import math.complex_number.ComplexNumber
+import math.abstract_structure.instance.FieldModularUInt
+import math.integer.modular.ModularUInt
 import math.integer.operation.modTimes
 import math.martix.AbstractSquareMatrix
 import math.martix.formalProduct
@@ -14,13 +14,13 @@ import math.martix.squareMatrix
 import util.stdlib.lazyAssert2
 
 /**
- * Created by CowardlyLion at 2022/2/4 16:35
+ * Created by CowardlyLion at 2022/2/5 12:13
  */
-class DftMatrixPrimeComplexDouble(root: RootDataUIntPrime<ComplexNumber<Double>>) : DftMatrixPrime<ComplexNumber<Double>>(root) {
+class DftMatrixPrimeModularUInt(root: RootDataUIntPrime<ModularUInt>) :DftMatrixPrime<ModularUInt>(root) {
 
     init {
         lazyAssert2 {
-            assert(root.ring == FieldComplexNumberDouble)
+            assert(root.ring is FieldModularUInt)
         }
     }
 
@@ -30,11 +30,11 @@ class DftMatrixPrimeComplexDouble(root: RootDataUIntPrime<ComplexNumber<Double>>
                 root.power(modTimes(i, j, size))
             }
         } else {
-            SquareRowBipartiteMatrix(RowSummationMatrix(ring, size), DftMatrixPrimeLowerPartComplexDouble(root))
+            SquareRowBipartiteMatrix(RowSummationMatrix(ring, size), DftMatrixPrimeLowerPartModularUInt(root))
         }
 
-    override fun inverse(): AbstractSquareMatrix<ComplexNumber<Double>> {
-        return ring.formalProduct(DftMatrixPrimeComplexDouble(root.conjugate()), ring.scalarMatrix(size, ring.inverse(ring.ofInteger(size))))
+    override fun inverse(): AbstractSquareMatrix<ModularUInt> {
+        return ring.formalProduct(DftMatrixPrimeModularUInt(root.conjugate()), ring.scalarMatrix(size, ring.inverse(ring.ofInteger(size))))
     }
 
 }

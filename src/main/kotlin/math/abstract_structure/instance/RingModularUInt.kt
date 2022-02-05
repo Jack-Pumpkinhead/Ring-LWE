@@ -71,4 +71,13 @@ open class RingModularUInt(val modulus: UInt) : Ring<ModularUInt> {
             ModularUInt(modulus, modulus - (-a).toUInt())
         }
 
+    override fun ofInteger(a: ULong): ModularUInt = ModularUInt(modulus, a.mod(modulus))
+
+    override fun ofInteger(a: Long): ModularUInt =
+        if (a >= 0) {
+            ModularUInt(modulus, a.toULong().mod(modulus))
+        } else {
+            ModularUInt(modulus, a.mod(modulus.toLong()).toUInt())
+        }
+
 }

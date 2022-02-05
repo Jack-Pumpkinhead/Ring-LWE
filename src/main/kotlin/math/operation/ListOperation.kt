@@ -2,7 +2,7 @@ package math.operation
 
 import math.abstract_structure.Monoid
 import math.abstract_structure.Ring
-import math.powerM
+import math.abstract_structure.algorithm.powerM
 import math.vector.VectorLike
 
 /**

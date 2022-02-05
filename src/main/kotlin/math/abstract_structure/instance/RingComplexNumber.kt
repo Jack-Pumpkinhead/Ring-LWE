@@ -58,7 +58,8 @@ open class RingComplexNumber<A>(val ring: Ring<A>) : Ring<ComplexNumber<A>> {
     }
 
     override fun ofInteger(a: UInt): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
-
     override fun ofInteger(a: Int): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
+    override fun ofInteger(a: ULong): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
+    override fun ofInteger(a: Long): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
 
 }

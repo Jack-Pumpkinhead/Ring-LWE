@@ -28,7 +28,8 @@ object RingBigInteger : Ring<BigInteger> {
     }
 
     override fun ofInteger(a: UInt): BigInteger = a.toBigInteger()
-
     override fun ofInteger(a: Int): BigInteger = a.toBigInteger()
+    override fun ofInteger(a: ULong): BigInteger = a.toBigInteger()
+    override fun ofInteger(a: Long): BigInteger = a.toBigInteger()
 
 }

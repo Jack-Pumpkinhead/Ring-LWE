@@ -4,7 +4,7 @@ import math.abstract_structure.Ring
 import math.abstract_structure.instance.*
 import math.integer.FactorizationUIntPrime
 import math.integer.operation.modUnaryMinus
-import math.powerM
+import math.abstract_structure.algorithm.powerM
 import util.stdlib.lazyAssert2
 
 /**

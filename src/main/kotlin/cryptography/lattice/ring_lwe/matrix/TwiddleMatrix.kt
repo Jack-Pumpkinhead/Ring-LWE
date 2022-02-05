@@ -3,7 +3,7 @@ package cryptography.lattice.ring_lwe.matrix
 import math.abstract_structure.Ring
 import math.coding.LadderIndex
 import math.martix.AbstractDiagonalMatrix
-import math.powerM
+import math.abstract_structure.algorithm.powerM
 import util.stdlib.lazyAssert2
 
 /**

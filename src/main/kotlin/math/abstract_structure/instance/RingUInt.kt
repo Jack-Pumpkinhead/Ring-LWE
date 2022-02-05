@@ -25,4 +25,7 @@ object RingUInt : Ring<UInt> {
 
     override fun ofInteger(a: UInt): UInt = a
     override fun ofInteger(a: Int): UInt = a.toUInt()
+    override fun ofInteger(a: ULong): UInt = a.toUInt()
+    override fun ofInteger(a: Long): UInt = a.toUInt()
+
 }

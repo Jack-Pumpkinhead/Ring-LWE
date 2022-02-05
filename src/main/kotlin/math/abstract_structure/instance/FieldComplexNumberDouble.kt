@@ -1,9 +1,9 @@
 package math.abstract_structure.instance
 
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPrimePower
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.DftMatrixComplexDouble
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.DftMatrixPrimeComplexDouble
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.concrete.DftMatrixPrimePowerComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPrimeComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPrimePowerComplexDouble
 import cryptography.lattice.ring_lwe.ring.RootDataUInt
 import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
 import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower

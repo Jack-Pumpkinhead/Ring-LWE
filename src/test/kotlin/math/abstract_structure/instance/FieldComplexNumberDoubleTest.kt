@@ -2,9 +2,9 @@ package math.abstract_structure.instance
 
 import kotlinx.coroutines.runBlocking
 import math.integer.primeFactorization
-import math.power
-import math.powerM
-import math.powerS
+import math.abstract_structure.algorithm.power
+import math.abstract_structure.algorithm.powerM
+import math.abstract_structure.algorithm.powerS
 import org.junit.jupiter.api.Test
 
 /**

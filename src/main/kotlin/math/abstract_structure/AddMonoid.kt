@@ -13,5 +13,4 @@ interface AddMonoid<A> {
     fun hasNegation(a: A): Boolean
     fun negate(a: A): A
 
-
 }
