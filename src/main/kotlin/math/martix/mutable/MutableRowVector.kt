@@ -15,4 +15,14 @@ class MutableRowVector<A>(override val ring: Ring<A>, val vector: MutableList<A>
         vector[index.toInt()] = a
     }
 
+    override fun rowListAt(row: UInt): List<A> {
+        require(row == 0u)
+        return vector.toList()
+    }
+
+    override fun rowMutableListAt(row: UInt): MutableList<A> {
+        require(row == 0u)
+        return vector.toMutableList()
+    }
+
 }

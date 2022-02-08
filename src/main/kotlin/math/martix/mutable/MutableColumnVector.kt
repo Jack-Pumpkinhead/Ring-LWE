@@ -15,4 +15,14 @@ class MutableColumnVector<A>(override val ring: Ring<A>, val vector: MutableList
         vector[index.toInt()] = a
     }
 
+    override fun columnListAt(column: UInt): List<A> {
+        require(column == 0u)
+        return vector.toList()
+    }
+
+    override fun columnMutableListAt(column: UInt): MutableList<A> {
+        require(column == 0u)
+        return vector.toMutableList()
+    }
+
 }

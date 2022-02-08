@@ -7,11 +7,12 @@ import math.abstract_structure.AddGroup
  *
  * TODO add description of all mathematical object (definition, etc)
  */
-interface FiniteFreeModule<R, A> : AddGroup<A> {
+interface AbstractFiniteModule<R, A> : AddGroup<A> {
 
 //    val ring: CRing<R>    //should acted by a ring
 
     val dimension: UInt
+
     fun action(r: R, a: A): A
 
 }

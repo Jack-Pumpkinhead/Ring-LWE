@@ -12,6 +12,8 @@ import math.martix.concrete.view.RowVectorView
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.operation.*
+import util.stdlib.list
+import util.stdlib.mutableList
 
 /**
  * Created by CowardlyLion at 2022/1/7 21:22
@@ -172,8 +174,8 @@ interface AbstractMatrix<A> {
             this is AbstractMutableMatrix<A> -> this    //TODO mutable row/column vector
             rows == 0u || columns == 0u      -> return EmptyMatrix(ring, rows, columns)
             rows == 1u && columns == 1u      -> Constant(ring, elementAtUnsafe(0u, 0u))
-            rows == 1u                       -> RowVector(ring, List(columns.toInt()) { j -> elementAtUnsafe(0u, j.toUInt()) })
-            columns == 1u                    -> ColumnVector(ring, List(rows.toInt()) { i -> elementAtUnsafe(i.toUInt(), 0u) })
+            rows == 1u                       -> RowVector(ring, list(columns) { j -> elementAtUnsafe(0u, j) })
+            columns == 1u                    -> ColumnVector(ring, list(rows) { i -> elementAtUnsafe(i, 0u) })
             else                             -> this
         }
     }
@@ -184,7 +186,7 @@ interface AbstractMatrix<A> {
     }
 
     fun rowVectorViews(): List<RowVectorView<A>> {
-        return List(rows.toInt()) { row -> RowVectorView(ring, this, row.toUInt()) }
+        return list(rows) { row -> RowVectorView(ring, this, row) }
     }
 
     fun columnVectorViewAt(column: UInt): ColumnVectorView<A> {
@@ -193,13 +195,13 @@ interface AbstractMatrix<A> {
     }
 
     fun columnVectorViews(): List<ColumnVectorView<A>> {
-        return List(columns.toInt()) { column -> ColumnVectorView(ring, this, column.toUInt()) }
+        return list(columns) { column -> ColumnVectorView(ring, this, column) }
     }
 
-
+    //modification of sub list/vector should not reflect by this matrix (if result is List, should not cast it to MutableList and modify)
     fun rowListAt(row: UInt): List<A> {
         require(row < rows)
-        return List(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }
+        return list(columns) { i -> elementAtUnsafe(row, i) }
     }
 
     /**
@@ -207,19 +209,24 @@ interface AbstractMatrix<A> {
      */
     fun rowMutableListAt(row: UInt): MutableList<A> {
         require(row < rows)
-        return MutableList(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) }
+        return mutableList(columns) { i -> elementAtUnsafe(row, i) }
     }
 
-    //simplification by actual array structure is possible, but may cause problem if underlying array is mutable.
-    fun rowVectorAt(row: UInt): RowVector<A> {
-        require(row < rows)
-        return RowVector(ring, List(columns.toInt()) { i -> elementAtUnsafe(row, i.toUInt()) })
-    }
-
-    fun columnVectorAt(column: UInt): ColumnVector<A> {
+    fun columnListAt(column: UInt): List<A> {
         require(column < columns)
-        return ColumnVector(ring, List(rows.toInt()) { i -> elementAtUnsafe(i.toUInt(), column) })
+        return list(rows) { i -> elementAtUnsafe(i, column) }
     }
+
+    /**
+     * copy of column
+     */
+    fun columnMutableListAt(column: UInt): MutableList<A> {
+        require(column < columns)
+        return mutableList(rows) { i -> elementAtUnsafe(i, column) }
+    }
+
+    fun rowVectorAt(row: UInt): RowVector<A> = RowVector(ring, rowListAt(row))
+    fun columnVectorAt(column: UInt): ColumnVector<A> = ColumnVector(ring, columnListAt(column))
 
     fun toOrdinaryMatrix(): OrdinaryMatrix<A> = ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
     fun toMutableMatrix(): MutableMatrix<A> = ring.mutableMatrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }

@@ -4,7 +4,7 @@ import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrime
 import cryptography.lattice.ring_lwe.matrix.ChineseRemainderTransformMatrixPrimePower
 import cryptography.lattice.ring_lwe.matrix.LowerTriangularOneMatrix
 import math.abstract_structure.instance.*
-import math.abstract_structure.module.CategoryOfModule
+import math.abstract_structure.module.category.CategoryOfModule
 import math.abstract_structure.module.freeModule
 import math.integer.FactorizationUIntPrimePower
 import math.martix.whiskered

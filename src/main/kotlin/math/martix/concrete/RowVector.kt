@@ -23,4 +23,9 @@ class RowVector<A>(override val ring: Ring<A>, val vector: List<A>) : AbstractRo
         return vector.toMutableList()
     }
 
+    override fun rowVectorAt(row: UInt): RowVector<A> {
+        require(row == 0u)
+        return this
+    }
+
 }
