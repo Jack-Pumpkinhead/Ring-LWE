@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import math.abstract_structure.instance.FieldModularUInt
 import math.integer.modular.ModularUInt
 import math.integer.primeOf
-import math.random.randomModularUIntMatrix
+import math.random.randomMatrix
 import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
 import math.timing.EqualTwoMatrixMultiplicationTiming
@@ -28,7 +28,7 @@ internal class DftMatrixTest {
             for (i in 1u..200u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.firstFullDft()
-                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
+                val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
@@ -48,7 +48,7 @@ internal class DftMatrixTest {
             for (i in 410u..420u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.firstFullDft()
-                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
+                val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()

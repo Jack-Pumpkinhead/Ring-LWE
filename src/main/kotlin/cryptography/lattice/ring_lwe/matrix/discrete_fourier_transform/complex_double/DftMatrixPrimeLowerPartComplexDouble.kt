@@ -37,7 +37,7 @@ class DftMatrixPrimeLowerPartComplexDouble(root: RootDataUIntPrime<ComplexNumber
     val dftInv: AbstractSquareMatrix<ComplexNumber<Double>>
     val diag_dft_rgInvPadding: AbstractMatrix<ComplexNumber<Double>>
 
-    val twoPower = nextTwoPower(2u * rows - 1u)     //TODO speedup when size is already 2^k, or leave it alone to prevent so-called 'timing-attack'?
+    val twoPower = nextTwoPower(2u * rows - 1u)     //speedup when size is already 2^k, or leave it alone to prevent so-called 'timing-attack'? //situations that p = 2^k+1 is very few.
 
     init {
         dft = FieldComplexNumberDouble.dft(twoPower)

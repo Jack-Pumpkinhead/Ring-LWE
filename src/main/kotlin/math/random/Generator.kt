@@ -72,11 +72,11 @@ fun Random.randomSquareUIntMatrices(matrices: UInt, sizeRange: UIntRange, bound:
     }
 }
 
-fun RingModularULong.randomModularULongMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularULong(modulus, randomness.nextULong(modulus)) }
-fun RingModularUInt.randomModularUIntMatrix(rows: UInt, columns: UInt, randomness: Random = Random) = this.matrix(rows, columns) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
-fun RingModularUInt.randomModularUIntMatrix(rows: UInt, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(rows, randomness.nextUInt(columnsRange)) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
-fun RingModularUInt.randomModularUIntMatrix(rowsRange: UIntRange, columns: UInt, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), columns) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
-fun RingModularUInt.randomModularUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
+fun RingModularULong.randomMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularULong(modulus, randomness.nextULong(modulus)) }
+fun RingModularUInt.randomMatrix(rows: UInt, columns: UInt, randomness: Random = Random) = this.matrix(rows, columns) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
+fun RingModularUInt.randomMatrix(rows: UInt, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(rows, randomness.nextUInt(columnsRange)) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
+fun RingModularUInt.randomMatrix(rowsRange: UIntRange, columns: UInt, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), columns) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
+fun RingModularUInt.randomMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
 
 /**
  * return a random complex number that within range [-bound, bound)

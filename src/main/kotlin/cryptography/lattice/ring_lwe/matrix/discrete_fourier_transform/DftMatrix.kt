@@ -45,7 +45,7 @@ open class DftMatrix<A>(val root: RootDataUInt<A>) : BackingSquareMatrix<A> {
 
     override fun hasInverse(): Boolean = ring.hasInverse(ring.ofInteger(size))
 
-    override fun inverse(): AbstractSquareMatrix<A> {   //TODO inverse of size in Z/(p) equals (p-1)^2/size mod p, maybe faster than gcd algorithm
+    override fun inverse(): AbstractSquareMatrix<A> {   //TODO inverse of size in Z/(p) equals (p-1)^2/size mod p, maybe faster than gcd algorithm, but this is only a O(1) improvement
         return ring.formalProduct(DftMatrix(root.conjugate()), ring.scalarMatrix(size, ring.inverse(ring.ofInteger(size))))
     }
 }

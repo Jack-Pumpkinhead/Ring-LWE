@@ -5,7 +5,7 @@ import math.abstract_structure.instance.FieldModularUInt
 import math.integer.FactorizationUIntPrime
 import math.integer.modular.ModularUInt
 import math.integer.primeOf
-import math.random.randomModularUIntMatrix
+import math.random.randomMatrix
 import math.statistic.TaskTimingStatistic
 import math.timing.EqualTwoMatrixMultiplicationTiming
 import math.timing.TwoMatrix
@@ -31,7 +31,7 @@ internal class DftMatrixPrimeTest {
                 val root = primeField.firstGenerator
 //                val dft = DftMatrixPrime(root.primeSubroot(Random.nextUInt(root.order.factors.size.toUInt())))
                 val dft = DftMatrixPrime(root.primeSubroot(root.order.factors.size.toUInt() - 1u))
-                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
+                val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
@@ -53,7 +53,7 @@ internal class DftMatrixPrimeTest {
                 val root = primeField.firstGenerator
 //                val dft = DftMatrixPrime(root.primeSubroot(Random.nextUInt(root.order.factors.size.toUInt())))    //too many variation here
                 val dft = DftMatrixPrime(root.primeSubroot(root.order.factors.size.toUInt() - 1u))  //very large prime
-                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
+                val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
@@ -78,7 +78,7 @@ internal class DftMatrixPrimeTest {
                 val root = primeField.firstGenerator
 //                val dft = DftMatrixPrime(root.primeSubroot(Random.nextUInt(root.order.factors.size.toUInt())))    //too many variation here
                 val dft = DftMatrixPrime(root.primeSubroot(root.order.factors.size.toUInt() - 1u))  //very large prime
-                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
+                val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
                 statistic.go(TwoMatrix(dft, x)) //repeat to prevent exception in statistic, but cost another 45s.
             }
@@ -102,7 +102,7 @@ internal class DftMatrixPrimeTest {
                 println("i: $i,  prime: $prime")
                 val root = primeField.firstGenerator
                 val dft = DftMatrixPrime(root.primeSubroot(root.order.factors.size.toUInt() - 1u))  //very large prime
-                val x = primeField.randomModularUIntMatrix(dft.columns, 2u)
+                val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()

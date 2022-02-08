@@ -31,13 +31,13 @@ internal class DftMatrixComplexDoubleTest {
     }
 
     //slower than DftMatrix on Z/(p)
-    // *  : average 16.29752ms, deviation 13.98964ms
-    // *p : average 16.44031ms, deviation 14.04635ms
-    // * t: average 16.04624ms, deviation 14.07935ms
-    // *pt: average 17.72277ms, deviation 14.35874ms
-    //d*  : average 33.54643ms, deviation 33.52126ms
-    //total: 20.010654800s
-    //average: 7.397929337518881E-9, max: 5.147973871997159E-7
+    // *  : average 15.29855ms, deviation 13.34968ms
+    // *p : average 15.48522ms, deviation 13.10551ms
+    // * t: average 15.13052ms, deviation 13.30079ms
+    // *pt: average 16.62362ms, deviation 13.59304ms
+    //d*  : average 33.41120ms, deviation 33.38036ms
+    //total: 19.189820594s
+    //average: 6.837927288466171E-7, max: 5.912274465473463E-5
     @Test
     fun multiplication() {
         runBlocking {
@@ -45,7 +45,7 @@ internal class DftMatrixComplexDoubleTest {
             for (i in 1u..200u) {
                 val prime = primeOf(i).toUInt()
                 val dft = FieldComplexNumberDouble.dft((prime - 1u).primeFactorization())
-                val x = FieldComplexNumberDouble.randomMatrix(dft.columns, 2u, 10.0)
+                val x = FieldComplexNumberDouble.randomMatrix(dft.columns, 2u, prime.toDouble())
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
@@ -53,15 +53,15 @@ internal class DftMatrixComplexDoubleTest {
         }
     }
 
-    //faster than DftMatrix on Z/(p) now!
+    //faster than direct multiplication of DftMatrix on Z/(p)
     //and parallel method started to work.
-    // *  : average 117.76305ms, deviation 37.15359ms
-    // *p : average 106.83181ms, deviation 24.36754ms
-    // * t: average 104.31774ms, deviation 29.23314ms
-    // *pt: average 122.37411ms, deviation 25.32018ms
-    //d*  : average 673.86712ms, deviation 18.57547ms
-    //total: 12.376692100s
-    //average: 6.775370123834831E-7, max: 3.034870920035866E-6
+    // *  : average 116.59528ms, deviation 37.37676ms
+    // *p : average 106.49788ms, deviation 26.72946ms
+    // * t: average 103.74234ms, deviation 29.93683ms
+    // *pt: average 117.40474ms, deviation 24.43515ms
+    //d*  : average 671.86108ms, deviation 19.47628ms
+    //total: 12.277114507s
+    //average: 1.8593447047501372E-4, max: 8.379635427682263E-4
     @Test
     fun largeMultiplication() {
         runBlocking {
@@ -69,7 +69,7 @@ internal class DftMatrixComplexDoubleTest {
             for (i in 410u..420u) {
                 val prime = primeOf(i).toUInt()
                 val dft = FieldComplexNumberDouble.dft((prime - 1u).primeFactorization())
-                val x = FieldComplexNumberDouble.randomMatrix(dft.columns, 2u, 10.0)
+                val x = FieldComplexNumberDouble.randomMatrix(dft.columns, 2u, prime.toDouble())
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
@@ -77,4 +77,49 @@ internal class DftMatrixComplexDoubleTest {
         }
     }
 
+    // *  : average 5.94735ms, deviation 13.33431ms
+    // *p : average 9.72825ms, deviation 19.85498ms
+    // * t: average 5.97808ms, deviation 13.33069ms
+    // *pt: average 9.72660ms, deviation 19.96243ms
+    //d*  : average 7.53727ms, deviation 27.36269ms
+    //total: 18.836094401s
+    //average: 1.9132886893372178E-5, max: 6.868382116736388E-4
+    @Test
+    fun primeField() {
+        runBlocking {
+            val statistic = TaskNearMatrixComplexDoubleStatistic(TwoMatrixMultiplicationTiming())
+            for (i in 1u..484u) {
+                val prime = primeOf(i)
+                val root = FieldComplexNumberDouble.root((prime.toUInt() - 1u).primeFactorization())
+                val dft = DftMatrixPrimeComplexDouble(root.primeSubroot(root.order.factors.size.toUInt() - 1u))
+                val x = FieldComplexNumberDouble.randomMatrix(dft.columns, 2u, prime.toDouble())
+                statistic.go(TwoMatrix(dft, x))
+            }
+            statistic.printAverageAndStandardDeviation()
+            statistic.printAverageAndMaxDistance()
+        }
+    }
+
+    // *  : average 14.87212ms, deviation 25.43669ms
+    // *p : average 22.85050ms, deviation 37.31633ms
+    // * t: average 14.23107ms, deviation 24.73446ms
+    // *pt: average 21.62239ms, deviation 35.18192ms
+    //d*  : average 23.01333ms, deviation 54.05985ms
+    //total: 8.210099824s
+    //average: 6.996785315210394E-5, max: 7.612033504292067E-4
+    @Test
+    fun largePrimeField2() {
+        runBlocking {
+            val statistic = TaskNearMatrixComplexDoubleStatistic(TwoMatrixMultiplicationTiming())
+            for (i in 400u..484u) {
+                val prime = primeOf(i)
+                val root = FieldComplexNumberDouble.root((prime.toUInt() - 1u).primeFactorization())
+                val dft = DftMatrixPrimeComplexDouble(root.primeSubroot(root.order.factors.size.toUInt() - 1u))
+                val x = FieldComplexNumberDouble.randomMatrix(dft.columns, 2u, prime.toDouble())
+                statistic.go(TwoMatrix(dft, x))
+            }
+            statistic.printAverageAndStandardDeviation()
+            statistic.printAverageAndMaxDistance()
+        }
+    }
 }
