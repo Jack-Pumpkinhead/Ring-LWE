@@ -29,3 +29,8 @@
 - ℝ
 - ℚ
 - ℂ
+
+##data structure
+- ULong 64-bit
+- Int.MAX_VALUE = 2147483647 = 2^31 -1
+- UInt.MAX_VALUE = 2^32 -1 < 64 * Int.MAX_VALUE < ULong.MAX_VALUE = 2^64 -1

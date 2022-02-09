@@ -2,7 +2,7 @@ package math.abstract_structure.instance
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.abstract_structure.Ring
-import math.bitAt
+import util.bit.bitAt
 import math.twoPower64
 
 /**

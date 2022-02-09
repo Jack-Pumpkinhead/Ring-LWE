@@ -2,8 +2,9 @@ package util
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.bitAt
-import math.setBitAt
+import util.bit.bitAt
+import math.num64
+import util.bit.copyWithBitChange
 
 /**
  * Created by CowardlyLion at 2022/1/16 21:25
@@ -11,8 +12,8 @@ import math.setBitAt
 class InfiniteBitSet {
 
     /**
-     * ONLY capable of bits(index) < Int.MAX_VALUE * 64
-     * TODO use ULongArray
+     * ONLY capable of bits < Int.MAX_VALUE * 64
+     * TODO use MutableList<ULongArray>
      * */
     val base = mutableListOf<ULong>()
 
@@ -20,16 +21,16 @@ class InfiniteBitSet {
         require(i.isNegative.not())
 
         val wordIndex = i / num64
-        return if (wordIndex >= base.size.toBigInteger()) false else {
+        return if (wordIndex < base.size.toBigInteger()) {
             base[wordIndex.intValue()].bitAt(i.mod(num64).uintValue())
-        }
+        } else false
     }
 
     fun bitAt(i: UInt): Boolean {
         val wordIndex = i / 64u
-        return if (wordIndex >= base.size.toUInt()) false else {
+        return if (wordIndex < base.size.toUInt()) {
             base[wordIndex.toInt()].bitAt(i.mod(64u))
-        }
+        } else false
     }
 
 
@@ -42,27 +43,24 @@ class InfiniteBitSet {
             while (wordIndex >= base.size) {
                 base += 0uL
             }
-            base[wordIndex].setBitAt(remainder.uintValue(), true)
+            base[wordIndex] = base[wordIndex].copyWithBitChange(remainder.uintValue(), true)
         } else if (wordIndex < base.size) {
-            base[wordIndex].setBitAt(remainder.uintValue(), false)
+            base[wordIndex] = base[wordIndex].copyWithBitChange(remainder.uintValue(), false)
         }
     }
 
     fun setBitAt(i: UInt, bit: Boolean) {
         val wordIndex = (i / 64u).toInt()
-        val remainder = i.mod(64u)
 
         if (bit) {
             while (wordIndex >= base.size) {
                 base += 0uL
             }
-            base[wordIndex].setBitAt(remainder, true)
+            base[wordIndex] = base[wordIndex].copyWithBitChange(i.mod(64u), true)
         } else if (wordIndex < base.size) {
-            base[wordIndex].setBitAt(remainder, false)
+            base[wordIndex] = base[wordIndex].copyWithBitChange(i.mod(64u), false)
         }
     }
 
-
 }
 
-val num64 = BigInteger(64)

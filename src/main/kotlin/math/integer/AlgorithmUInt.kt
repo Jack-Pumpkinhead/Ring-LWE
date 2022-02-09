@@ -4,6 +4,7 @@ import math.abstract_structure.instance.RingUInt
 import math.integer.modular.ModularUInt
 import math.integer.operation.modPowerS
 import math.operation.product
+import util.stdlib.shl
 import kotlin.math.sqrt
 
 /**
@@ -327,14 +328,19 @@ fun firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime: UInt, primeMinusOne: F
     }
 }
 
-fun UInt.floorLog2(): Int {
+fun UInt.floorLog2Int(): Int {
     require(this != 0u)
     return 31 - this.countLeadingZeroBits()
 }
 
-fun UInt.ceilLog2(): Int {
+fun UInt.ceilLog2Int(): Int {
     require(this != 0u)
     return 32 - (this - 1u).countLeadingZeroBits()
+}
+
+fun UInt.ceilLog2(): UInt {
+    require(this != 0u)
+    return 32u - (this - 1u).countLeadingZeroBits().toUInt()
 }
 
 fun isTwoPower(n: UInt): Boolean = nextTwoPowerDirect(n) == n
@@ -354,5 +360,5 @@ fun nextTwoPower(n: UInt): FactorizationUIntPrimePower {
     require(n <= Int.MAX_VALUE.toUInt())
     val power = n.ceilLog2()
 //    require(power != 32)
-    return FactorizationUIntPrimePower(1u shl power, 2u, power.toUInt())
+    return FactorizationUIntPrimePower(1u shl power, 2u, power)
 }

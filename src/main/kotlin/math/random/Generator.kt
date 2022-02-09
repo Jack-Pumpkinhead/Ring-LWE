@@ -9,7 +9,9 @@ import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.OrdinarySquareMatrix
 import math.martix.matrix
 import math.martix.squareMatrix
+import math.twoPower31
 import math.twoPower32
+import util.stdlib.shl
 import util.stdlib.shr
 import kotlin.random.Random
 import kotlin.random.nextUInt
@@ -95,28 +97,15 @@ fun FieldComplexNumberDouble.randomMatrix(rows: UInt, columns: UInt, bound: Doub
 fun Random.nextUIntFDR(bound: UInt): UInt {
     require(bound != 0u)
     if (bound == 1u) return 0u
-    if (bound <= Int.MAX_VALUE.toUInt()) {
-        val log = bound.ceilLog2()  //log>=1
-        var n = 1u shl log
+    if (bound <= twoPower31) {
+        val bits = bound.ceilLog2()  //1 <= log <= 31
+        var n = 1u shl bits
 
-        var randomUInt = this.nextUInt()        //make every input (including 2^k) has nearly same performance.
-        var r = randomUInt.mod(n)
-        randomUInt = randomUInt shr n
-        var bits = 32u - n
+        val randomUInt = this.nextUInt()        //make every input (including 2^k) has nearly same performance.
+        var r = randomUInt.and(n - 1u)
 
-        fun nextBit(): UInt =
-            if (bits != 0u) {
-                val result = randomUInt.mod(2u)
-                randomUInt = randomUInt shr 1
-                bits--
-                result
-            } else {
-                randomUInt = this.nextUInt()
-                val result = randomUInt.mod(2u)
-                randomUInt = randomUInt shr 1
-                bits = 31u
-                result
-            }
+        val randomBit = RandomBit(this, randomUInt shr bits, 32u - bits)
+
         while (true) {
             if (n >= bound) {
                 if (r < bound) {
@@ -127,27 +116,13 @@ fun Random.nextUIntFDR(bound: UInt): UInt {
                 }
             }
             n = n.shl(1)
-            r = r.shl(1) + nextBit()
+            r = r.shl(1) + randomBit.nextBitUInt()
         }
     } else {
         var n = twoPower32
-        var r = this.nextUInt()
+        var r = this.nextUInt()     //make every input (including 2^k) has nearly same performance.
 
-        var randomUInt = 0u        //make every input (including 2^k) has nearly same performance.
-        var bits = 0u
-        fun nextBit(): UInt =
-            if (bits != 0u) {
-                val result = randomUInt.mod(2u)
-                randomUInt = randomUInt shr 1
-                bits--
-                result
-            } else {
-                randomUInt = this.nextUInt()
-                val result = randomUInt.mod(2u)
-                randomUInt = randomUInt shr 1
-                bits = 31u
-                result
-            }
+        val randomBit = RandomBit(this)
 
         while (true) {
             if (n >= bound) {
@@ -159,7 +134,7 @@ fun Random.nextUIntFDR(bound: UInt): UInt {
                 }
             }
             n = n.shl(1)
-            r = r.shl(1) + nextBit()
+            r = r.shl(1) + randomBit.nextBitUInt()
         }
     }
 }

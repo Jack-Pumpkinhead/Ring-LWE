@@ -1,5 +1,8 @@
 package test
 
+import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import org.junit.jupiter.api.Test
+
 /**
  * Created by CowardlyLion at 2022/1/5 17:23
  */
@@ -50,4 +53,11 @@ internal class Test {
 
         }
     }*/
+
+    @Test
+    fun bigDecimal() {
+        val a = 123L.toBigDecimal(0L, null)
+        "aaa".toBigDecimal()
+        println(a)
+    }
 }

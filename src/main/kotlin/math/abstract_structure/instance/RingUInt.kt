@@ -1,7 +1,7 @@
 package math.abstract_structure.instance
 
 import math.abstract_structure.Ring
-import math.bitAt
+import util.bit.bitAt
 import math.integer.modInverse
 import math.twoPower32
 

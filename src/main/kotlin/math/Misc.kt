@@ -4,7 +4,6 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.integer.gcd
 import math.martix.AbstractMatrix
-import kotlin.math.PI
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -89,35 +88,3 @@ fun nonNegMin(a: BigInteger, b: ULong): ULong {
     return if (a > b.toBigInteger()) b else a.ulongValue()
 }
 
-fun UInt.bitAt(i: UInt): Boolean {
-    require(i < 32u)
-    return this.shr(i.toInt()).and(1u) == 1u
-}
-
-fun UInt.setBitAt(i: UInt, bit: Boolean): UInt {
-    require(i < 32u)
-    return if (bit) {
-        this.or(1u.shl(i.toInt()))
-    } else {
-        this.inv().or(1u.shl(i.toInt())).inv()
-    }
-}
-
-fun ULong.bitAt(i: UInt): Boolean {
-    require(i < 64u)
-    return this.shr(i.toInt()).and(1uL) == 1uL
-}
-
-fun ULong.setBitAt(i: UInt, bit: Boolean): ULong {
-    require(i < 64u)
-    return if (bit) {
-        this.or(1uL.shl(i.toInt()))
-    } else {
-        this.inv().or(1uL.shl(i.toInt())).inv()
-    }
-}
-
-val twoPower32 = 1uL.shl(32)
-val twoPower64 = BigInteger.ONE.shl(64)
-
-const val pi2 = PI * 2
