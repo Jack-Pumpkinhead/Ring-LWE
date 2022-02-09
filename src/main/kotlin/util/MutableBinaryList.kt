@@ -11,7 +11,7 @@ import util.stdlib.toULong
  *
  * bits that stored always >= [size]
  */
-class MutableBinaryList(var size: ULong, val list: MutableList<ULong> = mutableListOf()) {
+class MutableBinaryList(var size: ULong = 0uL, val list: MutableList<ULong> = mutableListOf()) {
 
     init {
         if (size > 0uL) {
@@ -67,6 +67,5 @@ class MutableBinaryList(var size: ULong, val list: MutableList<ULong> = mutableL
         val wordIndex = (i / 64u).toInt()   //always <= Int.MAX_VALUE
         list[wordIndex] = list[wordIndex].copyWithBitChange(i.mod(64u), bit)
     }
-
 
 }

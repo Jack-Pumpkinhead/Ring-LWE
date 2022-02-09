@@ -23,7 +23,7 @@ class RandomBit(val random: Random, var randomUInt: UInt = 0u, var bitsRemaining
         }
     }
 
-    fun nextBoolean(): Boolean {
+    fun nextBit(): Boolean {
         return if (bitsRemaining != 0u) {
             val result = randomUInt.and(1u)
             randomUInt = randomUInt shr 1
