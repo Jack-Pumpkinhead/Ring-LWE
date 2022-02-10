@@ -88,3 +88,6 @@ fun nonNegMin(a: BigInteger, b: ULong): ULong {
     return if (a > b.toBigInteger()) b else a.ulongValue()
 }
 
+fun BigInteger.isOdd(): Boolean = this.and(BigInteger.ONE) == BigInteger.ONE
+fun BigInteger.isEven(): Boolean = this.and(BigInteger.ONE) == BigInteger.ZERO
+

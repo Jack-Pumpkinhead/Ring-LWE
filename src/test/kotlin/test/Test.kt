@@ -1,7 +1,10 @@
 package test
 
+import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 /**
  * Created by CowardlyLion at 2022/1/5 17:23
@@ -60,4 +63,50 @@ internal class Test {
         "aaa".toBigDecimal()
         println(a)
     }
+
+    @Test
+    fun bigDecimalDivision() {
+        val a = 1637603.toBigDecimal(0L, null)
+        val b = 2097152.toBigDecimal(0L, null)
+        println(a)
+        println(b)
+        val div = a.divide(b, DecimalMode.DEFAULT)
+        println(div)
+    }
+
+    @Test
+    fun bigDecimalDivision1() {
+        val a = 1637603.toBigDecimal(0L, null)
+        val b = 2097152.toBigDecimal(0L, null)
+        println(a.toStringExpanded())
+        println(b.toStringExpanded())
+        val div = a.divide(b, DecimalMode(21))
+        println(div.toStringExpanded())
+    }
+
+    @Test
+    fun bigDecimalDivisionJava() {
+//        val a = BigDecimal(1637603)
+//        val b = BigDecimal(2097152)
+        val a = BigDecimal.valueOf(1637603L)
+        val b = BigDecimal.valueOf(2097152L)
+        println(a)
+        println(b)
+        val div = a.divide(b, 25, RoundingMode.UNNECESSARY)
+        println(div)
+    }
+    @Test
+    fun bigDecimalDivisionJava1() {
+//        val a = BigDecimal(1637603)
+//        val b = BigDecimal(2097152)
+        val a = BigDecimal.valueOf(1637603L)
+        val b = BigDecimal.valueOf(2097152L)
+        println(a)
+        println(b)
+        val div = a / b
+        println(div)
+    }
+
+
+
 }
