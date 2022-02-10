@@ -2,6 +2,8 @@ package test
 
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -107,6 +109,15 @@ internal class Test {
         println(div)
     }
 
+    @Test
+    fun shl() {
+        val zero = BigInteger.ZERO
+        println(zero.shl(1))
+        println("sign: ${zero.getSign()}")
 
+        val zero1  = BigInteger.ONE - 1uL.toBigInteger()
+        println("${zero1.shl(1)}")
+        println("sign: ${zero1.getSign()}")
+    }
 
 }

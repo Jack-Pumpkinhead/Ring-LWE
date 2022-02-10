@@ -24,7 +24,7 @@ import kotlin.random.nextUInt
 internal class BinaryRandomNumberTest {
 
     fun fractionInteger(a: BinaryRandomNumber, digits: ULong): BigInteger {
-        val decimal = a.toBigDecimal(digits)
+        val decimal = a.absoluteValueBigDecimal(digits)
 //        println("decimal: ${decimal.toStringExpanded()}")
         val integer = BigDecimal.fromBigInteger(a.integer)
 //        println("integer: ${integer1.toStringExpanded()}")
@@ -40,8 +40,8 @@ internal class BinaryRandomNumberTest {
 
     @Test
     fun random() {
-        val a = BinaryRandomNumber(Random, BigInteger.ONE)
-        val b = a.toBigDecimal(10uL)
+        val a = BinaryRandomNumber(Random, integer = BigInteger.ONE)
+        val b = a.absoluteValueBigDecimal(10uL)
         val fraction = BigInteger.TWO.pow(10L)
         val c = b * BigDecimal.fromBigInteger(fraction)
         val c1 = c.toBigInteger()
@@ -63,8 +63,8 @@ internal class BinaryRandomNumberTest {
                 Task("               kotlin") { (value, power) -> Random.nextUInt(value.uintValue(true)).toBigInteger() },
                 Task("                  FDR") { (value, power) -> Random.nextUIntFDR(value.uintValue(true)).toBigInteger() },
                 Task("    binary fractional") { (value, power) ->
-                    val a = BinaryRandomNumber(Random, BigInteger.ZERO)
-                    val b = a.toBigDecimal(power)
+                    val a = BinaryRandomNumber(Random, integer = BigInteger.ZERO)
+                    val b = a.absoluteValueBigDecimal(power)
                     val c = b * BigDecimal.fromBigInteger(value)
                     val c1 = c.toBigInteger()
                     val remain = c - BigDecimal.fromBigInteger(c1)
@@ -115,8 +115,8 @@ internal class BinaryRandomNumberTest {
                 Task("               kotlin") { (value, power) -> Random.nextUInt(value.uintValue(true)).toBigInteger() },
                 Task("                  FDR") { (value, power) -> Random.nextUIntFDR(value.uintValue(true)).toBigInteger() },
                 Task("    binary fractional") { (value, power) ->
-                    val a = BinaryRandomNumber(Random, BigInteger.ZERO)
-                    val b = a.toBigDecimal(power)
+                    val a = BinaryRandomNumber(Random, integer = BigInteger.ZERO)
+                    val b = a.absoluteValueBigDecimal(power)
                     val c = b * BigDecimal.fromBigInteger(value)
                     val c1 = c.toBigInteger()
                     val remain = c - BigDecimal.fromBigInteger(c1)
@@ -126,8 +126,8 @@ internal class BinaryRandomNumberTest {
                 Task("TPM            kotlin") { (value, power) -> TPMRandom.nextUInt(value.uintValue(true)).toBigInteger() },
                 Task("TPM               FDR") { (value, power) -> TPMRandom.nextUIntFDR(value.uintValue(true)).toBigInteger() },
                 Task("TPM binary fractional") { (value, power) ->
-                    val a = BinaryRandomNumber(TPMRandom, BigInteger.ZERO)
-                    val b = a.toBigDecimal(power)
+                    val a = BinaryRandomNumber(TPMRandom, integer = BigInteger.ZERO)
+                    val b = a.absoluteValueBigDecimal(power)
                     val c = b * BigDecimal.fromBigInteger(value)
                     val c1 = c.toBigInteger()
                     val remain = c - BigDecimal.fromBigInteger(c1)
@@ -153,7 +153,7 @@ internal class BinaryRandomNumberTest {
 
     @Test
     fun random3() {
-        val r = BinaryRandomNumber(Random, BigInteger.ZERO)
+        val r = BinaryRandomNumber(Random, integer = BigInteger.ZERO)
         for (i in 0uL..1000uL) {
             println("i: $i, ${fractionInteger(r, i).toString(2)}")
         }
