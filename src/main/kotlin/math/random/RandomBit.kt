@@ -1,5 +1,6 @@
 package math.random
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import kotlin.random.Random
 import kotlin.random.nextUInt
 
@@ -36,6 +37,14 @@ class RandomBit(val random: Random, var randomUInt: UInt = 0u, var bitsRemaining
             bitsRemaining = 31u
             result == 1u
         }
+    }
+
+    fun nextBigInteger(bits: ULong): BigInteger {
+        var result = BigInteger.ZERO
+        for (i in 0uL until bits) {
+            result = result.shl(1) + if (nextBit()) BigInteger.ONE else BigInteger.ZERO
+        }
+        return result
     }
 
 }

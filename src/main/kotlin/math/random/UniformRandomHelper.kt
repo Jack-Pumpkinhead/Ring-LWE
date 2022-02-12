@@ -1,5 +1,6 @@
 package math.random
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import math.abstract_structure.instance.*
 import math.complex_number.ComplexNumber
 import math.integer.*
@@ -21,6 +22,7 @@ import kotlin.random.nextULong
  * Created by CowardlyLion at 2022/1/12 18:18
  */
 
+//naive implementation of randomization with given weights
 fun <T> Random.randomizedElements(weights: DoubleArray, vararg elements: T): T {
     require(weights.isNotEmpty())
     require(weights.size == elements.size)
@@ -149,6 +151,40 @@ fun Random.nextUIntFDR(range: UIntRange): UInt {
     return range.first + nextUIntFDR(range.last + 1u - range.first)
 }
 
+/**
+ * Fast Dice Roller algorithm by Jérémie Lumbroso
+ *
+ * n = 2^k, r uniformly distributed in [0, n-1]
+ *
+ * faster than [nextUIntFDR]
+ *
+ * return integer uniformly distributed in [0, [bound]-1]
+ */
+fun Random.nextBigIntegerFDR(bound: BigInteger): BigInteger {
+    require(bound.isPositive)
+    if (bound == BigInteger.ONE) return BigInteger.ZERO
+
+    val bits = bound.ceilLog2()  //1 <= log
+    require(bits <= Int.MAX_VALUE.toULong())  //only accept "small but large enough" value of bound
+
+    val randomBit = RandomBit(this)
+
+    var n = BigInteger.ONE shl bits.toInt()
+    var r = randomBit.nextBigInteger(bits)
+
+    while (true) {
+        if (n >= bound) {
+            if (r < bound) {
+                return r
+            } else {
+                n -= bound
+                r -= bound
+            }
+        }
+        n = n.shl(1)
+        r = r.shl(1) + if (randomBit.nextBit()) BigInteger.ONE else BigInteger.ZERO
+    }
+}
 
 /**
  * generating random factored number algorithm by Adam Kalai

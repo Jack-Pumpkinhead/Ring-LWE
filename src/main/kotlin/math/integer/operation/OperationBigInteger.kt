@@ -8,6 +8,7 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 
 val BigInteger.maxIndexOfOne: Long
     get() {
+        require(!isNegative)
         return if (this == BigInteger.ZERO) -1
         else {
             var i = numberOfWords.toLong() * 63L
@@ -17,14 +18,23 @@ val BigInteger.maxIndexOfOne: Long
             i
         }
     }
+val BigInteger.maxIndexOfOneULong: ULong
+    get() {
+        require(isPositive)
+        var i = numberOfWords.toULong() * 63uL
+        while (!bitAt(i.toLong())) {
+            i--
+        }
+        return i
+    }
 
 /**
  * Montgomery's ladder.
  * @return [x]^[power] mod [modulus], 0^0 = 1
  * */
 fun modPowerM(x: BigInteger, power: BigInteger, modulus: BigInteger): BigInteger {
-    require(power >= BigInteger.ZERO)
-    require(modulus >= BigInteger.ONE)
+    require(!power.isNegative)
+    require(modulus.isPositive)
     return when (power) {
         BigInteger.ZERO -> BigInteger.ONE.mod(modulus)
         BigInteger.ONE  -> x.mod(modulus)
@@ -53,7 +63,7 @@ fun modPowerM(x: BigInteger, power: BigInteger, modulus: BigInteger): BigInteger
  * @return [this]^[power], 0^0 = 1
  * */
 fun BigInteger.powerM(power: BigInteger): BigInteger {
-    require(power >= BigInteger.ZERO)
+    require(!power.isNegative)
     return when (power) {
         BigInteger.ZERO -> BigInteger.ONE
         BigInteger.ONE  -> this

@@ -1,12 +1,16 @@
 package test
 
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
+import com.ionspin.kotlin.bignum.decimal.RoundingMode.*
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import math.random.RandomBit
 import org.junit.jupiter.api.Test
+import util.toBigDecimal
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.random.Random
 
 /**
  * Created by CowardlyLion at 2022/1/5 17:23
@@ -97,6 +101,7 @@ internal class Test {
         val div = a.divide(b, 25, RoundingMode.UNNECESSARY)
         println(div)
     }
+
     @Test
     fun bigDecimalDivisionJava1() {
 //        val a = BigDecimal(1637603)
@@ -115,9 +120,22 @@ internal class Test {
         println(zero.shl(1))
         println("sign: ${zero.getSign()}")
 
-        val zero1  = BigInteger.ONE - 1uL.toBigInteger()
+        val zero1 = BigInteger.ONE - 1uL.toBigInteger()
         println("${zero1.shl(1)}")
         println("sign: ${zero1.getSign()}")
+    }
+
+    @Test
+    fun roundToBigInteger() {
+        val random = RandomBit(Random)
+        for (i in 1u..1000u) {
+            var randomDivision = random.nextBigInteger(1000uL).toBigDecimal().divide((random.nextBigInteger(1000uL) + BigInteger.ONE).toBigDecimal(), DecimalMode(5, ROUND_HALF_TO_EVEN))
+            if (random.nextBit()) {
+                randomDivision = -randomDivision
+            }
+            val round = randomDivision.roundToDigitPositionAfterDecimalPoint(0L, CEILING).toBigInteger()
+            println(" ${randomDivision.toStringExpanded()} round to $round")
+        }
     }
 
 }

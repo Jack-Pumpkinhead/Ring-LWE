@@ -8,7 +8,7 @@ import math.abstract_structure.algorithm.powerM
 import math.abstract_structure.instance.FieldBigDecimal
 import math.statistic.TaskResultStatistic
 import math.statistic.TaskTimingStatistic
-import math.statistic.counting
+import math.statistic.countingUInt
 import math.timing.Task
 import math.timing.TaskTimingImpl
 import org.junit.jupiter.api.Assertions.*
@@ -90,7 +90,7 @@ internal class BinaryRandomNumberTest {
                 statistic.go(TwoPower(BigInteger.TWO.pow(digits.toLong()), digits))
             }
             for (list in statistic.resultStatistic) {
-                println(list.map { it.uintValue(true) }.counting().sortedBy { it.value })
+                println(list.map { it.uintValue(true) }.countingUInt().sortedBy { it.value })
             }
             println()
         }

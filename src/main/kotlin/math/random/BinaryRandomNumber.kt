@@ -10,6 +10,7 @@ import math.half
 import util.MutableBinaryList
 import util.stdlib.shl
 import util.stdlib.toULong
+import util.toBigDecimal
 import kotlin.random.Random
 
 /**
@@ -97,12 +98,15 @@ class BinaryRandomNumber(val random: Random, val isPositive: Boolean = true, val
 
     override fun compareTo(other: BinaryRandomNumber): Int =
         if (this.isPositive) {
-            if (other.isPositive) compareToPositivePart(other) else 1
+            if (other.isPositive) absoluteValueCompareTo(other) else 1
         } else {
-            if (other.isPositive) -1 else -compareToPositivePart(other)
+            if (other.isPositive) -1 else -absoluteValueCompareTo(other)
         }
 
-    fun compareToPositivePart(other: BinaryRandomNumber): Int = when {
+    /**
+     * compare this.absoluteValue to other.absoluteValue
+     */
+    fun absoluteValueCompareTo(other: BinaryRandomNumber): Int = when {
         this.integer == other.integer -> {
             var i = 0uL
             while (this.fractionalBitAt(i) == other.fractionalBitAt(i)) {
@@ -112,6 +116,47 @@ class BinaryRandomNumber(val random: Random, val isPositive: Boolean = true, val
         }
         this.integer > other.integer  -> 1
         else                          -> -1
+    }
+
+    /**
+     * compare this.absoluteValue to other
+     *
+     * require [other] >= 0
+     *
+     * may very slow, why "BigBinary" not exists?
+     */
+    fun absoluteValueCompareToNonNegative(other: BigDecimal): Int {
+        require(!other.isNegative)
+        if (other.isZero()) {
+            return 1
+        }
+        val otherInteger = other.toBigInteger()
+        return when {
+            this.integer == otherInteger -> {
+
+                var otherFraction = other - otherInteger.toBigDecimal()
+
+                fun otherNextFractionalBit(): Boolean {
+                    val value1 = otherFraction * BigDecimal.TWO
+                    val integer1 = value1.toBigInteger()
+                    otherFraction = value1 - integer1.toBigDecimal()
+                    return when (integer1) {
+                        BigInteger.ZERO -> false
+                        BigInteger.ONE  -> true
+                        else            -> error("fraction should not have non-zero integer part, checkout why")
+                    }
+                }
+
+                var i = 0uL
+                while (this.fractionalBitAt(i) == otherNextFractionalBit()) {
+                    if (otherFraction.isZero()) return 1    //should not detect zero in while() loop
+                    i++
+                }
+                if (this.fractionalBitAt(i)) 1 else -1
+            }
+            this.integer > otherInteger  -> 1
+            else                         -> -1
+        }
     }
 
     /**

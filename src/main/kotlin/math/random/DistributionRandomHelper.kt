@@ -1,8 +1,12 @@
 package math.random
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import math.isEven
 import math.isOdd
+import util.ceilToBigInteger
+import util.ceilToInteger
+import util.toBigDecimal
 import kotlin.random.Random
 
 /**
@@ -156,4 +160,97 @@ fun Random.threeWaySelectorSpecial(m: BigInteger): Int {
             (!n1.isPositive) && n2 >= m -> return 0 // 1/m < x < 2/m
         }
     }
+}
+
+//var twoSixFailed = 0u
+//var twoSixSuccess = 0u
+
+fun Random.nextIntegerNormalDistribution(mu: BigDecimal, sigma: BigDecimal, sigmaInv: BigDecimal): BigInteger {
+    val randomBit = RandomBit(this)
+    val ceilSigma = sigma.ceilToBigInteger()
+
+    rerun@ while (true) {
+        val k = nextNonNegativeIntegerSpecial()
+        val sign = randomBit.nextBit()
+
+        val t = if (sign) {
+            sigma * k.toBigDecimal() + mu
+        } else {
+            sigma * k.toBigDecimal() - mu
+        }
+        val ceilT = t.ceilToInteger()
+        val j = this.nextBigIntegerFDR(ceilSigma)
+        val x = (ceilT - t + j.toBigDecimal()) * sigmaInv
+
+        if (x < BigDecimal.ONE) {
+//        if (x < BigDecimal.ONE && x.isPositive) {
+            if (k.isPositive || x.isPositive || sign) {
+
+                var trials = k + BigInteger.ONE
+                while (trials.isPositive) {
+                    if (!nextBooleanSpecialBernoulli(k, x)) {
+                        /*val result = if (sign) {
+                            ceilT.toBigInteger() + j
+                        } else {
+                            -(ceilT.toBigInteger() + j)
+                        }
+                        if (result == (-26).toBigInteger()) {
+                            println("k: $k, x: $x, j: $j, failed")
+                            twoSixFailed++
+                        }*/
+                        continue@rerun
+                    }
+                    trials--
+                }
+               /* val result = if (sign) {
+                    ceilT.toBigInteger() + j
+                } else {
+                    -(ceilT.toBigInteger() + j)
+                }
+                if (result == (-26).toBigInteger()) {
+                    println("k: $k, x: $x, j: $j, success")
+                    twoSixSuccess++
+                }*/
+
+                return if (sign) {
+                    ceilT.toBigInteger() + j
+                } else {
+                    -(ceilT.toBigInteger() + j)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * return true with probability e^(-x(2k+x)/(2k+2))
+ *
+ * require [x] in [0, 1), [k] >= 0
+ */
+fun Random.nextBooleanSpecialBernoulli(k: BigInteger, x: BigDecimal): Boolean {
+    var n = BigInteger.ZERO
+
+    val u = BinaryRandomNumber(this, integer = BigInteger.ZERO)
+    if (u.absoluteValueCompareToNonNegative(x) < 0) {
+        val f = threeWaySelectorSpecial((k + 1).shl(1))
+        if (f > 0 || (f == 0 && BinaryRandomNumber(this).absoluteValueCompareToNonNegative(x) < 0)) {
+            var uMin = u
+            n++
+
+            while (true) {
+                val u1 = BinaryRandomNumber(this, integer = BigInteger.ZERO)
+                if (u1 < uMin) {
+                    val f1 = threeWaySelectorSpecial((k + 1).shl(1))
+                    if (f1 > 0 || (f1 == 0 && BinaryRandomNumber(this).absoluteValueCompareToNonNegative(x) < 0)) {
+                        uMin = u1
+                        n++
+                        continue
+                    }
+                }
+                break
+            }
+        }
+    }
+
+    return n.isEven()
 }

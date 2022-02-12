@@ -1,5 +1,7 @@
 package math.random
 
+import com.ionspin.kotlin.bignum.decimal.div
+import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import kotlinx.coroutines.runBlocking
 import math.statistic.TaskTimingStatistic
 import math.timing.Task
@@ -15,7 +17,7 @@ import kotlin.random.asJavaRandom
 /**
  * Created by CowardlyLion at 2022/2/9 22:53
  */
-internal class AlgorithmKtTest {
+internal class DistributionRandomHelperKtTest {
 
     //413ms
     @Test
@@ -73,7 +75,6 @@ internal class AlgorithmKtTest {
 
     }
 
-    //java's Random may have a nextGaussian() method
     //0.5s
     @Test
     fun standardNormalDistribution() {
@@ -133,4 +134,15 @@ internal class AlgorithmKtTest {
     }
 
 
+    @Test
+    fun integerNormalDistribution() {
+        val mu = (-11).toBigDecimal()
+        val sigma = 10.toBigDecimal()
+        val list = list(100000u) {
+            Random.nextIntegerNormalDistribution(mu, sigma, 1 / sigma)
+        }
+//        println(list.countingBigInteger().sortedBy { it.value })
+        println("Histogram[${list.joinToString(prefix = "{", postfix = "}")}]")
+//        println("-26 success: $twoSixSuccess, fail: $twoSixFailed")
+    }
 }

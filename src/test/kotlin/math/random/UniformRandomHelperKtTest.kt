@@ -1,9 +1,10 @@
 package math.random
 
+import com.ionspin.kotlin.bignum.integer.toBigInteger
 import kotlinx.coroutines.runBlocking
 import math.statistic.TaskResultStatistic
 import math.statistic.TaskTimingStatistic
-import math.statistic.counting
+import math.statistic.countingUInt
 import math.timing.Task
 import math.timing.TaskTimingImpl
 import org.junit.jupiter.api.Test
@@ -14,23 +15,28 @@ import kotlin.random.nextUInt
 /**
  * Created by CowardlyLion at 2022/2/2 18:29
  */
-internal class GeneratorKtTest {
+internal class UniformRandomHelperKtTest {
 
-    //    kotlin: average 0.01002ms, deviation 0.07041ms
-    //       FDR: average 0.02534ms, deviation 0.61574ms
-    //TPM kotlin: average 3.79268ms, deviation 4.53962ms
-    //TPM    FDR: average 3.67532ms, deviation 0.63652ms
-    //total: 7.503353100s
-    //kotlin:   TPM is 378.5105x slower
-    //   FDR:   TPM is 145.0632x slower
+    //    kotlin: average 0.00961ms, deviation 0.06764ms
+    //       FDR: average 0.03158ms, deviation 0.83412ms
+    //    bigFDR: average 0.02284ms, deviation 0.12369ms
+    //TPM kotlin: average 3.70544ms, deviation 5.01683ms
+    //TPM    FDR: average 3.57737ms, deviation 0.61637ms
+    //TPM bigFDR: average 3.58288ms, deviation 0.62096ms
+    //total: 10.929726700s
+    //kotlin:   TPM is 385.4214x slower
+    //   FDR:   TPM is 113.2904x slower
+    //bigFDR:   TPM is 156.8549x slower
     @Test
     fun testRandomUIntSpeed() {
         runBlocking {
             val tasks = TaskTimingImpl<UInt, UInt>(
                 Task("    kotlin") { Random.nextUInt(it) },
                 Task("       FDR") { Random.nextUIntFDR(it) },
+                Task("    bigFDR") { Random.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
                 Task("TPM kotlin") { TPMRandom.nextUInt(it) },
                 Task("TPM    FDR") { TPMRandom.nextUIntFDR(it) },
+                Task("TPM bigFDR") { TPMRandom.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
             )
             val statistic = TaskTimingStatistic(tasks)
 
@@ -41,26 +47,32 @@ internal class GeneratorKtTest {
             statistic.printAverageAndStandardDeviation()
 
             val average = statistic.average()
-            println("kotlin:   TPM is ${(average[2] / average[0]).toString(4u)}x slower")
-            println("   FDR:   TPM is ${(average[3] / average[1]).toString(4u)}x slower")
+            println("kotlin:   TPM is ${(average[3] / average[0]).toString(4u)}x slower")
+            println("   FDR:   TPM is ${(average[4] / average[1]).toString(4u)}x slower")
+            println("bigFDR:   TPM is ${(average[5] / average[2]).toString(4u)}x slower")
         }
     }
 
-    //    kotlin: average 0.01122ms, deviation 0.08592ms
-    //       FDR: average 0.02156ms, deviation 0.50165ms
-    //TPM kotlin: average 7.76924ms, deviation 7.31940ms
-    //TPM    FDR: average 5.43850ms, deviation 1.97233ms
-    //total: 13.240522s
-    //kotlin:   TPM is 692.1986x slower
-    //   FDR:   TPM is 252.2847x slower
+    //    kotlin: average 0.01021ms, deviation 0.07652ms
+    //       FDR: average 0.03311ms, deviation 0.88417ms
+    //    bigFDR: average 0.02326ms, deviation 0.07889ms
+    //TPM kotlin: average 7.49704ms, deviation 6.71323ms
+    //TPM    FDR: average 5.22666ms, deviation 1.97148ms
+    //TPM bigFDR: average 5.39404ms, deviation 1.94152ms
+    //total: 18.184314300s
+    //kotlin:   TPM is 734.1401x slower
+    //   FDR:   TPM is 157.8716x slower
+    //bigFDR:   TPM is 231.9018x slower
     @Test
     fun testLargeRandomUIntSpeed() {
         runBlocking {
             val tasks = TaskTimingImpl<UInt, UInt>(
                 Task("    kotlin") { Random.nextUInt(it) },
                 Task("       FDR") { Random.nextUIntFDR(it) },
+                Task("    bigFDR") { Random.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
                 Task("TPM kotlin") { TPMRandom.nextUInt(it) },
                 Task("TPM    FDR") { TPMRandom.nextUIntFDR(it) },
+                Task("TPM bigFDR") { TPMRandom.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
             )
             val statistic = TaskTimingStatistic(tasks)
 
@@ -71,8 +83,9 @@ internal class GeneratorKtTest {
             statistic.printAverageAndStandardDeviation()
 
             val average = statistic.average()
-            println("kotlin:   TPM is ${(average[2] / average[0]).toString(4u)}x slower")
-            println("   FDR:   TPM is ${(average[3] / average[1]).toString(4u)}x slower")
+            println("kotlin:   TPM is ${(average[3] / average[0]).toString(4u)}x slower")
+            println("   FDR:   TPM is ${(average[4] / average[1]).toString(4u)}x slower")
+            println("bigFDR:   TPM is ${(average[5] / average[2]).toString(4u)}x slower")
         }
     }
 
@@ -82,8 +95,10 @@ internal class GeneratorKtTest {
             val tasks = TaskTimingImpl<UInt, UInt>(
                 Task("    kotlin") { Random.nextUInt(it) },
                 Task("       FDR") { Random.nextUIntFDR(it) },
+                Task("    bigFDR") { Random.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
                 Task("TPM kotlin") { TPMRandom.nextUInt(it) },
                 Task("TPM    FDR") { TPMRandom.nextUIntFDR(it) },
+                Task("TPM bigFDR") { TPMRandom.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
             )
             val statistic = TaskResultStatistic(tasks)
 
@@ -91,7 +106,7 @@ internal class GeneratorKtTest {
                 statistic.go(105u)
             }
             for (list in statistic.resultStatistic) {
-                println(list.counting().sortedBy { it.value })
+                println(list.countingUInt().sortedBy { it.value })
             }
             println()
         }
@@ -108,7 +123,7 @@ internal class GeneratorKtTest {
                 statistic.go(23u to 105u)
             }
             for (list in statistic.resultStatistic) {
-                println(list.counting().sortedBy { it.value })
+                println(list.countingUInt().sortedBy { it.value })
             }
             println()
         }
@@ -126,7 +141,27 @@ internal class GeneratorKtTest {
                 statistic.go(23u..105u)
             }
             for (list in statistic.resultStatistic) {
-                println(list.counting().sortedBy { it.value })
+                println(list.countingUInt().sortedBy { it.value })
+            }
+            println()
+        }
+    }
+
+    @Test
+    fun testDistribution() {
+        runBlocking {
+            val tasks = TaskTimingImpl<UInt, UInt>(
+                Task("    kotlin") { Random.nextUInt(it) },
+                Task("       FDR") { Random.nextUIntFDR(it) },
+                Task("    bigFDR") { Random.nextBigIntegerFDR(it.toBigInteger()).uintValue(true) },
+            )
+            val statistic = TaskResultStatistic(tasks)
+
+            repeat(100000) {
+                statistic.go(105u)
+            }
+            for (list in statistic.resultStatistic) {
+                println(list.countingUInt().sortedBy { it.value })
             }
             println()
         }
@@ -149,7 +184,7 @@ internal class GeneratorKtTest {
                 statistic.go(45u)
             }
             for (list in statistic.resultStatistic) {
-                println(list.counting().sortedBy { it.value })
+                println(list.countingUInt().sortedBy { it.value })
             }
             println()
         }
