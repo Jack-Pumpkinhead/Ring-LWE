@@ -143,6 +143,5 @@ internal class DistributionRandomHelperKtTest {
         }
 //        println(list.countingBigInteger().sortedBy { it.value })
         println("Histogram[${list.joinToString(prefix = "{", postfix = "}")}]")
-//        println("-26 success: $twoSixSuccess, fail: $twoSixFailed")
     }
 }

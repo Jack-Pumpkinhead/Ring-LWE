@@ -72,11 +72,12 @@ fun Random.lengthOfDescendingChainLessThanHalf(): BigInteger {
 fun Random.nextBinaryRandomNumberStandardNormalDistribution(): BinaryRandomNumber {
     rerun@ while (true) {
         val k = nextNonNegativeIntegerSpecial()
+        val k1 = (k + 1).shl(1)
 
         val x = BinaryRandomNumber(this, integer = BigInteger.ZERO)
         var trials = k + BigInteger.ONE
         while (trials.isPositive) {
-            if (!nextBooleanSpecialBernoulli(k, x)) {
+            if (!nextBooleanSpecialBernoulli(x, k1)) {
                 continue@rerun
             }
             trials--
@@ -114,15 +115,15 @@ fun Random.lengthOfTrueSpecialBernoulli(): BigInteger {
 /**
  * return true with probability e^(-x(2k+x)/(2k+2))
  *
- * require [x] in (0, 1), [k] >= 0
+ * require [x] in (0, 1), k >= 0, [k1] = 2k + 2
  */
-fun Random.nextBooleanSpecialBernoulli(k: BigInteger, x: BinaryRandomNumber): Boolean {
+fun Random.nextBooleanSpecialBernoulli(x: BinaryRandomNumber, k1: BigInteger): Boolean {
     var n = BigInteger.ZERO
     var uMin = x
     while (true) {
         val u = BinaryRandomNumber(this, integer = BigInteger.ZERO)
         if (u < uMin) {
-            val f = threeWaySelectorSpecial((k + 1).shl(1))
+            val f = threeWaySelectorSpecial(k1)
             if (f > 0 || (f == 0 && BinaryRandomNumber(this) < x)) {
                 uMin = u
                 n++
@@ -162,15 +163,13 @@ fun Random.threeWaySelectorSpecial(m: BigInteger): Int {
     }
 }
 
-//var twoSixFailed = 0u
-//var twoSixSuccess = 0u
-
 fun Random.nextIntegerNormalDistribution(mu: BigDecimal, sigma: BigDecimal, sigmaInv: BigDecimal): BigInteger {
     val randomBit = RandomBit(this)
     val ceilSigma = sigma.ceilToBigInteger()
 
     rerun@ while (true) {
         val k = nextNonNegativeIntegerSpecial()
+
         val sign = randomBit.nextBit()
 
         val t = if (sign) {
@@ -183,34 +182,16 @@ fun Random.nextIntegerNormalDistribution(mu: BigDecimal, sigma: BigDecimal, sigm
         val x = (ceilT - t + j.toBigDecimal()) * sigmaInv
 
         if (x < BigDecimal.ONE) {
-//        if (x < BigDecimal.ONE && x.isPositive) {
             if (k.isPositive || x.isPositive || sign) {
+                val k1 = (k + 1).shl(1)
 
                 var trials = k + BigInteger.ONE
                 while (trials.isPositive) {
-                    if (!nextBooleanSpecialBernoulli(k, x)) {
-                        /*val result = if (sign) {
-                            ceilT.toBigInteger() + j
-                        } else {
-                            -(ceilT.toBigInteger() + j)
-                        }
-                        if (result == (-26).toBigInteger()) {
-                            println("k: $k, x: $x, j: $j, failed")
-                            twoSixFailed++
-                        }*/
+                    if (!nextBooleanSpecialBernoulli(x, k1)) {
                         continue@rerun
                     }
                     trials--
                 }
-               /* val result = if (sign) {
-                    ceilT.toBigInteger() + j
-                } else {
-                    -(ceilT.toBigInteger() + j)
-                }
-                if (result == (-26).toBigInteger()) {
-                    println("k: $k, x: $x, j: $j, success")
-                    twoSixSuccess++
-                }*/
 
                 return if (sign) {
                     ceilT.toBigInteger() + j
@@ -225,14 +206,14 @@ fun Random.nextIntegerNormalDistribution(mu: BigDecimal, sigma: BigDecimal, sigm
 /**
  * return true with probability e^(-x(2k+x)/(2k+2))
  *
- * require [x] in [0, 1), [k] >= 0
+ * require [x] in [0, 1), k >= 0, [k1] = 2k + 2
  */
-fun Random.nextBooleanSpecialBernoulli(k: BigInteger, x: BigDecimal): Boolean {
+fun Random.nextBooleanSpecialBernoulli(x: BigDecimal, k1: BigInteger): Boolean {
     var n = BigInteger.ZERO
 
     val u = BinaryRandomNumber(this, integer = BigInteger.ZERO)
     if (u.absoluteValueCompareToNonNegative(x) < 0) {
-        val f = threeWaySelectorSpecial((k + 1).shl(1))
+        val f = threeWaySelectorSpecial(k1)
         if (f > 0 || (f == 0 && BinaryRandomNumber(this).absoluteValueCompareToNonNegative(x) < 0)) {
             var uMin = u
             n++
@@ -240,7 +221,7 @@ fun Random.nextBooleanSpecialBernoulli(k: BigInteger, x: BigDecimal): Boolean {
             while (true) {
                 val u1 = BinaryRandomNumber(this, integer = BigInteger.ZERO)
                 if (u1 < uMin) {
-                    val f1 = threeWaySelectorSpecial((k + 1).shl(1))
+                    val f1 = threeWaySelectorSpecial(k1)
                     if (f1 > 0 || (f1 == 0 && BinaryRandomNumber(this).absoluteValueCompareToNonNegative(x) < 0)) {
                         uMin = u1
                         n++
