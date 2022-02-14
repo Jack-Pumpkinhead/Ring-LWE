@@ -17,16 +17,16 @@ import kotlin.random.nextUInt
  */
 internal class UniformRandomHelperKtTest {
 
-    //    kotlin: average 0.00961ms, deviation 0.06764ms
-    //       FDR: average 0.03158ms, deviation 0.83412ms
-    //    bigFDR: average 0.02284ms, deviation 0.12369ms
-    //TPM kotlin: average 3.70544ms, deviation 5.01683ms
-    //TPM    FDR: average 3.57737ms, deviation 0.61637ms
-    //TPM bigFDR: average 3.58288ms, deviation 0.62096ms
-    //total: 10.929726700s
-    //kotlin:   TPM is 385.4214x slower
-    //   FDR:   TPM is 113.2904x slower
-    //bigFDR:   TPM is 156.8549x slower
+    //    kotlin: average 0.00992ms, deviation 0.06845ms
+    //       FDR: average 0.03004ms, deviation 0.78983ms
+    //    bigFDR: average 0.02344ms, deviation 0.06807ms
+    //TPM kotlin: average 3.59102ms, deviation 4.37874ms
+    //TPM    FDR: average 3.43500ms, deviation 0.77487ms
+    //TPM bigFDR: average 3.48422ms, deviation 0.78481ms
+    //total: 10.573649500s
+    //kotlin:   TPM is 361.9618x slower
+    //   FDR:   TPM is 114.3399x slower
+    //bigFDR:   TPM is 148.6187x slower
     @Test
     fun testRandomUIntSpeed() {
         runBlocking {
@@ -53,16 +53,16 @@ internal class UniformRandomHelperKtTest {
         }
     }
 
-    //    kotlin: average 0.01021ms, deviation 0.07652ms
-    //       FDR: average 0.03311ms, deviation 0.88417ms
-    //    bigFDR: average 0.02326ms, deviation 0.07889ms
-    //TPM kotlin: average 7.49704ms, deviation 6.71323ms
-    //TPM    FDR: average 5.22666ms, deviation 1.97148ms
-    //TPM bigFDR: average 5.39404ms, deviation 1.94152ms
-    //total: 18.184314300s
-    //kotlin:   TPM is 734.1401x slower
-    //   FDR:   TPM is 157.8716x slower
-    //bigFDR:   TPM is 231.9018x slower
+    //    kotlin: average 0.00925ms, deviation 0.07345ms
+    //       FDR: average 0.03072ms, deviation 0.81478ms
+    //    bigFDR: average 0.02196ms, deviation 0.07597ms
+    //TPM kotlin: average 6.83762ms, deviation 6.44792ms
+    //TPM    FDR: average 4.88890ms, deviation 1.90222ms
+    //TPM bigFDR: average 5.00935ms, deviation 1.98834ms
+    //total: 16.797801900s
+    //kotlin:   TPM is 738.8029x slower
+    //   FDR:   TPM is 159.1647x slower
+    //bigFDR:   TPM is 228.1435x slower
     @Test
     fun testLargeRandomUIntSpeed() {
         runBlocking {
@@ -172,11 +172,11 @@ internal class UniformRandomHelperKtTest {
         runBlocking {
             val tasks = TaskTimingImpl<UInt, UInt>(
                 Task("                FDR") { Random.nextUIntFDR(1u..it) },
-                Task("    factored kotlin") { runBlocking { Random.randomFactoredNumber(it).value } },
-                Task("    factored    FDR") { runBlocking { Random.randomFactoredNumberFDR(it).value } },
+                Task("    factored kotlin") { runBlocking { Random.nextFactoredNumber(it).value } },
+                Task("    factored    FDR") { runBlocking { Random.nextFactoredNumberFDR(it).value } },
                 Task("TPM             FDR") { TPMRandom.nextUIntFDR(1u..it) },
-                Task("TPM factored kotlin") { runBlocking { TPMRandom.randomFactoredNumber(it).value } },
-                Task("TPM factored    FDR") { runBlocking { TPMRandom.randomFactoredNumberFDR(it).value } },
+                Task("TPM factored kotlin") { runBlocking { TPMRandom.nextFactoredNumber(it).value } },
+                Task("TPM factored    FDR") { runBlocking { TPMRandom.nextFactoredNumberFDR(it).value } },
             )
             val statistic = TaskResultStatistic(tasks)
 
@@ -190,32 +190,59 @@ internal class UniformRandomHelperKtTest {
         }
     }
 
+    //large r have large ambiguity of time
+
     //r: 4253509286
-    //                FDR: average 1.98715ms, deviation 6.23237ms
-    //    factored kotlin: average 5.48565ms, deviation 4.73894ms
-    //    factored    FDR: average 2.59341ms, deviation 1.46676ms
-    //TPM             FDR: average 18.65238ms, deviation 48.96807ms
-    //TPM factored kotlin: average 2043.71689ms, deviation 1885.34117ms
-    //TPM factored    FDR: average 3684.78914ms, deviation 3407.11605ms
-    //total: 57.572246200s
-    //            FDR:   TPM is 9.3865x slower
-    //factored kotlin:   TPM is 372.5569x slower
-    //factored    FDR:   TPM is 1420.8278x slower
+    //                FDR: average 2.71243ms, deviation 8.53839ms
+    //    factored kotlin: average 3.76657ms, deviation 5.65271ms
+    //    factored    FDR: average 1.96541ms, deviation 2.95534ms
+    //TPM             FDR: average 16.63316ms, deviation 42.43218ms
+    //TPM factored kotlin: average 2768.79875ms, deviation 4591.15284ms
+    //TPM factored    FDR: average 4675.54103ms, deviation 5697.84878ms
+    //total: 1m 14.694173500s
+    //            FDR:   TPM is 6.1322x slower
+    //factored kotlin:   TPM is 735.0982x slower
+    //factored    FDR:   TPM is 2378.9138x slower
+
+    //r: 1969962444
+    //                FDR: average 2.72600ms, deviation 8.59665ms
+    //    factored kotlin: average 3.98701ms, deviation 6.57718ms
+    //    factored    FDR: average 2.19120ms, deviation 3.40412ms
+    //TPM             FDR: average 17.10029ms, deviation 43.00662ms
+    //TPM factored kotlin: average 2636.20869ms, deviation 2106.75640ms
+    //TPM factored    FDR: average 2613.78427ms, deviation 1709.73858ms
+    //total: 52.759974600s
+    //            FDR:   TPM is 6.2730x slower
+    //factored kotlin:   TPM is 661.1994x slower
+    //factored    FDR:   TPM is 1192.8552x slower
+
+    //r: 595938349
+    //                FDR: average 2.58082ms, deviation 8.13327ms
+    //    factored kotlin: average 3.66285ms, deviation 3.94722ms
+    //    factored    FDR: average 3.14896ms, deviation 3.39685ms
+    //TPM             FDR: average 16.71797ms, deviation 42.51859ms
+    //TPM factored kotlin: average 2301.55426ms, deviation 1759.84322ms
+    //TPM factored    FDR: average 1900.46372ms, deviation 2192.35902ms
+    //total: 42.281285800s
+    //            FDR:   TPM is 6.4778x slower
+    //factored kotlin:   TPM is 628.3507x slower
+    //factored    FDR:   TPM is 603.5211x slower
     @Test
     fun testRandomFactoredNumberSpeed() {
         runBlocking {
             val tasks = TaskTimingImpl<UInt, UInt>(
                 Task("                FDR") { Random.nextUIntFDR(1u..it) },
-                Task("    factored kotlin") { runBlocking { Random.randomFactoredNumber(it).value } },
-                Task("    factored    FDR") { runBlocking { Random.randomFactoredNumberFDR(it).value } },
+                Task("    factored kotlin") { runBlocking { Random.nextFactoredNumber(it).value } },
+                Task("    factored    FDR") { runBlocking { Random.nextFactoredNumberFDR(it).value } },
                 Task("TPM             FDR") { TPMRandom.nextUIntFDR(1u..it) },
-                Task("TPM factored kotlin") { runBlocking { TPMRandom.randomFactoredNumber(it).value } },
-                Task("TPM factored    FDR") { runBlocking { TPMRandom.randomFactoredNumberFDR(it).value } },
+                Task("TPM factored kotlin") { runBlocking { TPMRandom.nextFactoredNumber(it).value } },
+                Task("TPM factored    FDR") { runBlocking { TPMRandom.nextFactoredNumberFDR(it).value } },
             )
             val statistic = TaskTimingStatistic(tasks)
 
 //            val r = Random.nextUInt(1u..UInt.MAX_VALUE)   //IDEA: this range is empty???
-            val r = Random.nextUInt()
+//            val r = Random.nextUInt()
+            val r = 4253509286u
             println("r: $r")
             if (r != 0u) {
                 repeat(10) {
@@ -231,26 +258,26 @@ internal class UniformRandomHelperKtTest {
         }
     }
 
-    //                FDR: average 0.18613ms, deviation 1.77065ms
-    //    factored kotlin: average 0.31443ms, deviation 0.69299ms
-    //    factored    FDR: average 0.27444ms, deviation 0.33950ms
-    //TPM             FDR: average 4.42460ms, deviation 15.36563ms
-    //TPM factored kotlin: average 105.36206ms, deviation 112.08160ms
-    //TPM factored    FDR: average 133.63499ms, deviation 119.14794ms
-    //total: 24.419664400s
-    //            FDR:   TPM is 23.7721x slower
-    //factored kotlin:   TPM is 335.0912x slower
-    //factored    FDR:   TPM is 486.9406x slower
+    //                FDR: average 0.28747ms, deviation 2.79365ms
+    //    factored kotlin: average 0.25509ms, deviation 0.80702ms
+    //    factored    FDR: average 0.20759ms, deviation 0.65087ms
+    //TPM             FDR: average 4.73363ms, deviation 15.47228ms
+    //TPM factored kotlin: average 92.28323ms, deviation 80.79305ms
+    //TPM factored    FDR: average 114.85421ms, deviation 101.07840ms
+    //total: 21.262121s
+    //            FDR:   TPM is 16.4667x slower
+    //factored kotlin:   TPM is 361.7744x slower
+    //factored    FDR:   TPM is 553.2716x slower
     @Test
     fun testSmallRandomFactoredNumberSpeed() {
         runBlocking {
             val tasks = TaskTimingImpl<UInt, UInt>(
                 Task("                FDR") { Random.nextUIntFDR(1u..it) },
-                Task("    factored kotlin") { runBlocking { Random.randomFactoredNumber(it).value } },
-                Task("    factored    FDR") { runBlocking { Random.randomFactoredNumberFDR(it).value } },
+                Task("    factored kotlin") { runBlocking { Random.nextFactoredNumber(it).value } },
+                Task("    factored    FDR") { runBlocking { Random.nextFactoredNumberFDR(it).value } },
                 Task("TPM             FDR") { TPMRandom.nextUIntFDR(1u..it) },
-                Task("TPM factored kotlin") { runBlocking { TPMRandom.randomFactoredNumber(it).value } },
-                Task("TPM factored    FDR") { runBlocking { TPMRandom.randomFactoredNumberFDR(it).value } },
+                Task("TPM factored kotlin") { runBlocking { TPMRandom.nextFactoredNumber(it).value } },
+                Task("TPM factored    FDR") { runBlocking { TPMRandom.nextFactoredNumberFDR(it).value } },
             )
             val statistic = TaskTimingStatistic(tasks)
 

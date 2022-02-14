@@ -1,7 +1,7 @@
 package cryptography.lattice.ring_lwe.matrix
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.RingUInt
+import math.integer.uint.RingUInt
 import math.andPrint
 import math.random.randomUIntMatrix
 import math.statistic.TaskTimingStatistic

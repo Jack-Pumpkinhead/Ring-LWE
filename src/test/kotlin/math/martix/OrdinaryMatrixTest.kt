@@ -1,7 +1,7 @@
 package math.martix
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.RingUInt
+import math.integer.uint.RingUInt
 import math.andPrint
 import math.random.randomMultiplicableUIntMatrices
 import math.random.randomUIntMatrix
@@ -14,6 +14,8 @@ import kotlin.random.Random
  * Created by CowardlyLion at 2022/1/9 17:48
  */
 internal class OrdinaryMatrixTest {
+
+    //BUILD SUCCESSFUL in 27s
 
     @Test
     fun identityMatrix() {

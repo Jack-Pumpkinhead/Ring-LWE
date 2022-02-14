@@ -1,7 +1,7 @@
 package cryptography.lattice.ring_lwe.ring
 
-import math.integer.operation.modTimesUnsafe
-import math.integer.operation.modUnaryMinus
+import math.integer.uint.modTimesUnsafe
+import math.integer.uint.modUnaryMinus
 
 /**
  * Created by CowardlyLion at 2022/1/19 13:56

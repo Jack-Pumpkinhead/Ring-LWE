@@ -1,16 +1,16 @@
 package math.abstract_structure
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.RingUInt
 import math.abstract_structure.instance.categoryUIntMatrix
+import math.integer.uint.RingUInt
 import math.martix.FormalProduct
 import math.martix.identityMatrix
 import math.operation.composeAll
 import math.operation.composeAllPrefixedWithIdentity
 import math.random.randomMultiplicableUIntMatrices
 import math.statistic.TaskTimingStatistic
-import math.timing.ManyMatrices
 import math.timing.EqualManyMatricesMultiplicationTiming
+import math.timing.ManyMatrices
 import math.timing.Task
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -20,10 +20,18 @@ import kotlin.random.Random
  */
 internal class CategoryInstanceKtTest {
 
-    //  21.4s  21.3s
-    //  21.2s 21.2s (disable assertion)
-    //  assertion in FormalProduct is costly (but FormalProduct is slower even if disable assertion)
-    //  TODO find out why multiplication by FormalProduct is slower
+    //  assertion in FormalProduct may costly
+    //  multiplication by FormalProduct is a bit slower, but more time-stable
+
+    //c : average 61.95125ms, deviation 5.36783ms
+    //ci: average 62.20267ms, deviation 4.01629ms
+    //FP: average 70.41571ms, deviation 3.58413ms
+    //total: 19.456962800s
+
+    //c : average 68.17331ms, deviation 5.03362ms
+    //ci: average 68.42159ms, deviation 3.42225ms
+    //FP: average 74.79191ms, deviation 2.94362ms
+    //total: 21.138681300s
     @Test
     fun multiplication() {
         runBlocking {
@@ -31,7 +39,7 @@ internal class CategoryInstanceKtTest {
                 EqualManyMatricesMultiplicationTiming<UInt>(
                     Task("c ") { m -> categoryUIntMatrix.composeAll(m.matrices) },
                     Task("ci") { m -> categoryUIntMatrix.composeAllPrefixedWithIdentity(m.matrices) },
-                    Task("d ") { m -> FormalProduct(RingUInt, m.matrices) * RingUInt.identityMatrix(m.matrices.last().columns) }
+                    Task("FP") { m -> FormalProduct(RingUInt, m.matrices.first().rows, m.matrices.last().columns, m.matrices) * RingUInt.identityMatrix(m.matrices.last().columns) }
                 )
             )
             for (i in 1u..100u) {

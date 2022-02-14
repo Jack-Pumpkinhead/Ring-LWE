@@ -1,11 +1,10 @@
 package math.operation
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.integer.operation.maxIndexOfOne
-import math.integer.operation.modPowerM
+import math.integer.big_integer.maxIndexOfOne
+import math.integer.big_integer.modPowerM
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 /**
  * Created by CowardlyLion at 2022/1/5 17:59
@@ -14,7 +13,7 @@ internal class OperationBigIntegerKtTest {
 
     @Test
     fun getMaxIndexOfOne() {
-        for (i in -100..1234) {
+        for (i in 0..1234) {
             val x = BigInteger(i)
             println("$i.maxIndexOfOne ${i.toString(2)}, ${x.maxIndexOfOne}")
         }

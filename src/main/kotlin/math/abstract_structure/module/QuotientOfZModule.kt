@@ -1,9 +1,9 @@
 package math.abstract_structure.module
 
-import math.abstract_structure.instance.RingModularUInt
-import math.abstract_structure.instance.RingUInt
-import math.integer.modular.ModularUInt
-import math.integer.modular.toUIntModular
+import math.integer.uint.modular.RingModularUInt
+import math.integer.uint.RingUInt
+import math.integer.uint.modular.ModularUInt
+import util.toUIntModular
 
 /**
  * Created by CowardlyLion at 2022/1/25 17:27

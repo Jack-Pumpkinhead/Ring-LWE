@@ -30,6 +30,6 @@ class TaskNearMatrixComplexDoubleStatistic<Condition>(timing: TaskTiming<Conditi
     }
 
     fun printAverageAndMaxDistance() {
-        println("average: ${maxDistances.average()}, max: ${maxDistances.maxOrNull()!!}")
+        println("average distance: ${maxDistances.average()}, max distance: ${maxDistances.maxOrNull()!!}")
     }
 }

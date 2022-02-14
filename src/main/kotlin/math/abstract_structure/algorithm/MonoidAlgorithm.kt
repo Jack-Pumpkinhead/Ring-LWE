@@ -2,7 +2,7 @@ package math.abstract_structure.algorithm
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import math.abstract_structure.Monoid
-import math.integer.operation.maxIndexOfOne
+import math.integer.big_integer.maxIndexOfOne
 
 /**
  * Created by CowardlyLion at 2022/1/5 19:25

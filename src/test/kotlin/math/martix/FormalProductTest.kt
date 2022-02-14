@@ -1,8 +1,8 @@
 package math.martix
 
-import math.abstract_structure.instance.RingUInt
 import math.abstract_structure.instance.categoryUIntMatrix
 import math.andPrint
+import math.integer.uint.RingUInt
 import math.operation.composeAllPrefixedWithIdentity
 import math.operation.matrixEquals
 import math.random.randomMultiplicableUIntMatrices
@@ -20,7 +20,7 @@ internal class FormalProductTest {
         repeat(100) {
             val matrices = Random.randomMultiplicableUIntMatrices(5u, 1u..10u, 0u..100u)
 //            println("---------------")
-            val matrix = FormalProduct(RingUInt, matrices).andPrint()
+            val matrix = FormalProduct(RingUInt, matrices.first().rows, matrices.last().columns, matrices).andPrint()
             val matrix1 = matrix.toOrdinaryMatrix().andPrint()
             val matrix2 = categoryUIntMatrix.composeAllPrefixedWithIdentity(matrices).andPrint()
             assertTrue(matrixEquals(matrix, matrix1))

@@ -1,17 +1,14 @@
 package math.abstract_structure.instance
 
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPrimePower
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixComplexDouble
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPrimeComplexDouble
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPrimePowerComplexDouble
-import cryptography.lattice.ring_lwe.ring.RootDataUInt
-import cryptography.lattice.ring_lwe.ring.RootDataUIntPrime
-import cryptography.lattice.ring_lwe.ring.RootDataUIntPrimePower
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.*
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.PrimeDftMatrixComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPPIBuilderComplexDouble
+import cryptography.lattice.ring_lwe.ring.RootUIntP
+import cryptography.lattice.ring_lwe.ring.RootUIntPP
+import cryptography.lattice.ring_lwe.ring.RootUIntPPP
 import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
-import math.integer.FactorizationUInt
-import math.integer.FactorizationUIntPrime
-import math.integer.FactorizationUIntPrimePower
+import math.integer.uint.factored.*
 import math.pi2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -34,29 +31,33 @@ object FieldComplexNumberDouble : FieldComplexNumber<Double>(FieldDouble) {
     /**
      * primitive [order]-th root of unity
      */
-    fun root(order: FactorizationUInt): RootDataUInt<ComplexNumber<Double>> {
-        val root = expI(pi2 / order.value.toDouble())
-        return RootDataUInt(this, root, order)
-    }
+    fun root(order: UIntP) = RootUIntP(this, expI(pi2 / order.value.toDouble()), order)
+    fun root(order: UIntPP) = RootUIntPP(this, expI(pi2 / order.value.toDouble()), order)
+    fun root(order: UIntPPP) = RootUIntPPP(this, expI(pi2 / order.value.toDouble()), order)
+    fun root(order: UIntPPI) =
+        when (order) {
+            is UIntPP -> root(order)
+            is UIntP  -> root(order)
+            else      -> error("unknown type of order $order, class: ${order::class}")
+        }
 
-    fun root(order: FactorizationUIntPrimePower): RootDataUIntPrimePower<ComplexNumber<Double>> {
-        val root = expI(pi2 / order.value.toDouble())
-        return RootDataUIntPrimePower(this, root, order)
-    }
+    fun root(order: UIntPPPI) =
+        when (order) {
+            is UIntPPP -> root(order)
+            is UIntPP  -> root(order)
+            is UIntP   -> root(order)
+            else       -> error("unknown type of order $order, class: ${order::class}")
+        }
 
-    fun root(order: FactorizationUIntPrime): RootDataUIntPrime<ComplexNumber<Double>> {
-        val root = expI(pi2 / order.value.toDouble())
-        return RootDataUIntPrime(this, root, order)
-    }
 
-    fun dft(order: FactorizationUInt) = DftMatrixComplexDouble(root(order))
-
-    fun dft(order: FactorizationUIntPrimePower): DftMatrixPrimePower<ComplexNumber<Double>> {
-        val root = root(order)
-        return DftMatrixPrimePowerComplexDouble(root, DftMatrixPrimeComplexDouble(root.primeSubroot()))
-    }
-
-    fun dft(order: FactorizationUIntPrime) = DftMatrixPrimeComplexDouble(root(order))
-
+    fun dft(order: UIntP) = PrimeDftMatrixComplexDouble(root(order))
+    fun dft(order: UIntPPP) = DftMatrixPPP(DftMatrixPPIBuilderComplexDouble, root(order))
+    fun dft(order: UIntPPI): DftMatrixPPI<ComplexNumber<Double>> = DftMatrixPPIBuilderComplexDouble.build(root(order))
+    fun dft(order: UIntPPPI): DftMatrixPPPI<ComplexNumber<Double>> =
+        when (order) {
+            is UIntPPP -> ProperPrimePowerProductDftMatrix(DftMatrixPPIBuilderComplexDouble, root(order))
+            is UIntPPI -> dft(order)
+            else       -> error("unknown type of order $order, class: ${order::class}")
+        }
 
 }

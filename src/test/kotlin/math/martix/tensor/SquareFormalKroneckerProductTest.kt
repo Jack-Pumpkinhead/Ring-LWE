@@ -1,10 +1,11 @@
 package math.martix.tensor
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.RingUInt
+import math.integer.uint.RingUInt
 import math.martix.AbstractSquareMatrix
 import math.martix.constantMatrix
 import math.martix.formalKroneckerProduct
+import math.operation.product
 import math.random.randomSquareUIntMatrices
 import math.random.randomUIntMatrix
 import math.statistic.TaskTimingStatistic
@@ -16,6 +17,8 @@ import kotlin.random.Random
  * Created by CowardlyLion at 2022/1/29 12:54
  */
 internal class SquareFormalKroneckerProductTest {
+
+    //BUILD SUCCESSFUL in 26s
 
     @Test
     fun multiplication() {
@@ -30,8 +33,10 @@ internal class SquareFormalKroneckerProductTest {
             )
             repeat(100) {
                 val m = Random.randomSquareUIntMatrices(5u, 1u..4u, 0u..20u)
-                val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractSquareMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
-                val m1: SquareFormalKroneckerProduct<UInt> = RingUInt.formalKroneckerProduct(m)
+                val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractSquareMatrix<UInt>) { acc, i ->
+                    RingUInt.formalKroneckerProduct(acc.size * i.size, acc, i)
+                }
+                val m1: SquareFormalKroneckerProduct<UInt> = RingUInt.formalKroneckerProduct(RingUInt.product(m.map { it.size }), m)
                 val m0o = m0.toOrdinaryMatrix()
 //                val m1o = m1.toOrdinaryMatrix()
                 val x = Random.randomUIntMatrix(m0.columns, 1u..2u, 0u..10u)
@@ -48,7 +53,9 @@ internal class SquareFormalKroneckerProductTest {
             val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
             repeat(100) {
                 val m = Random.randomSquareUIntMatrices(5u, 1u..4u, 0u..20u)
-                val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractSquareMatrix<UInt>) { acc, i -> RingUInt.formalKroneckerProduct(acc, i) }
+                val m0 = m.fold(RingUInt.constantMatrix(1u) as AbstractSquareMatrix<UInt>) { acc, i ->
+                    RingUInt.formalKroneckerProduct(acc.size * i.size, acc, i)
+                }
                 val x = Random.randomUIntMatrix(m0.columns, 1u..2u, 0u..10u)
                 statistic.go(TwoMatrix(m0, x))
             }
@@ -63,7 +70,7 @@ internal class SquareFormalKroneckerProductTest {
             val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
             repeat(100) {
                 val m = Random.randomSquareUIntMatrices(5u, 1u..4u, 0u..20u)
-                val m1: SquareFormalKroneckerProduct<UInt> = RingUInt.formalKroneckerProduct(m)
+                val m1: SquareFormalKroneckerProduct<UInt> = RingUInt.formalKroneckerProduct(RingUInt.product(m.map { it.size }), m)
                 val x = Random.randomUIntMatrix(m1.columns, 1u..2u, 0u..10u)
                 statistic.go(TwoMatrix(m1, x))
             }

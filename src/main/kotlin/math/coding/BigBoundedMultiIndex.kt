@@ -1,7 +1,7 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.abstract_structure.instance.RingBigInteger
+import math.integer.big_integer.RingBigInteger
 import math.operation.product
 import util.stdlib.lazyAssert
 

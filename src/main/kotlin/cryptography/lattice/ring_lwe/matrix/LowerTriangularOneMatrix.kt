@@ -59,5 +59,6 @@ class LowerTriangularOneMatrix<A>(override val ring: Ring<A>, override val size:
 
     override fun hasInverse(): Boolean = true
 
-    override fun inverse(): AbstractSquareMatrix<A> = InverseLowerTriangularOneMatrix(ring, size)
+    override val inverse: AbstractSquareMatrix<A>
+        get() = InverseLowerTriangularOneMatrix(ring, size)
 }

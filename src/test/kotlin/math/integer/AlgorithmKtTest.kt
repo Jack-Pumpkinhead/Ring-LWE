@@ -1,7 +1,9 @@
 package math.integer
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.RingULong
+import math.integer.uint.extendedGCD
+import math.integer.uint.modInverseOrNull
+import math.integer.ulong.*
 import math.operation.product
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals

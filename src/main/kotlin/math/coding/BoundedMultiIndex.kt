@@ -1,6 +1,6 @@
 package math.coding
 
-import math.abstract_structure.instance.RingUInt
+import math.integer.uint.RingUInt
 import math.operation.product
 import util.stdlib.lazyAssert
 

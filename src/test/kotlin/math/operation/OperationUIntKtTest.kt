@@ -1,12 +1,12 @@
 package math.operation
 
-import math.abstract_structure.instance.RingModularUInt
-import math.abstract_structure.instance.RingUInt
-import math.integer.modular.ModularUInt
-import math.integer.operation.modPowerM
-import math.integer.operation.modPowerS
-import math.integer.operation.powerM
-import math.integer.operation.powerS
+import math.integer.uint.modular.RingModularUInt
+import math.integer.uint.RingUInt
+import math.integer.uint.modular.ModularUInt
+import math.integer.uint.modPowerM
+import math.integer.uint.modPowerS
+import math.integer.uint.powerM
+import math.integer.uint.powerS
 import math.abstract_structure.algorithm.powerM
 import math.abstract_structure.algorithm.powerS
 import org.junit.jupiter.api.Assertions.*

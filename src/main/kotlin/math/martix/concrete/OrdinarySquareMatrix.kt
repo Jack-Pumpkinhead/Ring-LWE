@@ -15,9 +15,10 @@ class OrdinarySquareMatrix<A>(ring: Ring<A>, override val size: UInt, matrix: Li
         TODO("Not yet implemented")
     }
 
-    override fun inverse(): AbstractSquareMatrix<A> {
-        TODO("Not yet implemented")
-    }
+    override val inverse: AbstractSquareMatrix<A>
+        get() {
+            TODO("Not yet implemented")
+        }
 
 
 }

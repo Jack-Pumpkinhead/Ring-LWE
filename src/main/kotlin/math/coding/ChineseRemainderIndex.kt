@@ -2,9 +2,9 @@ package math.coding
 
 import math.coding.iterator.GrayCodeIterator
 import math.coding.iterator.MultiIndexIterator
-import math.integer.modInverse
-import math.integer.operation.modMinusUnsafe
-import math.integer.operation.modPlusUnsafe
+import math.integer.uint.modInverse
+import math.integer.uint.modMinusUnsafe
+import math.integer.uint.modPlusUnsafe
 import util.stdlib.lazyAssert2
 
 /**

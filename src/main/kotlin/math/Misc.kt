@@ -2,7 +2,7 @@ package math
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.integer.gcd
+import math.integer.uint.gcd
 import math.martix.AbstractMatrix
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime

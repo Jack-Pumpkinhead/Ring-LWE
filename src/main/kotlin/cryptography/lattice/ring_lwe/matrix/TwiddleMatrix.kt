@@ -1,9 +1,9 @@
 package cryptography.lattice.ring_lwe.matrix
 
+import cryptography.lattice.ring_lwe.ring.RootProperPrimePowerUInt
 import math.abstract_structure.Ring
 import math.coding.LadderIndex
 import math.martix.AbstractDiagonalMatrix
-import math.abstract_structure.algorithm.powerM
 import util.stdlib.lazyAssert2
 
 /**
@@ -11,29 +11,26 @@ import util.stdlib.lazyAssert2
  *
  * r^(b0*b1) = 1
  */
-class TwiddleMatrix<A>(override val ring: Ring<A>, b0: UInt, b1: UInt, val root: A) : AbstractDiagonalMatrix<A> {
-
-    override val size: UInt = b0 * b1
+class TwiddleMatrix<A>(override val ring: Ring<A>, override val size: UInt, b0: UInt, b1: UInt, val root: RootProperPrimePowerUInt<A>) : AbstractDiagonalMatrix<A> {
 
     val ladderIndex = LadderIndex(listOf(b0, b1), size)
 
     init {
         lazyAssert2 {
-            val size = b0.toULong() * b1.toULong()
-            assert(size <= UInt.MAX_VALUE)
+            assert(size.toULong() == b0.toULong() * b1.toULong())
+            assert(size == root.order.value)
         }
-    }
-
-    override fun vectorElementAt(index: UInt): A {
-        require(index < rows)
-        val a = ladderIndex.decode(index)
-        return ring.powerM(root, a[0] * a[1])
     }
 
     override fun vectorElementAtUnsafe(index: UInt): A {
         val a = ladderIndex.decode(index)
-        return ring.powerM(root, a[0] * a[1])
+        return root.cachedPower(a[0] * a[1])  //use cached power
+//        return ring.powerM(root, a[0] * a[1])
     }
 
+//    override val inverse: AbstractSquareMatrix<A>
+//        get() = TwiddleMatrix(ring, b0, b1, root.inverse)
+
+    //TODO multiplication of TwiddleMatrix can also speed up by iteration of ladderIndex
 
 }

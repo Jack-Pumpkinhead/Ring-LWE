@@ -1,7 +1,7 @@
 package math.coding
 
 import math.coding.iterator.GrayCodeIterator
-import math.integer.operation.modMinusUnsafe
+import math.integer.uint.modMinusUnsafe
 import util.stdlib.lazyAssert2
 import util.stdlib.runningFoldRight
 

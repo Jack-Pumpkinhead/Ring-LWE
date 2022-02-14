@@ -1,9 +1,9 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.FieldModularUInt
-import math.integer.modular.ModularUInt
-import math.integer.primeOf
+import math.integer.uint.modular.FieldModularUInt
+import math.integer.uint.modular.ModularUInt
+import math.integer.ulong.primeOf
 import math.random.randomMatrix
 import math.statistic.TaskTimingStatistic
 import math.timing.TwoMatrix
@@ -15,19 +15,22 @@ import org.junit.jupiter.api.Test
  */
 internal class DftMatrixTest {
 
-    // *  : average 8.76939ms, deviation 18.15522ms
-    // *p : average 9.02094ms, deviation 18.02072ms
-    // * t: average 8.79241ms, deviation 18.32357ms
-    // *pt: average 10.24140ms, deviation 18.27370ms
-    //d*  : average 17.09975ms, deviation 16.79598ms
-    //total: 10.784778411s
+    //significantly faster
+    // *  : average 3.21996ms, deviation 4.57589ms
+    // *p : average 3.45527ms, deviation 4.65399ms
+    // * t: average 3.17135ms, deviation 4.59103ms
+    // *pt: average 4.65567ms, deviation 4.87628ms
+    //d*  : average 17.56838ms, deviation 17.14555ms
+    //total: 6.414125s
     @Test
     fun multiplication() {
         runBlocking {
+            val defaultBuilder = DftMatrixPPIBuilderImpl<ModularUInt>()
+
             val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
             for (i in 1u..200u) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val dft = primeField.firstFullDft()
+                val dft = defaultBuilder.build(primeField.firstGenerator)
                 val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
@@ -35,23 +38,29 @@ internal class DftMatrixTest {
         }
     }
 
-    // *  : average 274.66916ms, deviation 367.08094ms
-    // *p : average 268.31002ms, deviation 368.17655ms
-    // * t: average 266.93755ms, deviation 373.58580ms
-    // *pt: average 279.44295ms, deviation 375.23690ms
-    //d*  : average 332.57835ms, deviation 9.08284ms
-    //total: 15.641318297s
+    //significantly faster
+    // *  : average 72.84144ms, deviation 79.81287ms
+    // *p : average 68.53130ms, deviation 78.78803ms
+    // * t: average 66.62584ms, deviation 79.57418ms
+    // *pt: average 78.73923ms, deviation 78.84515ms
+    //d*  : average 327.17575ms, deviation 13.31347ms
+    //total: 6.753049200s
+    //range: 410..420
     @Test
     fun largeMultiplication() {
         runBlocking {
+            val defaultBuilder = DftMatrixPPIBuilderImpl<ModularUInt>()
+
             val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
-            for (i in 410u..420u) {
+            val range = 410u..420u
+            for (i in range) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val dft = primeField.firstFullDft()
+                val dft = defaultBuilder.build(primeField.firstGenerator)
                 val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
+            println("range: $range")
         }
     }
 

@@ -1,7 +1,7 @@
 package math.coding
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
-import math.abstract_structure.instance.RingBigInteger
+import math.integer.big_integer.RingBigInteger
 import math.isPairwiseCoprimeBigInteger
 import math.nonNegMin
 import math.operation.product

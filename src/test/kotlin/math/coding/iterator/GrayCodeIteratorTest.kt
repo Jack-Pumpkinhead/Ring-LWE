@@ -1,6 +1,6 @@
 package math.coding.iterator
 
-import math.abstract_structure.instance.RingUInt
+import math.integer.uint.RingUInt
 import math.operation.product
 import org.junit.jupiter.api.Test
 import kotlin.random.Random

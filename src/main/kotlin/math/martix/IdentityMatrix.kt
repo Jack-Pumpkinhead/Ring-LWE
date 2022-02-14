@@ -23,6 +23,7 @@ class IdentityMatrix<A>(override val ring: Ring<A>, override val size: UInt) : A
     }
 
     override fun determinant(): A = ring.one
-    override fun inverse(): AbstractSquareMatrix<A> = this
+    override val inverse: AbstractSquareMatrix<A>
+        get() = this
 
 }

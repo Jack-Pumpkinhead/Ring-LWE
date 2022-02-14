@@ -4,6 +4,9 @@
 - extend BoundedMultiIndex to support BigInteger index currently useless, because index of Array in Java/Kotlin is restricted to int, but restrict implementation for UInt needs a tedious overflow-checking (costly and error-prone).
 - no need to implement radix-2 FFt since it is equivalent to prime power case when p=2
 - after making abstract matrix to interface, implement equals method for every class is very tedious
+- kotlin cannot override equals() and hashcode() in interface
+- never use 'open class', use interface instead
+- introduce 'Two' related class introduce complexity, unless make some class open
 
 ##todo
 - R[x]/f(x) for f monic
@@ -13,6 +16,7 @@
 ##debug  
 - test 的命名空间与 main相同，避免重名
 - make sure variables captured by launch{} is val (e.g. in a for() loop)
+- if 0 containers and 2 tests were Method or class mismatch, try gradle clean (reload gradle project / restart IDEA not work) 
 
 ##references
 - (2013) [Optimal Discrete Uniform Generation from Coin Flips, and Applications --Jérémie Lumbroso](https://arxiv.org/abs/1304.1916)
@@ -33,4 +37,7 @@
 ##data structure
 - ULong 64-bit
 - Int.MAX_VALUE = 2147483647 = 2^31 -1
-- UInt.MAX_VALUE = 2^32 -1 < 64 * Int.MAX_VALUE < ULong.MAX_VALUE = 2^64 -1
+- UInt.MAX_VALUE = 4294967295 = 2^32 -1 < 64 * Int.MAX_VALUE < ULong.MAX_VALUE = 2^64 -1
+
+so addition of two positive Int in UInt would not overflow  
+multiplication of two UInt in ULong would not overflow  

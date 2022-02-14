@@ -3,6 +3,10 @@ package math.abstract_structure.instance
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import math.abstract_structure.Ring
 import math.abstract_structure.Category
+import math.integer.big_integer.RingBigInteger
+import math.integer.big_integer.modular.RingModularBigInteger
+import math.integer.uint.RingUInt
+import math.integer.uint.modular.RingModularUInt
 import math.martix.AbstractMatrix
 import math.martix.identityMatrix
 

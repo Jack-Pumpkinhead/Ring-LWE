@@ -23,9 +23,10 @@ class SquareRowBipartiteMatrix<A>(override val upper: AbstractMatrix<A>, overrid
         TODO("Not yet implemented")
     }
 
-    override fun inverse(): AbstractSquareMatrix<A> {
-        TODO("Not yet implemented")
-    }
+    override val inverse: AbstractSquareMatrix<A>
+        get() {
+            TODO("Not yet implemented")
+        }
 
 
 }

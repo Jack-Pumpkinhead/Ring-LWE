@@ -107,11 +107,11 @@ internal class DistributionRandomHelperKtTest {
         println("Histogram[${numbers.joinToString(prefix = "{", postfix = "}")}]")
     }
 
-    //     1303.6257: average 0.50006ms, deviation 1.60131ms
-    //          java: average 0.00444ms, deviation 0.00484ms
-    //TPM  1303.6257: average 69.31595ms, deviation 55.53951ms
-    //TPM       java: average 8.41569ms, deviation 10.53382ms
-    //total: 1m 18.236132100s
+    //     1303.6257: average 0.55728ms, deviation 1.64280ms
+    //          java: average 0.00495ms, deviation 0.00815ms
+    //TPM  1303.6257: average 65.37853ms, deviation 65.48338ms
+    //TPM       java: average 8.15885ms, deviation 9.90847ms
+    //total: 1m 14.099606300s
     @Test
     fun standardNormalDistributionSpeed() {
         runBlocking {

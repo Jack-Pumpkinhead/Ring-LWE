@@ -2,15 +2,23 @@ package cryptography.lattice.ring_lwe.coding
 
 import math.coding.LadderIndex
 import math.coding.permutation.Permutation
+import util.stdlib.lazyAssert2
 
 /**
  * Created by CowardlyLion at 2022/1/24 13:44
  *
  * from LadderIndex (a0, a1) with bounds {b0, b1} to LadderIndex (a1, a0) with bounds {b1, b0}
  */
-class LadderSwitcher(val b0: UInt, val b1: UInt) : Permutation(b0 * b1) {
+class LadderSwitcher(size: UInt, val b0: UInt, val b1: UInt) : Permutation(size) {
+
+    init {
+        lazyAssert2 {
+            assert(size.toULong() == b0.toULong() * b1.toULong())
+        }
+    }
 
     val fromIndex = LadderIndex(listOf(b0, b1), super.size)
+
     val toIndex = LadderIndex(listOf(b1, b0), super.size)
 
     override fun invoke(x: UInt): UInt {
@@ -22,6 +30,8 @@ class LadderSwitcher(val b0: UInt, val b1: UInt) : Permutation(b0 * b1) {
         val a = toIndex.decode(y)
         return fromIndex.encode(listOf(a[1], a[0]))
     }
+
+    override val inverse: Permutation get() = LadderSwitcher(size, b1, b0)
 
     override fun iterator(): Iterator<PermutationPair> = object : Iterator<PermutationPair> {
 

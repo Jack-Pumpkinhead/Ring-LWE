@@ -14,19 +14,8 @@ abstract class Permutation(val size: UInt) : Iterable<Permutation.PermutationPai
     abstract operator fun invoke(x: UInt): UInt
     abstract fun inv(y: UInt): UInt
 
-    open fun toInverse() = object : Permutation(size) {
-        override operator fun invoke(x: UInt): UInt = this@Permutation.inv(x)
-        override fun inv(y: UInt): UInt = this@Permutation(y)
-        override fun iterator(): Iterator<PermutationPair> {
-            val iterator = this@Permutation.iterator()
-            return object : Iterator<PermutationPair> {
-                override fun hasNext(): Boolean = iterator.hasNext()
-                override fun next(): PermutationPair {
-                    val (source, target) = iterator.next()
-                    return PermutationPair(target, source)
-                }
-            }
-        }
+    open val inverse: Permutation by lazy {
+        InversePermutation(this)
     }
 
     /**

@@ -1,11 +1,18 @@
 package math.random
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.abstract_structure.instance.*
+import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.abstract_structure.instance.FieldDouble
 import math.complex_number.ComplexNumber
-import math.integer.*
-import math.integer.modular.ModularUInt
-import math.integer.modular.ModularULong
+import math.integer.big_integer.ceilLog2
+import math.integer.uint.RingUInt
+import math.integer.uint.ceilLog2
+import math.integer.uint.factored.*
+import math.integer.uint.isPrime
+import math.integer.uint.modular.ModularUInt
+import math.integer.uint.modular.RingModularUInt
+import math.integer.ulong.modular.ModularULong
+import math.integer.ulong.modular.RingModularULong
 import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.OrdinarySquareMatrix
 import math.martix.matrix
@@ -193,93 +200,44 @@ fun Random.nextBigIntegerFDR(bound: BigInteger): BigInteger {
  *
  * TODO implement a fast isPrime() then remove `suspend`
  */
-suspend fun Random.randomFactoredNumberFDR(n: UInt): FactorizationUInt {
+suspend fun nextFactoredNumberFDR(n: UInt, nextUIntMethod: (UIntRange) -> UInt): UIntPPPI {
     require(n != 0u)
-    val factors = mutableListOf<FactorizationUIntPrimePower>()
-    var lastPrime = 0u
-    var lastPower = 1u  //power may not be too big in general, using manual multiplication permits early rejection and safe multiplication
-    var lastPrimePower = 0u
-    var r = 1uL     //prevent overflow
+    rerun@ while (true) {
 
-    var a = this.nextUIntFDR(1u..n)
-    while (a != 1u) {
-        if (a.isPrime()) {
-            r *= a
-            if (r > n) return this.randomFactoredNumberFDR(n)
-            if (lastPrime == a) {
-                lastPower++
-                lastPrimePower *= a
-            } else {
-                if (lastPrime == 0u) {
-                    lastPrime = a
-                    lastPrimePower = a
-                } else {
-                    factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)
-                    lastPrime = a
-                    lastPower = 1u
-                    lastPrimePower = a
+        val factors = mutableListOf<UIntPPI>()
+        var lastPrime = 0u
+        var lastPower = 1u  //power may not be too big in general, using manual multiplication permits early rejection and safe multiplication
+//        var lastPrimePower = 0u //use fast power method
+        var r = 1uL     //prevent overflow
+
+        var a = nextUIntMethod(1u..n)
+        while (a != 1u) {
+            if (a.isPrime()) {
+                r *= a
+                if (r > n) continue@rerun
+                when (lastPrime) {
+                    a    -> lastPower++
+                    0u   -> lastPrime = a
+                    else -> {
+                        factors += ofPrimePower(lastPrime, lastPower)
+                        lastPrime = a
+                        lastPower = 1u
+                    }
                 }
             }
+            a = nextUIntMethod(1u..a)
         }
-        a = this.nextUIntFDR(1u..a)
-    }
 
-    return if (this.nextUIntFDR(n) < r) {   //with probability r/n
-
-        if (lastPrime != 0u) {
-            factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)
-        }
-        factors.reverse()
-        FactorizationUInt(r.toUInt(), factors)
-
-    } else this.randomFactoredNumberFDR(n)
-}
-
-/**
- * generating random factored number algorithm by Adam Kalai
- *
- * return a uniformly random integer in 1..n with it's factorization
- *
- * TODO implement a fast isPrime() then remove `suspend`
- */
-suspend fun Random.randomFactoredNumber(n: UInt): FactorizationUInt {
-    require(n != 0u)
-    val factors = mutableListOf<FactorizationUIntPrimePower>()
-    var lastPrime = 0u
-    var lastPower = 1u  //power may not be too big in general, using manual multiplication permits early rejection and safe multiplication
-    var lastPrimePower = 0u
-    var r = 1uL     //prevent overflow
-
-    var a = this.nextUInt(1u..n)
-    while (a != 1u) {
-        if (a.isPrime()) {
-            r *= a
-            if (r > n) return this.randomFactoredNumber(n)
-            if (lastPrime == a) {
-                lastPower++
-                lastPrimePower *= a
-            } else {
-                if (lastPrime == 0u) {
-                    lastPrime = a
-                    lastPrimePower = a
-                } else {
-                    factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)
-                    lastPrime = a
-                    lastPower = 1u
-                    lastPrimePower = a
-                }
+        if (nextUIntMethod(0u until n) < r) {   //accept r with probability r/n
+            if (lastPrime != 0u) {
+                factors += ofPrimePower(lastPrime, lastPower)
             }
+            factors.reverse()
+            return ofPrimePowers(factors, r.toUInt())
         }
-        a = this.nextUInt(1u..a)
     }
-
-    return if (this.nextUInt(n) < r) {   //with probability r/n
-
-        if (lastPrime != 0u) {
-            factors += FactorizationUIntPrimePower(lastPrimePower, lastPrime, lastPower)
-        }
-        factors.reverse()
-        FactorizationUInt(r.toUInt(), factors)
-
-    } else this.randomFactoredNumber(n)
 }
+
+suspend fun Random.nextFactoredNumberFDR(n: UInt): UIntPPPI = nextFactoredNumberFDR(n) { range -> nextUIntFDR(range) }
+
+suspend fun Random.nextFactoredNumber(n: UInt): UIntPPPI = nextFactoredNumberFDR(n) { range -> nextUInt(range) }

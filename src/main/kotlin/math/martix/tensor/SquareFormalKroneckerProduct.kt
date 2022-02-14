@@ -2,59 +2,64 @@ package math.martix.tensor
 
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.abstract_structure.Ring
-import math.abstract_structure.instance.RingBigInteger
-import math.abstract_structure.instance.RingUInt
+import math.integer.big_integer.RingBigInteger
 import math.coding.LadderIndex
-import math.martix.AbstractSquareMatrix
-import math.martix.decomposeSquareFormalKroneckerProduct
+import math.martix.*
 import math.operation.product
 import util.stdlib.lazyAssert2
 
 /**
  * Created by CowardlyLion at 2022/1/27 16:40
  */
-class SquareFormalKroneckerProduct<A>(ring: Ring<A>, val elements: List<AbstractSquareMatrix<A>>) : SquareFormalProduct<A>(ring, ring.decomposeSquareFormalKroneckerProduct(elements)) {
+class SquareFormalKroneckerProduct<A>(override val ring: Ring<A>, override val size: UInt, override val elements: List<AbstractSquareMatrix<A>>) : AbstractSquareFormalProduct<A>, AbstractSquareFormalKroneckerProduct<A> {
 
-    val index: LadderIndex
+    //there are (matrices.size)! ways (permutations) of decomposition, use one that compute m0 first.
+    override val matrices: List<AbstractSquareMatrix<A>> =
+        when (elements.size) {
+            1    -> elements
+            else -> {
+                var l = size
+                var r = 1u
+
+                val result = mutableListOf<AbstractSquareMatrix<A>>()
+                for (i in elements.size - 1 downTo 0) {
+                    val m = elements[i]
+                    l /= m.rows
+                    result += SquareWhiskeredKroneckerProduct(ring, size, l, m, r)
+                    r *= m.columns
+                }
+                result
+            }
+        }
+
+    override val index: LadderIndex = LadderIndex(elements.map { it.size }, size)
 
     init {
-        val rows = elements.map { it.rows }
-        index = LadderIndex(rows, RingUInt.product(rows))
-
         lazyAssert2 {
             assert(elements.isNotEmpty())
-            val totalRows = RingBigInteger.product(rows.map { it.toBigInteger() })
-            assert(totalRows <= UInt.MAX_VALUE)
+            assert(size.toBigInteger() == RingBigInteger.product(elements.map { it.size.toBigInteger() }))
         }
     }
 
     override fun elementAtUnsafe(row: UInt, column: UInt): A {
         val row1 = index.decode(row)
         val column1 = index.decode(column)
-        return ring.product(0u until elements.size.toUInt()) { i -> elements[i.toInt()].elementAt(row1[i.toInt()], column1[i.toInt()]) }
+        return ring.product(0u until elements.size.toUInt()) { i -> elements[i.toInt()].elementAtUnsafe(row1[i.toInt()], column1[i.toInt()]) }
     }
-
-
-//    over checking may slow
-    /*override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when {
-        matrix is FormalKroneckerProduct<A>
-                && canMultiplyElementWise(this.elements, matrix.elements) -> {   //It's possible to implement a more intelligent mix-tensor-product resolution method, based on string diagrams of monoidal category.
-            FormalKroneckerProduct(ring, elements.zip(matrix.elements).map { (a, b) -> a * b })
-        }
-        else                                                              -> super.timesImpl(matrix)
-    }
-
-    override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> = when {
-        matrix is FormalKroneckerProduct<A>
-                && canMultiplyElementWise(this.elements, matrix.elements) -> {   //It's possible to implement a more intelligent mix-tensor-product resolution method.
-            FormalKroneckerProduct(ring, elements.zip(matrix.elements).map { (a, b) -> a.timesRowParallel(b) })
-        }
-        else                                                              -> super.timesRowParallelImpl(matrix)
-    }*/
-
 
     override fun downCast(): AbstractSquareMatrix<A> = when (elements.size) {
         1    -> elements[0]
         else -> this
     }
+
+    override fun hasInverse(): Boolean = elements.all { it.hasInverse() }
+
+    override val inverse: AbstractSquareMatrix<A> by lazy {
+        SquareFormalKroneckerProduct(ring, size, matrices.map { it.inverse })
+    }
+
+    override fun determinant(): A {
+        TODO("Not yet implemented")
+    }
+
 }

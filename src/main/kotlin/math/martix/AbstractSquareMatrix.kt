@@ -16,6 +16,6 @@ interface AbstractSquareMatrix<A> : AbstractMatrix<A> {
 
     fun hasInverse(): Boolean = ring.hasInverse(determinant())
 
-    fun inverse(): AbstractSquareMatrix<A>
+    val inverse: AbstractSquareMatrix<A>
 
 }

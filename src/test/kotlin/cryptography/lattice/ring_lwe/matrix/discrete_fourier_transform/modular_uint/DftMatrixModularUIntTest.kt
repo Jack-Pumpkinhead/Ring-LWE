@@ -1,9 +1,10 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.modular_uint
 
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.FieldModularUInt
-import math.integer.modular.ModularUInt
-import math.integer.primeOf
+import math.complex_number.maxRoundingError
+import math.integer.uint.modular.FieldModularUInt
+import math.integer.uint.modular.ModularUInt
+import math.integer.ulong.primeOf
 import math.random.randomMatrix
 import math.statistic.TaskTimingStatistic
 import math.timing.EqualTwoMatrixMultiplicationTiming
@@ -16,37 +17,44 @@ import org.junit.jupiter.api.assertThrows
  */
 internal class DftMatrixModularUIntTest {
 
-    // *  : average 15.84204ms, deviation 13.65451ms
-    // *p : average 16.08606ms, deviation 13.47130ms
-    // * t: average 15.88578ms, deviation 13.91805ms
-    // *pt: average 17.44031ms, deviation 14.55987ms
-    //d*  : average 17.39220ms, deviation 17.30109ms
-    //total: 16.529278395s
+    //a bit slower and time-unstable
+    // *  : average 16.63000ms, deviation 14.25035ms
+    // *p : average 16.73985ms, deviation 14.12499ms
+    // * t: average 16.60502ms, deviation 14.32827ms
+    // *pt: average 18.11378ms, deviation 14.64732ms
+    //d*  : average 20.97162ms, deviation 21.00202ms
+    //total: 17.812052600s
+    //range: 1..200
     @Test
     fun multiplication() {
         runBlocking {
             val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
-            for (i in 1u..200u) {
+            val range = 1u..200u
+            for (i in range) {
                 val primeField = FieldModularUInt(primeOf(i).toUInt())
                 val dft = primeField.firstFullDftFast()
                 val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
+            println("range: $range")
         }
     }
 
-    // *  : average 130.29925ms, deviation 49.46187ms
-    // *p : average 115.82274ms, deviation 25.38631ms
-    // * t: average 115.81454ms, deviation 31.18571ms
-    // *pt: average 124.87878ms, deviation 24.65770ms
-    //d*  : average 325.86293ms, deviation 9.46035ms
-    //total: 8.939460601s
+    //a bit slower and time-unstable
+    // *  : average 121.97342ms, deviation 44.15251ms
+    // *p : average 107.92397ms, deviation 20.24315ms
+    // * t: average 106.28782ms, deviation 19.44385ms
+    // *pt: average 116.73839ms, deviation 20.18821ms
+    //d*  : average 385.00060ms, deviation 12.82751ms
+    //total: 9.217166200s
+    //range: 410..420
     @Test
     fun largeMultiplication() {
         runBlocking {
             val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
-            for (i in 410u..420u) {
+            val range = 410u..420u
+            for (i in range) {
                 val prime = primeOf(i)
                 val primeField = FieldModularUInt(prime.toUInt())
 //                println("prime: $prime")
@@ -55,6 +63,7 @@ internal class DftMatrixModularUIntTest {
                 statistic.go(TwoMatrix(dft, x))
             }
             statistic.printAverageAndStandardDeviation()
+            println("range: $range")
         }
     }
 
@@ -68,13 +77,16 @@ internal class DftMatrixModularUIntTest {
             val exception = assertThrows<IllegalArgumentException> {
                 val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
 //                for (i in 1u..901u) {
-                for (i in 460u..901u) {
+                for (i in 700u..9001u) {    //TODO test maximal acceptable DFT
                     val prime = primeOf(i)
                     val primeField = FieldModularUInt(prime.toUInt())
-                    println("i: $i,  prime: $prime")
+                    println("i: $i,  prime: $prime, p-1: ${primeField.primeMinusOne}")
                     val dft = primeField.firstFullDftFast()
                     val x = primeField.randomMatrix(dft.columns, 2u)
+
+                    maxRoundingError = 0.0
                     statistic.go(TwoMatrix(dft, x))
+                    println("maxRoundingError: $maxRoundingError")
                 }
                 statistic.printAverageAndStandardDeviation()
             }

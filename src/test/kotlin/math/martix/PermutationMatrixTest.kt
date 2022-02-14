@@ -3,8 +3,8 @@ package math.martix
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import cryptography.lattice.ring_lwe.coding.*
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.RingBigInteger
-import math.abstract_structure.instance.RingUInt
+import math.integer.big_integer.RingBigInteger
+import math.integer.uint.RingUInt
 import math.coding.permutation.SwitchIndexPermutation
 import math.isPairwiseCoprimeUInt
 import math.operation.product
@@ -21,39 +21,43 @@ import kotlin.random.nextUInt
  */
 internal class PermutationMatrixTest {
 
+    //BUILD SUCCESSFUL in 31s
+
     @Test
     fun multiplication() {
         runBlocking {
-            val samples = mutableListOf<Pair<List<UInt>, AbstractMatrix<UInt>>>()
+            data class Sample(val bound: UInt, val bounds: List<UInt>, val matrix: AbstractMatrix<UInt>)
+
+            val samples = mutableListOf<Sample>()
             for (length in 2..5) {
                 repeat(1000) {
                     val bound = List(length) { Random.nextUInt(2u..100u) }
                     val product = RingBigInteger.product(bound.map { it.toBigInteger() })
                     if (product <= 1000) {
                         if (bound.isPairwiseCoprimeUInt()) {
-                            samples += bound to Random.randomUIntMatrix(product.uintValue(), 2u, 0u..100u)
+                            samples += Sample(product.uintValue(true), bound, Random.randomUIntMatrix(product.uintValue(), 2u, 0u..100u))
                         }
                     }
                 }
             }
             println("samples: ${samples.size}")
 
-            suspend fun testPermutation(permutation: (List<UInt>) -> SwitchIndexPermutation, name: String) {
+            suspend fun testPermutation(permutation: (Sample) -> SwitchIndexPermutation, name: String) {
                 println("permutation $name")
                 val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
-                for ((bound, x) in samples) {
-                    statistic.go(TwoMatrix(PermutationMatrix(RingUInt, permutation(bound)), x))
+                for (sample in samples) {
+                    statistic.go(TwoMatrix(PermutationMatrix(RingUInt, permutation(sample)), sample.matrix))
                 }
                 statistic.printAverageAndStandardDeviation()
                 println()
             }
 
-            testPermutation({ bound -> permCRInv(bound) }, "CR")
-            testPermutation({ bound -> permRCInv(bound) }, "RC")
-            testPermutation({ bound -> permRLInv(bound) }, "RL")
-            testPermutation({ bound -> permLRInv(bound) }, "LR")
-            testPermutation({ bound -> permCLInv(bound) }, "CL")
-            testPermutation({ bound -> permLCInv(bound) }, "LC")
+            testPermutation({ sample -> permCRInv(sample.bound, sample.bounds) }, "CR")
+            testPermutation({ sample -> permRCInv(sample.bound, sample.bounds) }, "RC")
+            testPermutation({ sample -> permRLInv(sample.bound, sample.bounds) }, "RL")
+            testPermutation({ sample -> permLRInv(sample.bound, sample.bounds) }, "LR")
+            testPermutation({ sample -> permCLInv(sample.bound, sample.bounds) }, "CL")
+            testPermutation({ sample -> permLCInv(sample.bound, sample.bounds) }, "LC")
 
 
         }

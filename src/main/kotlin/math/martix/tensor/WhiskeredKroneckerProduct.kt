@@ -16,21 +16,16 @@ import util.stdlib.lazyAssert2
  *
  * represent a matrix of the form I_l ⊗ M ⊗ I_r
  */
-class WhiskeredKroneckerProduct<A>(override val ring: Ring<A>, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A> {
+class WhiskeredKroneckerProduct<A>(override val ring: Ring<A>, override val rows: UInt, override val columns: UInt, val l: UInt, val mA: AbstractMatrix<A>, val r: UInt) : AbstractMatrix<A> {
 
-    override val rows: UInt = l * mA.rows * r
-    override val columns: UInt = l * mA.columns * r
     val rowIndex = LadderIndex(listOf(l, mA.rows, r), rows)
+
     val columnIndex = LadderIndex(listOf(l, mA.columns, r), columns)
 
     init {
         lazyAssert2 {
-            val bigL = l.toBigInteger()
-            val bigR = r.toBigInteger()
-            val rows = bigL * mA.rows.toBigInteger() * bigR
-            assert(rows <= UInt.MAX_VALUE)
-            val columns = bigL * mA.columns.toBigInteger() * bigR
-            assert(columns <= UInt.MAX_VALUE)
+            require(rows.toBigInteger() == l.toBigInteger() * mA.rows.toBigInteger() * r.toBigInteger())
+            require(columns.toBigInteger() == l.toBigInteger() * mA.columns.toBigInteger() * r.toBigInteger())
         }
     }
 

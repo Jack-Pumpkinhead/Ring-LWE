@@ -106,6 +106,8 @@ open class PermutationMatrix<A>(override val ring: Ring<A>, val f: Permutation) 
     override fun determinant(): A = if (f.isOddPermutation) ring.negate(ring.one) else ring.one
 
     override fun hasInverse(): Boolean = true
-    override fun inverse(): AbstractSquareMatrix<A> = PermutationMatrix(ring, f.toInverse())
+    override val inverse: AbstractSquareMatrix<A> by lazy {
+        PermutationMatrix(ring, f.inverse)
+    }
 
 }

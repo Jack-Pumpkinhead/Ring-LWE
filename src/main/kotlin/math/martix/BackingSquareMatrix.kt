@@ -15,6 +15,6 @@ interface BackingSquareMatrix<A> : BackingMatrix<A>, AbstractSquareMatrix<A> {
 
     override fun determinant(): A = underlyingMatrix.determinant()
     override fun hasInverse(): Boolean = underlyingMatrix.hasInverse()
-    override fun inverse(): AbstractSquareMatrix<A> = underlyingMatrix.inverse()
+    override val inverse: AbstractSquareMatrix<A> get() = underlyingMatrix.inverse
 
 }

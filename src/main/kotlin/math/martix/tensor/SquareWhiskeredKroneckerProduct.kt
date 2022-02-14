@@ -17,18 +17,13 @@ import util.stdlib.stepForward
  *
  * represent a square matrix of the form I_l ⊗ M ⊗ I_r for M square
  */
-class SquareWhiskeredKroneckerProduct<A>(override val ring: Ring<A>, val l: UInt, val mA: AbstractSquareMatrix<A>, val r: UInt) : AbstractSquareMatrix<A> {
-
-    override val size: UInt = l * mA.size * r
+class SquareWhiskeredKroneckerProduct<A>(override val ring: Ring<A>, override val size: UInt, val l: UInt, val mA: AbstractSquareMatrix<A>, val r: UInt) : AbstractSquareMatrix<A> {
 
     val index = LadderIndex(listOf(l, mA.size, r), size)
 
     init {
         lazyAssert2 {
-            val bigL = l.toBigInteger()
-            val bigR = r.toBigInteger()
-            val rows = bigL * mA.size.toBigInteger() * bigR
-            assert(rows <= UInt.MAX_VALUE)
+            assert(size.toBigInteger() == l.toBigInteger() * mA.size.toBigInteger() * r.toBigInteger())
         }
     }
 
@@ -48,8 +43,8 @@ class SquareWhiskeredKroneckerProduct<A>(override val ring: Ring<A>, val l: UInt
         return mA.hasInverse()
     }
 
-    override fun inverse(): AbstractSquareMatrix<A> {
-        return SquareWhiskeredKroneckerProduct(ring, l, mA.inverse(), r)
+    override val inverse: AbstractSquareMatrix<A> by lazy {
+        SquareWhiskeredKroneckerProduct(ring, size, l, mA.inverse, r)
     }
 
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {

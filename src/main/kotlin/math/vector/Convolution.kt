@@ -1,8 +1,8 @@
 package math.vector
 
 import math.abstract_structure.Ring
-import math.integer.FactorizationULongPrimePower
-import math.integer.operation.modMinusUnsafe
+import math.integer.ulong.factored.FactorizationULongPrimePower
+import math.integer.uint.modMinusUnsafe
 
 /**
  * Created by CowardlyLion at 2022/1/19 13:34

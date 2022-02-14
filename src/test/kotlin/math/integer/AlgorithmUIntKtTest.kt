@@ -1,5 +1,9 @@
 package math.integer
 
+import math.integer.uint.ceilLog2
+import math.integer.uint.floorLog2Int
+import math.integer.uint.isTwoPower
+import math.integer.uint.nextTwoPositivePower
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -33,17 +37,17 @@ internal class AlgorithmUIntKtTest {
     }
 
     @Test
-    fun nextTwoPower() {
+    fun nextTwoPowerTest() {
         for (i in 2u..123456u) {
 //            println(i)
-            val (value, prime, power) = nextTwoPower(i)
-            assertTrue(value >= i)
-            assertTrue(value / 2u < i)
+            val twoPower = nextTwoPositivePower(i)
+            assertTrue(twoPower.value >= i)
+            assertTrue(twoPower.value / 2u < i)
         }
     }
 
     @Test
-    fun isTwoPower() {
+    fun isTwoPowerTest() {
         for (i in 0u..123456u) {
             if (isTwoPower(i)) {
                 println(i)

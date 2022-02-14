@@ -3,6 +3,7 @@ package math.complex_number
 import math.abstract_structure.Ring
 import math.roundingErrorDouble
 import kotlin.math.absoluteValue
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -28,6 +29,8 @@ fun ComplexNumber<Double>.roundToInt(): Int {
     return roundToInt
 }
 
+var maxRoundingError: Double = 0.0
+
 fun ComplexNumber<Double>.roundToLong(): Long {
 //    println("im: $imaginary")
     require(imaginary.absoluteValue < roundingErrorDouble) { "im: $imaginary" }
@@ -37,7 +40,9 @@ fun ComplexNumber<Double>.roundToLong(): Long {
         println("warn: rounding overflow, $real round to $roundToLong")
     }
     val roundingError = real - roundToLong
+    maxRoundingError = max(maxRoundingError, roundingError)
 //    println("err: $roundingError")
+
     require(roundingError.absoluteValue < roundingErrorDouble) { "err: $roundingError" }
     return roundToLong
 }

@@ -2,6 +2,7 @@ package math.integer
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import math.integer.big_integer.ceilLog2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ internal class AlgorithmBigIntegerKtTest {
 
     @Test
     fun ceilLog2() {
-        assertEquals(BigInteger.ONE.ceilLog2(), 0L)
+        assertEquals(BigInteger.ONE.ceilLog2(), 0uL)
         val bound = 123456u.toBigInteger()
         var i = BigInteger.TWO
         while (i <= bound) {
