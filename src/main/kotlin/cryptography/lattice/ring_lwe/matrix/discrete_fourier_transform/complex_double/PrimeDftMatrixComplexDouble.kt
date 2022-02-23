@@ -27,7 +27,7 @@ class PrimeDftMatrixComplexDouble(override val root: RootUIntPI<ComplexNumber<Do
     override val ring: Ring<ComplexNumber<Double>> get() = root.ring
 
     override val underlyingMatrix =
-        if (size <= 3u) {
+        if (size <= 389u) {
             ring.squareMatrix(size) { i, j ->
                 root.cachedPower(modTimes(i, j, size))
             }

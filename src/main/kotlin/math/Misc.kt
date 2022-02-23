@@ -4,6 +4,7 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
 import math.integer.uint.gcd
 import math.martix.AbstractMatrix
+import math.operation.matrixToString
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -43,7 +44,7 @@ val roundingErrorDouble = 0.3
 
 fun <A> AbstractMatrix<A>.andPrint(info: String = ""): AbstractMatrix<A> {
     if (printMatrix) {
-        println("$info\t$this\n\n")
+        println("$info\t${matrixToString(this)}\n\n")
     }
     return this
 }

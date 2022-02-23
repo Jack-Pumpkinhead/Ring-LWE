@@ -17,13 +17,13 @@ import org.junit.jupiter.api.assertThrows
  */
 internal class DftMatrixModularUIntTest {
 
-    //a bit slower and time-unstable
-    // *  : average 16.63000ms, deviation 14.25035ms
-    // *p : average 16.73985ms, deviation 14.12499ms
-    // * t: average 16.60502ms, deviation 14.32827ms
-    // *pt: average 18.11378ms, deviation 14.64732ms
-    //d*  : average 20.97162ms, deviation 21.00202ms
-    //total: 17.812052600s
+    //outperform ordinary method now.
+    // *  : average 2.04940ms, deviation 2.52790ms
+    // *p : average 2.17355ms, deviation 2.46768ms
+    // * t: average 1.96047ms, deviation 2.55947ms
+    // *pt: average 3.49734ms, deviation 2.79450ms
+    //d*  : average 17.41303ms, deviation 16.83532ms
+    //samples: 200, total time: 5.418757900s
     //range: 1..200
     @Test
     fun multiplication() {
@@ -41,13 +41,13 @@ internal class DftMatrixModularUIntTest {
         }
     }
 
-    //a bit slower and time-unstable
-    // *  : average 121.97342ms, deviation 44.15251ms
-    // *p : average 107.92397ms, deviation 20.24315ms
-    // * t: average 106.28782ms, deviation 19.44385ms
-    // *pt: average 116.73839ms, deviation 20.18821ms
-    //d*  : average 385.00060ms, deviation 12.82751ms
-    //total: 9.217166200s
+    //outperform ordinary method now.
+    // *  : average 54.33816ms, deviation 66.72178ms
+    // *p : average 43.60698ms, deviation 44.07210ms
+    // * t: average 41.37795ms, deviation 44.65537ms
+    // *pt: average 52.01183ms, deviation 44.30465ms
+    //d*  : average 358.72960ms, deviation 33.35449ms
+    //samples: 11, total time: 6.050709800s
     //range: 410..420
     @Test
     fun largeMultiplication() {
@@ -77,7 +77,7 @@ internal class DftMatrixModularUIntTest {
             val exception = assertThrows<IllegalArgumentException> {
                 val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
 //                for (i in 1u..901u) {
-                for (i in 700u..9001u) {    //TODO test maximal acceptable DFT
+                for (i in 745u..9001u) {    //TODO test maximal acceptable DFT
                     val prime = primeOf(i)
                     val primeField = FieldModularUInt(prime.toUInt())
                     println("i: $i,  prime: $prime, p-1: ${primeField.primeMinusOne}")

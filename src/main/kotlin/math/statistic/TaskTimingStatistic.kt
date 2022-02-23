@@ -62,7 +62,7 @@ open class TaskTimingStatistic<Condition, Result>(val timing: TaskTiming<Conditi
             val (average, deviation) = info[i]
             println("${timing.tasks[i].info}: average ${average.toString(DurationUnit.MILLISECONDS, 5)}, deviation ${deviation.toString(DurationUnit.MILLISECONDS, 5)}")
         }
-        println("total: $totalTime")
+        println("samples: $samples, total time: $totalTime")
     }
 
 

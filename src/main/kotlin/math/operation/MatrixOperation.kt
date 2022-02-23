@@ -4,13 +4,16 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
 import math.complex_number.ComplexNumber
+import math.complex_number.maxRoundingError
 import math.martix.AbstractMatrix
 import math.martix.matrix
 import math.martix.matrixRowParallel
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.mutable.MutableMatrix
 import math.martix.zeroMutableMatrix
+import math.roundingErrorDouble
 import util.stdlib.list
+import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
@@ -122,6 +125,27 @@ fun <A> matrixEquals(m1: AbstractMatrix<A>, m2: AbstractMatrix<A>): Boolean {
     for (i in 0u until m1.rows) {
         for (j in 0u until m1.columns) {
             if (m1.elementAtUnsafe(i, j) != m2.elementAtUnsafe(i, j)) return false
+        }
+    }
+    return true
+}
+
+fun matrixApproximatelyEquals(m1: AbstractMatrix<ComplexNumber<Double>>, m2: AbstractMatrix<ComplexNumber<Double>>): Boolean {
+    if (m1 === m2) return true
+
+    if (m1.ring != m2.ring) return false
+    if (m1.rows != m2.rows) return false
+    if (m1.columns != m2.columns) return false
+    for (i in 0u until m1.rows) {
+        for (j in 0u until m1.columns) {
+            val a1 = m1.elementAtUnsafe(i, j)
+            val a2 = m2.elementAtUnsafe(i, j)
+            val diff = a1 - a2
+            maxRoundingError = max(maxRoundingError, diff.real)
+            maxRoundingError = max(maxRoundingError, diff.imaginary)
+            if (diff.real > roundingErrorDouble || diff.imaginary > roundingErrorDouble) {
+                return false
+            }
         }
     }
     return true

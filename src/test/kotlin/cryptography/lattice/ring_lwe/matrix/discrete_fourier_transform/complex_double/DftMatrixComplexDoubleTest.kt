@@ -34,15 +34,14 @@ internal class DftMatrixComplexDoubleTest {
         }
     }
 
-    //slower than DftMatrix on Z/(p) ?
-    //a bit slower, but more accurate
-    // *  : average 16.02021ms, deviation 13.62026ms
-    // *p : average 16.24256ms, deviation 13.34189ms
-    // * t: average 15.94355ms, deviation 13.51269ms
-    // *pt: average 17.34704ms, deviation 13.92480ms
-    //d*  : average 34.55805ms, deviation 34.59322ms
-    //total: 20.022283700s
-    //average: 7.83331343514978E-8, max: 5.585313277043764E-6
+    //a bit slower than DftMatrix on Z/(p), but significantly faster now
+    // *  : average 4.63115ms, deviation 8.38823ms
+    // *p : average 4.62763ms, deviation 6.61297ms
+    // * t: average 4.18084ms, deviation 6.04738ms
+    // *pt: average 5.65603ms, deviation 6.41442ms
+    //d*  : average 33.34370ms, deviation 33.75852ms
+    //samples: 200, total time: 10.487868600s
+    //average distance: 4.285146091883088E-8, max distance: 5.117668648580157E-6
     //range: 1..200
     @Test
     fun multiplication() {
@@ -61,14 +60,14 @@ internal class DftMatrixComplexDoubleTest {
         }
     }
 
-    //a bit slower, but more accurate and time-stable
-    // *  : average 117.38925ms, deviation 34.52243ms
-    // *p : average 107.07288ms, deviation 20.28890ms
-    // * t: average 104.31870ms, deviation 21.82223ms
-    // *pt: average 117.18685ms, deviation 17.67930ms
-    //d*  : average 721.74754ms, deviation 26.41343ms
-    //total: 12.844867400s
-    //average distance: 1.7458237254970154E-5, max distance: 7.53154128323864E-5
+    //significantly faster now, only a bit slower than DftMatrix on Z/(p)
+    // *  : average 61.69466ms, deviation 56.74904ms
+    // *p : average 54.90454ms, deviation 46.94890ms
+    // * t: average 50.96729ms, deviation 47.14343ms
+    // *pt: average 60.52852ms, deviation 45.81325ms
+    //d*  : average 685.94943ms, deviation 20.15691ms
+    //samples: 11, total time: 10.054488800s
+    //average distance: 1.790625714556701E-5, max distance: 7.375587762754825E-5
     //range 410..420
     @Test
     fun largeMultiplication() {
@@ -88,13 +87,13 @@ internal class DftMatrixComplexDoubleTest {
     }
 
     //a bit faster, more accurate and time-stable
-    // *  : average 5.59187ms, deviation 11.93975ms
-    // *p : average 8.45663ms, deviation 16.88845ms
-    // * t: average 5.53166ms, deviation 11.94401ms
-    // *pt: average 8.44935ms, deviation 16.91003ms
-    //d*  : average 8.05969ms, deviation 29.65498ms
-    //total: 17.467171600s
-    //average distance: 1.94412666578443E-6, max distance: 7.512332691283856E-5
+    // *  : average 4.50272ms, deviation 12.64917ms
+    // *p : average 5.39144ms, deviation 14.54141ms
+    // * t: average 4.40415ms, deviation 12.27610ms
+    // *pt: average 5.29099ms, deviation 14.41603ms
+    //d*  : average 7.91845ms, deviation 28.78574ms
+    //samples: 484, total time: 13.313753s
+    //average distance: 1.8279345143600485E-6, max distance: 5.996043237606617E-5
     //range: 1..484
     @Test
     fun primeField() {
@@ -120,13 +119,13 @@ internal class DftMatrixComplexDoubleTest {
     }
 
     //a bit faster, more accurate and time-stable
-    // *  : average 12.05132ms, deviation 19.84043ms
-    // *p : average 17.97778ms, deviation 28.54891ms
-    // * t: average 11.23950ms, deviation 19.00349ms
-    // *pt: average 17.11428ms, deviation 27.25500ms
-    //d*  : average 26.00565ms, deviation 62.26409ms
-    //total: 7.173024600s
-    //average distance: 6.78593196544304E-6, max distance: 6.983699626707115E-5
+    // *  : average 10.11894ms, deviation 19.37400ms
+    // *p : average 12.18764ms, deviation 22.07281ms
+    // * t: average 9.12951ms, deviation 17.13135ms
+    // *pt: average 11.55292ms, deviation 21.07485ms
+    //d*  : average 23.39107ms, deviation 55.49724ms
+    //samples: 85, total time: 5.642306700s
+    //average distance: 7.014583859750442E-6, max distance: 6.523318487683674E-5
     //range: 400..484
     @Test
     fun largePrimeField2() {

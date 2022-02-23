@@ -26,9 +26,8 @@ class PrimeDftMatrixModularUInt(override val root: RootUIntPI<ModularUInt>) : Df
 
     override val ring: Ring<ModularUInt> get() = root.ring
 
-    //TODO decide exact number of when to use cached matrix
     override val underlyingMatrix =
-        if (size <= 3u) {
+        if (size <= 739u) {
             ring.squareMatrix(size) { i, j ->
                 root.cachedPower(modTimes(i, j, size))
             }
