@@ -9,7 +9,7 @@ import kotlin.random.nextUInt
 /**
  * Created by CowardlyLion at 2022/1/24 20:16
  */
-internal class MultiIndexIteratorTest {
+internal class MultiIndexIteratorLadderTest {
 
     @Test
     fun test() {
@@ -17,7 +17,7 @@ internal class MultiIndexIteratorTest {
             repeat(3) {
                 val bounds = List(length) { Random.nextUInt(1u..7u) }
                 println("radices: ${bounds.joinToString(", ", "[", "]")}")
-                val iterator = MultiIndexIteratorImpl(bounds, RingUInt.product(bounds))
+                val iterator = MultiIndexIteratorLadderImpl(bounds, RingUInt.product(bounds))
                 for (code in iterator) {
                     println(code)
                 }

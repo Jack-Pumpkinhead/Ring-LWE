@@ -1,7 +1,7 @@
 package math.coding
 
-import math.coding.iterator.GrayCodeIterator
-import math.coding.iterator.MultiIndexIterator
+import math.coding.iterator.MultiIndexIteratorGray
+import math.coding.iterator.MultiIndexIteratorLadder
 import math.integer.uint.modInverse
 import math.integer.uint.modMinusUnsafe
 import math.integer.uint.modPlusUnsafe
@@ -51,7 +51,7 @@ class ChineseRemainderIndex(bounds: List<UInt>, indexBound: UInt) : BoundedMulti
     override fun decreaseAt(index: UInt, i: Int): UInt = modMinusUnsafe(index, indexBase[i], indexBound)
 
 
-    override fun iterator(): MultiIndexIterator<UInt> = object : MultiIndexIterator<UInt>(bounds, indexBound) {
+    override fun iterator(): MultiIndexIteratorLadder<UInt> = object : MultiIndexIteratorLadder<UInt>(bounds, indexBound) {
         var encode = 0u
         override fun returnCode(): UInt = encode
 
@@ -64,7 +64,7 @@ class ChineseRemainderIndex(bounds: List<UInt>, indexBound: UInt) : BoundedMulti
         }
     }
 
-    override fun iteratorGray(): GrayCodeIterator<UInt> = object : GrayCodeIterator<UInt>(bounds, indexBound) {
+    override fun iteratorGray(): MultiIndexIteratorGray<UInt> = object : MultiIndexIteratorGray<UInt>(bounds, indexBound) {
 
         var encode = 0u
         override fun returnCode(): UInt = encode

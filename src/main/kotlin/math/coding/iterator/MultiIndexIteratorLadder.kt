@@ -5,7 +5,7 @@ import util.stdlib.lazyAssert
 /**
  * Created by CowardlyLion at 2022/1/24 20:07
  */
-abstract class MultiIndexIterator<A>(val bounds: List<UInt>, val indexBound: UInt) : Iterator<A> {
+abstract class MultiIndexIteratorLadder<A>(val bounds: List<UInt>, val indexBound: UInt) : Iterator<A> {
 
     init {
         require(bounds.isNotEmpty())
@@ -36,7 +36,7 @@ abstract class MultiIndexIterator<A>(val bounds: List<UInt>, val indexBound: UIn
             code[i]++
             atIncrease(i)
         }
-        index++
+        index++     //TODO cause first index-code pair not meet.
         return returnCode()
     }
 

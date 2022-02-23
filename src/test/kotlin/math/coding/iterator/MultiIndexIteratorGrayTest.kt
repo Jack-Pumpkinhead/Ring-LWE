@@ -9,7 +9,7 @@ import kotlin.random.nextUInt
 /**
  * Created by CowardlyLion at 2022/1/24 18:17
  */
-internal class GrayCodeIteratorTest {
+internal class MultiIndexIteratorGrayTest {
 
 
     @Test
@@ -18,9 +18,9 @@ internal class GrayCodeIteratorTest {
             repeat(3) {
                 val bounds = List(length) { Random.nextUInt(1u..7u) }
                 println("radices: ${bounds.joinToString(", ", "[", "]")}")
-                val iterator = GrayCodeIteratorImpl(bounds, RingUInt.product(bounds))
+                val iterator = MultiIndexIteratorGrayImpl(bounds, RingUInt.product(bounds))
                 for (code in iterator) {
-                    println(code)
+                    println("code: $code, index: ${iterator.index}")
                 }
                 println()
             }

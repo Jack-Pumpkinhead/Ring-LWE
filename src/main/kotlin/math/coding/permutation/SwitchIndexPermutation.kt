@@ -1,8 +1,8 @@
 package math.coding.permutation
 
 import math.coding.BoundedMultiIndex
-import math.coding.iterator.GrayCodeIterator
-import math.coding.iterator.MultiIndexIterator
+import math.coding.iterator.MultiIndexIteratorGray
+import math.coding.iterator.MultiIndexIteratorLadder
 import util.stdlib.lazyAssert
 
 /**
@@ -24,7 +24,7 @@ class SwitchIndexPermutation(val fromIndex: BoundedMultiIndex, val toIndex: Boun
     //    override fun iterator(): Iterator<PermutationPair> = iteratorNormal()
     override fun iterator(): Iterator<PermutationPair> = iteratorGray()
 
-    fun iteratorNormal(): MultiIndexIterator<PermutationPair> = object : MultiIndexIterator<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {
+    fun iteratorNormal(): MultiIndexIteratorLadder<PermutationPair> = object : MultiIndexIteratorLadder<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {
 
         var fromEncode = fromIndex.firstIndex()
         var toEncode = toIndex.firstIndex()
@@ -42,7 +42,7 @@ class SwitchIndexPermutation(val fromIndex: BoundedMultiIndex, val toIndex: Boun
         }
     }
 
-    fun iteratorGray(): GrayCodeIterator<PermutationPair> = object : GrayCodeIterator<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {
+    fun iteratorGray(): MultiIndexIteratorGray<PermutationPair> = object : MultiIndexIteratorGray<PermutationPair>(fromIndex.bounds, fromIndex.indexBound) {
 
         var fromEncode = fromIndex.firstIndex()
         var toEncode = toIndex.firstIndex()

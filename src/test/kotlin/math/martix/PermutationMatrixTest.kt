@@ -46,6 +46,7 @@ internal class PermutationMatrixTest {
                 println("permutation $name")
                 val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<UInt>())
                 for (sample in samples) {
+//                    println(sample)
                     statistic.go(TwoMatrix(PermutationMatrix(RingUInt, permutation(sample)), sample.matrix))
                 }
                 statistic.printAverageAndStandardDeviation()

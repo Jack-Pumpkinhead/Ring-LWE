@@ -1,6 +1,6 @@
 package math.coding
 
-import math.coding.iterator.GrayCodeIterator
+import math.coding.iterator.MultiIndexIteratorGray
 import math.integer.uint.modMinusUnsafe
 import util.stdlib.lazyAssert2
 import util.stdlib.runningFoldRight
@@ -88,7 +88,7 @@ class LadderIndex(bounds: List<UInt>, indexBound: UInt) : BoundedMultiIndex(boun
 
     override fun iterator(): Iterator<UInt> = (0u until indexBound).iterator()
 
-    override fun iteratorGray(): GrayCodeIterator<UInt> = object : GrayCodeIterator<UInt>(bounds, indexBound) {
+    override fun iteratorGray(): MultiIndexIteratorGray<UInt> = object : MultiIndexIteratorGray<UInt>(bounds, indexBound) {
 
         var encode = 0u
         override fun returnCode(): UInt = encode

@@ -5,7 +5,7 @@ import util.stdlib.lazyAssert
 /**
  * Created by CowardlyLion at 2022/1/24 17:16
  */
-abstract class GrayCodeIterator<A>(val bounds: List<UInt>, val indexBound: UInt) : Iterator<A> {
+abstract class MultiIndexIteratorGray<A>(val bounds: List<UInt>, val indexBound: UInt) : Iterator<A> {
 
     init {
         require(bounds.isNotEmpty())
@@ -32,7 +32,7 @@ abstract class GrayCodeIterator<A>(val bounds: List<UInt>, val indexBound: UInt)
                 shouldTryNext = tryNext()
             }
         }
-        index++
+        index++     //TODO cause first index-code pair not meet.
         return returnCode()
     }
 
