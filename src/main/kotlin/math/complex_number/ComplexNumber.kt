@@ -46,4 +46,5 @@ open class ComplexNumber<A>(val ring: Ring<A>, val real: A, val imaginary: A) {
     override fun toString(): String {
         return "$real + i $imaginary"
     }
+
 }

@@ -4,7 +4,6 @@ import cryptography.lattice.ring_lwe.coding.LadderSwitcher
 import cryptography.lattice.ring_lwe.matrix.ReducedTwiddleMatrix
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPPI
 import cryptography.lattice.ring_lwe.ring.RootUIntPP
-import math.integer.uint.modTimes
 import math.martix.*
 
 /**
@@ -12,7 +11,7 @@ import math.martix.*
  */
 class ProperPrimePowerCeMatrix<A>(override val root: RootUIntPP<A>, val primeCase: CeMatrixPI<A>, val decreaseCase: DftMatrixPPI<A>) : CeMatrixPPI<A>, AbstractSquareFormalProduct<A> {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = root.cachedPower(modTimes(root.order.coprimeNumberAtUnsafe(row), column, root.order.value))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = super<CeMatrixPPI>.elementAtUnsafe(row, column)
 
     private val primeDec: UInt get() = primeCase.size
     private val decPower: UInt get() = decreaseCase.size    //decreaseCase is DFT

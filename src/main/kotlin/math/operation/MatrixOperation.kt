@@ -13,6 +13,7 @@ import math.martix.mutable.MutableMatrix
 import math.martix.zeroMutableMatrix
 import math.roundingErrorDouble
 import util.stdlib.list
+import util.stdlib.toString
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -173,6 +174,21 @@ fun <A> matrixToString(matrix: AbstractMatrix<A>): String =
         }
     }.joinToString(",\n", "{\n", "}") { row ->
         row.joinToString(", ", "{", "}") { it.toString() }
+    }
+
+fun matrixToStringComplexDouble(matrix: AbstractMatrix<ComplexNumber<Double>>): String =
+    list(matrix.rows) { i ->
+        list(matrix.columns) { j ->
+            matrix.elementAtUnsafe(i, j)
+        }
+    }.joinToString(",\n", "{\n", "}") { row ->
+        row.joinToString(", ", "{", "}") {
+            if (it.real == 0.0 && it.imaginary == 0.0) {
+                "            "
+            } else {
+                it.toString(2u)
+            }
+        }
     }
 
 fun maxAbsoluteDistance(m1: AbstractMatrix<ComplexNumber<Double>>, m2: AbstractMatrix<ComplexNumber<Double>>): Double {

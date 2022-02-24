@@ -24,9 +24,16 @@ fun ComplexNumber<Double>.roundToInt(): Int {
         println("warn: rounding overflow, $real round to $roundToInt")
     }
     val roundingError = (real - roundToInt).absoluteValue
+    maxRoundingError = max(maxRoundingError, roundingError)
 //    println("err: $roundingError")
     require(roundingError < roundingErrorDouble)
     return roundToInt
+}
+
+fun ComplexNumber<Double>.roundToReal(): Double {
+    require(imaginary.absoluteValue < roundingErrorDouble) { this.toString() }
+    maxRoundingError = max(maxRoundingError, imaginary.absoluteValue)
+    return real
 }
 
 var maxRoundingError: Double = 0.0

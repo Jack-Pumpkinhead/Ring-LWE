@@ -87,6 +87,11 @@ fun Random.nextBinaryRandomNumberStandardNormalDistribution(): BinaryRandomNumbe
     }
 }
 
+fun Random.nextDoubleNormalDistribution(mean: Double, variance: Double): Double {
+    val x = nextBinaryRandomNumberStandardNormalDistribution()
+    return (x.toDouble() * variance) + mean
+}
+
 /**
  * return n>=0 with relative probability density e^(-(n^2)/2)
  */

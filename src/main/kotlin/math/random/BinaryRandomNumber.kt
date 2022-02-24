@@ -47,8 +47,9 @@ class BinaryRandomNumber(val random: Random, val isPositive: Boolean = true, val
             absoluteValueBigDecimal(fractionDigits).negate()
         }
 
+//    TODO improve it by Double.fromBits()
     fun toDouble(): Double {
-        TODO()
+        return toBigDecimal(54uL).doubleValue(false)
 //        Double.fromBits()
     }
 
