@@ -2,6 +2,8 @@ package cryptography.lattice.ring_lwe.ring
 
 import math.abstract_structure.Ring
 import math.abstract_structure.algorithm.powerM
+import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.ComplexNumber
 import math.integer.big_integer.modular.RingModularBigInteger
 import math.integer.uint.factored.PrimeUInt
 import math.integer.uint.modUnaryMinus
@@ -18,7 +20,13 @@ import util.stdlib.lazyAssert2
  */
 class RootPrimeUInt<A>(override val ring: Ring<A>, override val root: A, override val order: PrimeUInt) : AbstractRootPrimeUInt<A> {
 
-    override val inverse: RootPrimeUInt<A> by lazy { RootPrimeUInt(ring, ring.powerM(root, order.value - 1u), order) }
+    override val inverse: RootPrimeUInt<A> by lazy {
+        if (ring == FieldComplexNumberDouble) {
+            RootPrimeUInt(ring, (root as ComplexNumber<Double>).conjugate() as A, order)
+        } else {
+            RootPrimeUInt(ring, ring.powerM(root, order.value - 1u), order)
+        }
+    }
 
     private val powers: List<A> by lazy {
         val list = mutableListOf(ring.one, root)

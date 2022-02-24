@@ -6,7 +6,7 @@ import math.martix.AbstractMatrix
 /**
  * Created by CowardlyLion at 2022/2/24 16:38
  */
-class CeRowPaddingZero<A>(val matrix: AbstractMatrix<A>) : AbstractMatrix<A> {
+class MatrixPaddingZeroLastRow<A>(val matrix: AbstractMatrix<A>) : AbstractMatrix<A> {
 
     override val ring: Ring<A>
         get() = matrix.ring

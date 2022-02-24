@@ -1,7 +1,7 @@
 package cryptography.lattice.ring_lwe.matrix.canonical_embedding.complex_double
 
 import cryptography.lattice.ring_lwe.matrix.canonical_embedding.CeMatrixPI
-import cryptography.lattice.ring_lwe.matrix.canonical_embedding.CeRowPaddingZero
+import cryptography.lattice.ring_lwe.matrix.canonical_embedding.MatrixPaddingZeroLastRow
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPrimeLowerPartComplexDouble
 import cryptography.lattice.ring_lwe.ring.RootUIntPI
 import math.complex_number.ComplexNumber
@@ -29,21 +29,21 @@ class PrimeCeMatrixComplexDouble(override val root: RootUIntPI<ComplexNumber<Dou
         if (size <= threshold) {
             super.timesImpl(matrix)
         } else {
-            lowerPart!!.timesImpl(CeRowPaddingZero(matrix))
+            lowerPart!!.timesImpl(MatrixPaddingZeroLastRow(matrix))
         }
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<ComplexNumber<Double>>): AbstractMatrix<ComplexNumber<Double>> =
         if (size <= threshold) {
             super.timesRowParallelImpl(matrix)
         } else {
-            lowerPart!!.timesRowParallelImpl(CeRowPaddingZero(matrix))
+            lowerPart!!.timesRowParallelImpl(MatrixPaddingZeroLastRow(matrix))
         }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<ComplexNumber<Double>>, dest: AbstractMutableMatrix<ComplexNumber<Double>>) {
         if (size <= threshold) {
             super.multiplyToImpl(matrix, dest)
         } else {
-            lowerPart!!.multiplyToImpl(CeRowPaddingZero(matrix), dest)
+            lowerPart!!.multiplyToImpl(MatrixPaddingZeroLastRow(matrix), dest)
         }
     }
 
@@ -51,7 +51,7 @@ class PrimeCeMatrixComplexDouble(override val root: RootUIntPI<ComplexNumber<Dou
         if (size <= threshold) {
             super.multiplyToRowParallelImpl(matrix, dest)
         } else {
-            lowerPart!!.multiplyToRowParallelImpl(CeRowPaddingZero(matrix), dest)
+            lowerPart!!.multiplyToRowParallelImpl(MatrixPaddingZeroLastRow(matrix), dest)
         }
     }
 }

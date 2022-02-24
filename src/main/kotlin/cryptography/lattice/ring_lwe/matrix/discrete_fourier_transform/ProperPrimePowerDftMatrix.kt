@@ -3,7 +3,6 @@ package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 import cryptography.lattice.ring_lwe.coding.LadderSwitcher
 import cryptography.lattice.ring_lwe.matrix.TwiddleMatrix
 import cryptography.lattice.ring_lwe.ring.RootUIntPP
-import math.integer.uint.modTimes
 import math.martix.*
 
 /**
@@ -13,7 +12,7 @@ import math.martix.*
  */
 class ProperPrimePowerDftMatrix<A>(override val root: RootUIntPP<A>, val primeCase: DftMatrixPI<A>, val decreaseCase: DftMatrixPPI<A>) : DftMatrixPPI<A>, AbstractSquareFormalProduct<A> {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = root.cachedPower(modTimes(row, column, size))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = super<DftMatrixPPI>.elementAtUnsafe(row, column)
 
     private val prime: UInt get() = primeCase.size
     private val decOrder: UInt get() = decreaseCase.size

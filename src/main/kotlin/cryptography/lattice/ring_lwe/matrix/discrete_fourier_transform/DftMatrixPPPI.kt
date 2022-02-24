@@ -18,7 +18,7 @@ interface DftMatrixPPPI<A> : AbstractSquareMatrix<A> {
 
     override val ring: Ring<A> get() = root.ring
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = root.cachedPower(modTimes(row, column, root.order.value))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = root.cachedPower(modTimes(row, column, size))
 
     override fun hasInverse(): Boolean = ring.hasInverse(ring.ofInteger(size))
 

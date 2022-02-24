@@ -35,13 +35,13 @@ internal class DftMatrixComplexDoubleTest {
     }
 
     //a bit slower than DftMatrix on Z/(p), but significantly faster now
-    // *  : average 4.63115ms, deviation 8.38823ms
-    // *p : average 4.62763ms, deviation 6.61297ms
-    // * t: average 4.18084ms, deviation 6.04738ms
-    // *pt: average 5.65603ms, deviation 6.41442ms
-    //d*  : average 33.34370ms, deviation 33.75852ms
-    //samples: 200, total time: 10.487868600s
-    //average distance: 4.285146091883088E-8, max distance: 5.117668648580157E-6
+    // *  : average 4.49536ms, deviation 7.85104ms
+    // *p : average 4.48068ms, deviation 6.19184ms
+    // * t: average 4.11019ms, deviation 6.00245ms
+    // *pt: average 5.58734ms, deviation 6.10156ms
+    //d*  : average 33.55886ms, deviation 33.38329ms
+    //samples: 200, total time: 10.446484585s
+    //average distance: 4.439912813270074E-8, max distance: 5.2477280994118945E-6
     //range: 1..200
     @Test
     fun multiplication() {

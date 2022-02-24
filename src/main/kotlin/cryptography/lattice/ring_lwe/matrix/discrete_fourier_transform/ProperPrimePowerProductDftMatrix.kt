@@ -5,7 +5,6 @@ import cryptography.lattice.ring_lwe.coding.permLCInvMatrix
 import cryptography.lattice.ring_lwe.coding.permLRInvMatrix
 import cryptography.lattice.ring_lwe.coding.permRLInvMatrix
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
-import math.integer.uint.modTimes
 import math.martix.AbstractSquareFormalProduct
 import math.martix.AbstractSquareMatrix
 import math.martix.SquareFormalProduct
@@ -16,7 +15,7 @@ import math.martix.tensor.SquareFormalKroneckerProduct
  */
 class ProperPrimePowerProductDftMatrix<A>(val builder: DftMatrixPPIBuilder<A>, override val root: RootUIntPPP<A>) : DftMatrixPPPI<A>, AbstractSquareFormalProduct<A> {
 
-    override fun elementAtUnsafe(row: UInt, column: UInt): A = root.cachedPower(modTimes(row, column, size))
+    override fun elementAtUnsafe(row: UInt, column: UInt): A = super<DftMatrixPPPI>.elementAtUnsafe(row, column)
 
     private val factors = root.order.factors.map { it.value }
 
