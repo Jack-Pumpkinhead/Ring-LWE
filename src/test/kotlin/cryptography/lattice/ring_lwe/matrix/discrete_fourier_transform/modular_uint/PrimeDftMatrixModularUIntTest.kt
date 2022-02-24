@@ -64,7 +64,25 @@ internal class PrimeDftMatrixModularUIntTest {
         testBase(1500u..1509u)
     }*/
 
-    //TODO currently, 'fast' prime field DFT is slower than normal method at i<=484, and have an unacceptable rounding error at i>485
+   /* @Test
+    fun largePrimeField1() = runBlocking {
+        val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
+
+        for (i in 1510u..1510u) {
+            val primeField = PrimeUInt(primeOf(i).toUInt()).primeField
+            val root = primeField.firstGenerator
+            val dft = when (root) {
+                is RootUIntPPP -> PrimeDftMatrixModularUInt(root.primeSubrootAt(root.order.factors.size.toUInt() - 1u))
+                is RootUIntPP  -> PrimeDftMatrixModularUInt(root.primeSubroot())
+                is RootUIntP   -> PrimeDftMatrixModularUInt(root)
+                else           -> error("unknown type of root $root, class: ${root::class}")
+            }
+            val x = primeField.randomMatrix(dft.columns, 2u)
+            statistic.go(TwoMatrix(dft, x))
+            statistic.go(TwoMatrix(dft, x)) //repeat to prevent exception in statistic, but cost double time.
+        }
+        statistic.printAverageAndStandardDeviation()
+    }*/
 
     //situations that can avoid using padding method is very few
     @Test
