@@ -1,6 +1,5 @@
 package cryptography.lattice.ring_lwe
 
-import math.random.randomizedElements
 import kotlin.random.Random
 
 /**
@@ -36,11 +35,18 @@ fun integerCenteredRounding(a: Int, modulus: UInt): Int {
 fun integerCenteredRounding(a: List<Int>, modulus: UInt) = a.map { integerCenteredRounding(it, modulus) }
 
 /**
+ * sample r-1, r with probability r, 1-r
+ *
  * has expectation 0
+ *
+ * require 0 <= [r] < 1
  */
-fun Random.randomizedRounding(a: Double): Double {
-    val r = a.mod(1.0)
-    return randomizedElements(doubleArrayOf(r, 1 - r), r - 1, r)
-}
+fun Random.randomlySelectNearZero(r: Double): Double = if (nextDouble() < r) r - 1 else r
 
-fun Random.randomizedRounding(coordinate: List<Double>) = coordinate.map { this@randomizedRounding.randomizedRounding(it) }
+/**
+ * i = x.toLong()
+ * r = x - i
+ */
+fun Random.specialProbabilityOfMinusOne(x: Double, i:Long): Boolean = nextDouble() < x - i.toDouble()
+
+fun Random.modOneThenRandomlySelectNearZero(coordinate: List<Double>) = coordinate.map { this@modOneThenRandomlySelectNearZero.randomlySelectNearZero(it.mod(1.0)) }

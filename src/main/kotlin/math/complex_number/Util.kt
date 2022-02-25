@@ -1,6 +1,9 @@
 package math.complex_number
 
 import math.abstract_structure.Ring
+import math.abstract_structure.instance.FieldDouble
+import math.martix.AbstractColumnVector
+import math.martix.columnVector
 import math.roundingErrorDouble
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -35,6 +38,8 @@ fun ComplexNumber<Double>.roundToReal(): Double {
     maxRoundingError = max(maxRoundingError, imaginary.absoluteValue)
     return real
 }
+
+fun AbstractColumnVector<ComplexNumber<Double>>.roundToReal(): AbstractColumnVector<Double> = FieldDouble.columnVector(size) { i -> this.vectorElementAtUnsafe(i).roundToReal() }
 
 var maxRoundingError: Double = 0.0
 

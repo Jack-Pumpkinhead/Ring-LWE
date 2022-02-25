@@ -99,4 +99,25 @@ interface AbstractColumnVector<A> : AbstractMatrix<A>, VectorLike<A> {
             }
         }
     }
+
+    fun subtract(v: AbstractColumnVector<A>): AbstractColumnVector<A> {
+        require(this.size == v.size)
+        return subtractUnsafe(v)
+    }
+
+    fun subtractUnsafe(v: AbstractColumnVector<A>): AbstractColumnVector<A> =
+        ring.columnVector(this.size) { i ->
+            ring.subtract(this.vectorElementAtUnsafe(i), v.vectorElementAtUnsafe(i))
+        }
+
+    fun plus(v: AbstractColumnVector<A>): AbstractColumnVector<A> {
+        require(this.size == v.size)
+        return plusUnsafe(v)
+    }
+
+    fun plusUnsafe(v: AbstractColumnVector<A>): AbstractColumnVector<A> =
+        ring.columnVector(this.size) { i ->
+            ring.add(this.vectorElementAtUnsafe(i), v.vectorElementAtUnsafe(i))
+        }
+
 }

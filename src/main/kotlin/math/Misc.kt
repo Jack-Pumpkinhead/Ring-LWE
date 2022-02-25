@@ -2,8 +2,11 @@ package math
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.toBigInteger
+import math.abstract_structure.Ring
 import math.integer.uint.gcd
+import math.martix.AbstractColumnVector
 import math.martix.AbstractMatrix
+import math.martix.columnVector
 import math.operation.matrixToString
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -92,3 +95,4 @@ fun nonNegMin(a: BigInteger, b: ULong): ULong {
 fun BigInteger.isOdd(): Boolean = this.and(BigInteger.ONE) == BigInteger.ONE
 fun BigInteger.isEven(): Boolean = this.and(BigInteger.ONE) == BigInteger.ZERO
 
+fun <A, B> AbstractColumnVector<A>.map(ring: Ring<B>, op: (A) -> B): AbstractColumnVector<B> = ring.columnVector(this.size) { i -> op(this.vectorElementAtUnsafe(i)) }
