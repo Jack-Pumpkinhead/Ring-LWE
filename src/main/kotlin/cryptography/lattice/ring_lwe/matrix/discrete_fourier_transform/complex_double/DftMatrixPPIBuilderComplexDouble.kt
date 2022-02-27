@@ -15,6 +15,7 @@ import math.complex_number.ComplexNumber
  */
 object DftMatrixPPIBuilderComplexDouble : DftMatrixPPIBuilder<ComplexNumber<Double>> {
 
+    //TODO write a reusable cache (indexed only by order)
     override val cache = mutableMapOf<RootUIntPPI<ComplexNumber<Double>>, DftMatrixPPI<ComplexNumber<Double>>>()
 
     override fun buildImpl(root: RootUIntPI<ComplexNumber<Double>>): DftMatrixPI<ComplexNumber<Double>> = PrimeDftMatrixComplexDouble(root)

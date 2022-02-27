@@ -166,7 +166,6 @@ fun Random.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(order: UInt
  */
 fun Random.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(order: UIntPP, sigma: Double): List<Long> {
     return if (order.prime == 2u) {
-        val orderL = order.value.toULong()
         val reducePower = order.value / order.prime
         val size = order.eulerTotient
         val J_xi = sqrt(reducePower.toDouble())

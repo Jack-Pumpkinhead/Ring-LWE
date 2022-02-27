@@ -175,6 +175,7 @@ fun <A> matrixToString(matrix: AbstractMatrix<A>): String =
     }.joinToString(",\n", "{\n", "}") { row ->
         row.joinToString(", ", "{", "}") { it.toString() }
     }
+fun <A> AbstractMatrix<A>.toStringM() = matrixToString(this)
 
 fun matrixToStringComplexDouble(matrix: AbstractMatrix<ComplexNumber<Double>>): String =
     list(matrix.rows) { i ->

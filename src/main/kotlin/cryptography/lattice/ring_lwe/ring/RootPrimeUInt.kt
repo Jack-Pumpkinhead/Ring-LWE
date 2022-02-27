@@ -43,6 +43,7 @@ class RootPrimeUInt<A>(override val ring: Ring<A>, override val root: A, overrid
         list
     }
 
+    //TODO create RootPrimeUIntComplexNumberDouble, etc, to generate more accurate power of roots.
     override fun cachedPower(exponent: UInt) = powers[exponent.toInt()]
 
     override fun cachedInversePower(exponent: UInt) = powers[modUnaryMinus(exponent, order.value).toInt()]
