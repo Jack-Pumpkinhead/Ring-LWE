@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 /**
  * Created by CowardlyLion at 2022/2/24 19:33
  */
-internal class CeMatrixPPICTBuilderComplexDoubleTest{
+internal class CeCTMatrixPPIBuilderComplexDoubleTest{
 
     //(7932 = [2^2, 3, 661])
     //3.0597022343079476E-11
@@ -33,7 +33,7 @@ internal class CeMatrixPPICTBuilderComplexDoubleTest{
             when (root) {
                 is RootUIntPPP -> {
                     for (subroot in root.allMaximalPrimePowerSubroot()) {
-                        val ce_ct = CeMatrixPPICTBuilderComplexDouble.build(subroot)
+                        val ce_ct = CeCTMatrixPPIBuilderComplexDouble.build(subroot)
                         val x = FieldComplexNumberDouble.randomMatrix(ce_ct.columns, 2u, 100.0)
                         val m1 = ce_ct * x
                         val m2 = multiply(ce_ct, x)
@@ -45,7 +45,7 @@ internal class CeMatrixPPICTBuilderComplexDoubleTest{
                     }
                 }
                 is RootUIntPPI -> {
-                    val ce_ct = CeMatrixPPICTBuilderComplexDouble.build(root)
+                    val ce_ct = CeCTMatrixPPIBuilderComplexDouble.build(root)
                     val x = FieldComplexNumberDouble.randomMatrix(ce_ct.columns, 2u, 100.0)
                     val m1 = ce_ct * x
                     val m2 = multiply(ce_ct, x)
@@ -66,13 +66,13 @@ internal class CeMatrixPPICTBuilderComplexDoubleTest{
                 when (root) {
                     is RootUIntPPP -> {
                         for (subroot in root.allMaximalPrimePowerSubroot()) {
-                            val ce_ct = CeMatrixPPICTBuilderComplexDouble.build(subroot)
+                            val ce_ct = CeCTMatrixPPIBuilderComplexDouble.build(subroot)
                             val x = FieldComplexNumberDouble.randomMatrix(ce_ct.columns, 2u, 100.0)
                             statistic.go(TwoMatrix(ce_ct, x))
                         }
                     }
                     is RootUIntPPI -> {
-                        val ce_ct = CeMatrixPPICTBuilderComplexDouble.build(root)
+                        val ce_ct = CeCTMatrixPPIBuilderComplexDouble.build(root)
                         val x = FieldComplexNumberDouble.randomMatrix(ce_ct.columns, 2u, 100.0)
                         statistic.go(TwoMatrix(ce_ct, x))
                     }

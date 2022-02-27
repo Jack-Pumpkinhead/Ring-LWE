@@ -87,9 +87,9 @@ fun Random.nextBinaryRandomNumberStandardNormalDistribution(): BinaryRandomNumbe
     }
 }
 
-fun Random.nextDoubleNormalDistribution(mean: Double, variance: Double): Double {
+fun Random.nextDoubleNormalDistribution(mean: Double, sigma: Double): Double {
     val x = nextBinaryRandomNumberStandardNormalDistribution()
-    return (x.toDouble() * variance) + mean
+    return (x.toDouble() * sigma) + mean
 }
 
 /**

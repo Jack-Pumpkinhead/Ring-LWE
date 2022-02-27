@@ -5,8 +5,11 @@ import math.abstract_structure.instance.FieldDouble
 import math.complex_number.maxRoundingError
 import math.complex_number.roundToReal
 import math.integer.long.RingLong
+import math.integer.uint.factored.UIntP
+import math.integer.uint.factored.UIntPP
 import math.integer.uint.factored.UIntPPI
 import math.integer.uint.factored.primeFactorization
+import math.integer.ulong.primeOf
 import math.map
 import math.martix.columnVector
 import org.junit.jupiter.api.Test
@@ -172,5 +175,30 @@ internal class CommonKtTest {
             }
         }
     }
+
+    @Test
+    fun approximatelyDiscreteGaussianPrime() {
+        runBlocking {
+            for (i in 0u..100u) {
+                val prime = UIntP(primeOf(i).toUInt())
+                val sample = Random.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(prime, 10.0)
+                println("p: $prime, sample: $sample")
+            }
+        }
+    }
+
+    @Test
+    fun approximatelyDiscreteGaussianPrimePower() {
+        runBlocking {
+            for (i in 2u..1000u) {
+                val factorization = i.primeFactorization()
+                if (factorization is UIntPP) {
+                    val sample = Random.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(factorization, 100.0)
+                    println("p^i: $factorization, sample: $sample")
+                }
+            }
+        }
+    }
+
 
 }

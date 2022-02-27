@@ -8,7 +8,7 @@ import math.complex_number.ComplexNumber
 /**
  * Created by CowardlyLion at 2022/2/24 19:31
  */
-object CeMatrixPPICTBuilderComplexDouble : CeMatrixPPICTBuilder<ComplexNumber<Double>> {
+object CeCTMatrixPPIBuilderComplexDouble : CeMatrixPPICTBuilder<ComplexNumber<Double>> {
 
     override val cache: MutableMap<RootUIntPI<ComplexNumber<Double>>, CeMatrixPICT<ComplexNumber<Double>>> = mutableMapOf()
 
