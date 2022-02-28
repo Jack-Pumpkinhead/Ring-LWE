@@ -3,7 +3,7 @@ package cryptography.lattice.ring_lwe.category
 import cryptography.lattice.ring_lwe.matrix.LowerTriangularOneMatrix
 import math.abstract_structure.instance.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
-import math.abstract_structure.module.category.CategoryOfModule
+import math.abstract_structure.module.category.ModuleCategories
 import math.abstract_structure.module.freeModule
 import math.integer.uint.RingUInt
 import math.integer.uint.factored.UIntPPI
@@ -21,14 +21,10 @@ class CategoryInCyclotomicField(val order: UIntPPI, val q: FieldModularUInt) {
 
     val dimension = order.eulerTotient
 
-    val categoies = CategoryOfModule()
 
-    val complexModule = categoies.categoryOf(FieldComplexNumberDouble)
-    val realModule = categoies.categoryOf(FieldDouble)
-    val integerModule = categoies.categoryOf(RingUInt)
-    fun modularZModule(modulus: UInt) = categoies.categoryOf(RingModularUInt(modulus))
+    fun modularZModule(modulus: UInt) = ModuleCategories.categoryOf(RingModularUInt(modulus))
 
-    val integerModuloQModule = categoies.categoryOf(q)
+    val integerModuloQModule = ModuleCategories.categoryOf(q)
 
     /**
      * ℚ(ζp^i) ⊗ ℂ

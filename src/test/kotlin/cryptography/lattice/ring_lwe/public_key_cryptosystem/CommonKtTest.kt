@@ -12,13 +12,11 @@ import math.integer.uint.factored.primeFactorization
 import math.integer.ulong.primeOf
 import math.map
 import math.martix.columnVector
+import math.operation.innerProduct
 import org.junit.jupiter.api.Test
 import util.stdlib.mutableList
 import util.stdlib.toString
-import kotlin.math.abs
-import kotlin.math.absoluteValue
-import kotlin.math.max
-import kotlin.math.roundToLong
+import kotlin.math.*
 import kotlin.random.Random
 import kotlin.random.nextLong
 
@@ -48,7 +46,7 @@ internal class CommonKtTest {
     fun randomlyNearest() {
         runBlocking {
 
-            val p = 53u
+            val p = 7u
 
             for (i in 7u..7u) {
                 val order = i.primeFactorization()
@@ -56,7 +54,7 @@ internal class CommonKtTest {
                     println("order: $order")
                     println("φ(order): ${order.eulerTotient.primeFactorization()}")
                     val c = RingLong.columnVector(order.eulerTotient) { it.toLong() }
-                    val x = Random.samplingContinuousGaussianToDecodingBasis(order, 0.0, 1.0)
+                    val x = Random.samplingContinuousGaussianToDecodingBasis(order, 0.0, 100.0)
                     val realX = x.roundToReal()
                     println("x: ${x.columnListAt(0u)}")
                     println("realX: ${realX.columnListAt(0u)}")
@@ -64,9 +62,14 @@ internal class CommonKtTest {
                     repeat(100) {
                         val near0 = Random.randomlyNearestElement(realX, c.map(FieldDouble) { it.toDouble() }, p)
                         val near1 = Random.randomlyNearestElement1(realX, c, p)
+                        val distance0 = sqrt(FieldDouble.innerProduct(realX.subtract(near0),realX.subtract(near0)))
+                        val distance1 = sqrt(FieldDouble.innerProduct(realX.subtract(near0),realX.subtract(near0)))
+                        println("dist0: $distance0")
+                        println("dist1: $distance1")
                         println(near0.columnListAt(0u))
                         println(near1.columnListAt(0u))
                         println("maxError: $maxRoundingError")
+                        println()
                     }
                 }
             }

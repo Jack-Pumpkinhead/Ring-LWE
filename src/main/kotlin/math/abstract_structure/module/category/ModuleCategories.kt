@@ -5,7 +5,7 @@ import math.abstract_structure.Ring
 /**
  * Created by CowardlyLion at 2022/1/25 17:19
  */
-class CategoryOfModule {
+object ModuleCategories {
 
     val categoryCache = mutableMapOf<Ring<*>, FiniteConcreteCategoryOfFreeFiniteModule<*>>()
 

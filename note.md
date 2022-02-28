@@ -27,6 +27,8 @@
 - (2013) [A Toolkit for Ring-LWE Cryptography --Vadim Lyubashevsky and Chris Peikert and Oded Regev](https://eprint.iacr.org/2013/293)
 - (2016) [Implementing a Toolkit for Ring-LWE Based Cryptography in Arbitrary Cyclotomic Number Fields --Christoph M. Mayer](https://eprint.iacr.org/2016/049)
 
+- (2014) [Relationship between the Inverses of a Matrix and a Submatrix --E. Juárez-Ruiz, R. Cortés-Maldonado, F. Pérez-Rodríguez](http://www.scielo.org.mx/scielo.php?script=sci_arttext&pid=S1405-55462016000200251)
+
 ##symbols
 - ℕ
 - ℤ

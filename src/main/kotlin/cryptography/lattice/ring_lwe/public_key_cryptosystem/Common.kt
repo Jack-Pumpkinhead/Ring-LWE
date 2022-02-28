@@ -25,6 +25,7 @@ import kotlin.random.Random
  * Created by CowardlyLion at 2022/1/26 13:20
  */
 
+//TODO mean must be 0.0
 fun Random.samplingContinuousGaussianToDecodingBasis(order: UIntP, mean: Double, sigma: Double): AbstractColumnVector<ComplexNumber<Double>> {
     val x = FieldComplexNumberDouble.columnVector(order.eulerTotient) { FieldDouble.realComplexNumber(nextDoubleNormalDistribution(mean, sigma)) }
     return if (order.value == 2u) {
@@ -67,7 +68,7 @@ fun Random.samplingContinuousGaussianToDecodingBasis(order: UIntPPI, mean: Doubl
 //discretization in decoding basis
 
 /**
- * find a maybe-shortest element on [c] + [p]ℤ
+ * find a maybe-shortest element on [c] + [p]ℤ^n
  */
 fun Random.randomlyShortestElement(c: AbstractColumnVector<Double>, p: UInt): AbstractColumnVector<Double> =
     FieldDouble.columnVector(c.size) { i ->
@@ -75,7 +76,7 @@ fun Random.randomlyShortestElement(c: AbstractColumnVector<Double>, p: UInt): Ab
     }
 
 /**
- * find a maybe-nearest element on [c] + [p]Z to [x]
+ * find a maybe-nearest-to-x element on [c] + [p]ℤ^n
  */
 fun Random.randomlyNearestElement(x: AbstractColumnVector<Double>, c: AbstractColumnVector<Double>, p: UInt): AbstractColumnVector<Double> {
     val f = randomlyShortestElement(c.subtract(x), p)
@@ -83,7 +84,7 @@ fun Random.randomlyNearestElement(x: AbstractColumnVector<Double>, c: AbstractCo
 }
 
 /**
- * find a maybe-nearest element on [c] + [p]Z to [x]
+ * find a maybe-nearest-to-x element on [c] + [p]ℤ^n
  */
 fun Random.randomlyNearestElement1(x: AbstractColumnVector<Double>, c: AbstractColumnVector<Long>, p: UInt): AbstractColumnVector<Long> {
     require(x.size == c.size)
@@ -207,5 +208,13 @@ fun Random.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(order: UInt
             i++
         }
         x
+    }
+}
+
+fun Random.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(order: UIntPPI, sigma: Double): List<Long> {
+    return when (order) {
+        is UIntPP -> approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(order, sigma)
+        is UIntP  -> approximatelySamplingDiscreteGaussianOnOriginToPowerBasis(order, sigma)
+        else      -> error("unknown object $order, class: ${order::class}")
     }
 }

@@ -13,6 +13,7 @@ import math.integer.uint.modular.ModularUInt
 import math.integer.uint.modular.RingModularUInt
 import math.integer.ulong.modular.ModularULong
 import math.integer.ulong.modular.RingModularULong
+import math.martix.columnVector
 import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.OrdinarySquareMatrix
 import math.martix.matrix
@@ -82,6 +83,7 @@ fun Random.randomSquareUIntMatrices(matrices: UInt, sizeRange: UIntRange, bound:
         randomSquareUIntMatrix(size, bound)
     }
 }
+fun RingModularUInt.randomColumnVector(size: UInt, randomness: Random = Random) = this.columnVector(size) { ModularUInt(modulus, randomness.nextUInt(modulus)) }
 
 fun RingModularULong.randomMatrix(rowsRange: UIntRange, columnsRange: UIntRange, randomness: Random = Random) = this.matrix(randomness.nextUInt(rowsRange), randomness.nextUInt(columnsRange)) { _, _ -> ModularULong(modulus, randomness.nextULong(modulus)) }
 fun RingModularUInt.randomMatrix(rows: UInt, columns: UInt, randomness: Random = Random) = this.matrix(rows, columns) { _, _ -> ModularUInt(modulus, randomness.nextUInt(modulus)) }
