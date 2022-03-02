@@ -4,11 +4,13 @@ import math.abstract_structure.Ring
 import math.abstract_structure.instance.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.complex_number.ComplexNumber
+import math.complex_number.complexNumber
 import math.complex_number.imaginaryComplexNumber
 import math.complex_number.realComplexNumber
 import math.halfSqrtTwo
 import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
+import math.martix.matrix
 import math.martix.mutable.AbstractMutableMatrix
 import util.stdlib.lazyAssert2
 
@@ -16,6 +18,12 @@ import util.stdlib.lazyAssert2
  * Created by CowardlyLion at 2022/2/24 20:44
  *
  * a unitary basis of image of canonical embedding in C^φ(n)
+ *
+ * of form:  1/sqrt(2) *
+ *      1      i
+ *        1  i
+ *        1 -i
+ *      1     -i
  */
 class ConjugateMirrorMatrixComplexDouble(override val size: UInt, val halfSize: UInt = size / 2u) : AbstractSquareMatrix<ComplexNumber<Double>> {
 
@@ -57,18 +65,58 @@ class ConjugateMirrorMatrixComplexDouble(override val size: UInt, val halfSize: 
 
 
     override fun timesImpl(matrix: AbstractMatrix<ComplexNumber<Double>>): AbstractMatrix<ComplexNumber<Double>> {
-        return super.timesImpl(matrix)
+        return ring.matrix(this.rows, matrix.columns) { i, j ->
+            if (i < halfSize) {
+                val a = matrix.elementAtUnsafe(i, j)
+                val b = matrix.elementAtUnsafe(size - 1u - i, j)
+                FieldDouble.complexNumber((a.real - b.imaginary) * halfSqrtTwo, (a.imaginary + b.real) * halfSqrtTwo)
+            } else {
+                val a = matrix.elementAtUnsafe(size - 1u - i, j)
+                val b = matrix.elementAtUnsafe(i, j)
+                FieldDouble.complexNumber((a.real + b.imaginary) * halfSqrtTwo, (a.imaginary - b.real) * halfSqrtTwo)
+            }
+        }
     }
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<ComplexNumber<Double>>): AbstractMatrix<ComplexNumber<Double>> {
-        return super.timesRowParallelImpl(matrix)
+        return ring.matrix(this.rows, matrix.columns) { i, j ->
+            if (i < halfSize) {
+                val a = matrix.elementAtUnsafe(i, j)
+                val b = matrix.elementAtUnsafe(size - 1u - i, j)
+                FieldDouble.complexNumber((a.real - b.imaginary) * halfSqrtTwo, (a.imaginary + b.real) * halfSqrtTwo)
+            } else {
+                val a = matrix.elementAtUnsafe(size - 1u - i, j)
+                val b = matrix.elementAtUnsafe(i, j)
+                FieldDouble.complexNumber((a.real + b.imaginary) * halfSqrtTwo, (a.imaginary - b.real) * halfSqrtTwo)
+            }
+        }
     }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<ComplexNumber<Double>>, dest: AbstractMutableMatrix<ComplexNumber<Double>>) {
-        super.multiplyToImpl(matrix, dest)
+        dest.set { i, j ->
+            if (i < halfSize) {
+                val a = matrix.elementAtUnsafe(i, j)
+                val b = matrix.elementAtUnsafe(size - 1u - i, j)
+                FieldDouble.complexNumber((a.real - b.imaginary) * halfSqrtTwo, (a.imaginary + b.real) * halfSqrtTwo)
+            } else {
+                val a = matrix.elementAtUnsafe(size - 1u - i, j)
+                val b = matrix.elementAtUnsafe(i, j)
+                FieldDouble.complexNumber((a.real + b.imaginary) * halfSqrtTwo, (a.imaginary - b.real) * halfSqrtTwo)
+            }
+        }
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<ComplexNumber<Double>>, dest: AbstractMutableMatrix<ComplexNumber<Double>>) {
-        super.multiplyToRowParallelImpl(matrix, dest)
+        dest.set { i, j ->
+            if (i < halfSize) {
+                val a = matrix.elementAtUnsafe(i, j)
+                val b = matrix.elementAtUnsafe(size - 1u - i, j)
+                FieldDouble.complexNumber((a.real - b.imaginary) * halfSqrtTwo, (a.imaginary + b.real) * halfSqrtTwo)
+            } else {
+                val a = matrix.elementAtUnsafe(size - 1u - i, j)
+                val b = matrix.elementAtUnsafe(i, j)
+                FieldDouble.complexNumber((a.real + b.imaginary) * halfSqrtTwo, (a.imaginary - b.real) * halfSqrtTwo)
+            }
+        }
     }
 }

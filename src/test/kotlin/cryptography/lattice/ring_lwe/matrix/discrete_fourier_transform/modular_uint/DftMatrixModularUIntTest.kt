@@ -57,7 +57,7 @@ internal class DftMatrixModularUIntTest {
             for (i in range) {
                 val prime = primeOf(i)
                 val primeField = FieldModularUInt(prime.toUInt())
-//                println("prime: $prime")
+                println("prime: $prime")
                 val dft = primeField.firstFullDftFast()
                 val x = primeField.randomMatrix(dft.columns, 2u)
                 statistic.go(TwoMatrix(dft, x))

@@ -26,6 +26,7 @@ internal class CeMatrixPPIBuilderComplexDoubleTest {
     fun approximatelyEquals() {
         runBlocking {
             val prime = primeOf(1000u).toUInt()
+            println("prime: $prime")
             val root = FieldComplexNumberDouble.root((prime - 1u).primeFactorization())
             when (root) {
                 is RootUIntPPP -> {
@@ -55,6 +56,7 @@ internal class CeMatrixPPIBuilderComplexDoubleTest {
             val statistic = TaskNearMatrixComplexDoubleStatistic(TwoMatrixMultiplicationTiming())
             for (i in range) {
                 val prime = primeOf(i).toUInt()
+                println("prime: $prime")
                 val root = FieldComplexNumberDouble.root((prime - 1u).primeFactorization())
                 when (root) {
                     is RootUIntPPP -> {

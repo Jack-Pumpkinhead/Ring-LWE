@@ -40,7 +40,7 @@ fun <A> Ring<A>.multiplyUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): Ab
     }.downCast()
 }
 
-fun <A> multiplyToNewMutableMatrix(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): MutableMatrix<A> {
+fun <A> multiplyToNewMutableMatrix(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMutableMatrix<A> {
     require(mA.ring == mB.ring)
     require(mA.columns == mB.rows)
     val result = mA.ring.zeroMutableMatrix(mA.rows, mB.columns)
@@ -85,7 +85,7 @@ suspend fun <A> Ring<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: Abs
     }.downCast()
 }
 
-suspend fun <A> multiplyToNewMutableMatrixRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): MutableMatrix<A> {
+suspend fun <A> multiplyToNewMutableMatrixRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMutableMatrix<A> {
     require(mA.ring == mB.ring)
     require(mA.columns == mB.rows)
     val result = mA.ring.zeroMutableMatrix(mA.rows, mB.columns)

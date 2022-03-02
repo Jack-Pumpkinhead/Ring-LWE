@@ -5,12 +5,10 @@ import kotlinx.coroutines.launch
 import math.abstract_structure.Ring
 import math.martix.concrete.ColumnVector
 import math.martix.concrete.Constant
-import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.RowVector
 import math.martix.concrete.view.ColumnVectorView
 import math.martix.concrete.view.RowVectorView
 import math.martix.mutable.AbstractMutableMatrix
-import math.martix.mutable.MutableMatrix
 import math.operation.*
 import util.stdlib.list
 import util.stdlib.mutableList
@@ -91,7 +89,7 @@ interface AbstractMatrix<A> {
         else                         -> ring.multiplyRowParallelUnsafe(this, matrix)
     }
 
-    fun multiplyToNewMutableMatrix(matrix: AbstractMatrix<A>): MutableMatrix<A> {
+    fun multiplyToNewMutableMatrix(matrix: AbstractMatrix<A>): AbstractMutableMatrix<A> {
         require(this.ring == matrix.ring)
         require(this.columns == matrix.rows)
         val result = ring.zeroMutableMatrix(this.rows, matrix.columns)
@@ -128,7 +126,7 @@ interface AbstractMatrix<A> {
         }
     }
 
-    suspend fun multiplyToNewMutableMatrixRowParallel(matrix: AbstractMatrix<A>): MutableMatrix<A> {
+    suspend fun multiplyToNewMutableMatrixRowParallel(matrix: AbstractMatrix<A>): AbstractMutableMatrix<A> {
         require(this.ring == matrix.ring)
         require(this.columns == matrix.rows)
         val result = ring.zeroMutableMatrix(this.rows, matrix.columns)
@@ -228,8 +226,8 @@ interface AbstractMatrix<A> {
     fun rowVectorAt(row: UInt): RowVector<A> = RowVector(ring, rowListAt(row))
     fun columnVectorAt(column: UInt): ColumnVector<A> = ColumnVector(ring, columnListAt(column))
 
-    fun toOrdinaryMatrix(): OrdinaryMatrix<A> = ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
-    fun toMutableMatrix(): MutableMatrix<A> = ring.mutableMatrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
+    fun toOrdinaryMatrix(): AbstractMatrix<A> = ring.matrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
+    fun toMutableMatrix(): AbstractMutableMatrix<A> = ring.mutableMatrix(rows, columns) { i, j -> elementAtUnsafe(i, j) }
 
 
     fun isSquareMatrix(): Boolean = rows == columns

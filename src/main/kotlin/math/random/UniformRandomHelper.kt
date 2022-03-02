@@ -13,6 +13,7 @@ import math.integer.uint.modular.ModularUInt
 import math.integer.uint.modular.RingModularUInt
 import math.integer.ulong.modular.ModularULong
 import math.integer.ulong.modular.RingModularULong
+import math.martix.AbstractMatrix
 import math.martix.columnVector
 import math.martix.concrete.OrdinaryMatrix
 import math.martix.concrete.OrdinarySquareMatrix
@@ -55,7 +56,7 @@ fun Random.randomUIntMatrix(rowsRange: UIntRange, columnsRange: UIntRange, bound
 fun Random.randomSquareUIntMatrix(size: UInt, bound: UIntRange) = RingUInt.squareMatrix(size) { _, _ -> nextUInt(bound) }
 fun Random.randomSquareUIntMatrix(sizeRange: UIntRange, bound: UIntRange) = RingUInt.squareMatrix(nextUInt(sizeRange)) { _, _ -> nextUInt(bound) }
 
-fun Random.randomMultiplicableUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange): List<OrdinaryMatrix<UInt>> {
+fun Random.randomMultiplicableUIntMatrices(matrices: UInt, size: UIntRange, bound: UIntRange): List<AbstractMatrix<UInt>> {
     var a = nextUInt(size)
     return List(matrices.toInt()) {
         val b = nextUInt(size)
@@ -65,7 +66,7 @@ fun Random.randomMultiplicableUIntMatrices(matrices: UInt, size: UIntRange, boun
     }
 }
 
-fun Random.randomUIntMatrices(matrices: UInt, sizeRange: UIntRange, bound: UIntRange): List<OrdinaryMatrix<UInt>> {
+fun Random.randomUIntMatrices(matrices: UInt, sizeRange: UIntRange, bound: UIntRange): List<AbstractMatrix<UInt>> {
     return List(matrices.toInt()) {
         randomUIntMatrix(nextUInt(sizeRange), nextUInt(sizeRange), bound)
     }
@@ -96,7 +97,7 @@ fun RingModularUInt.randomMatrix(rowsRange: UIntRange, columnsRange: UIntRange, 
  */
 fun Random.randomComplexNumberDouble(bound: Double): ComplexNumber<Double> = ComplexNumber(FieldDouble, nextDouble(-bound, bound), nextDouble(-bound, bound))
 
-fun FieldComplexNumberDouble.randomMatrix(rows: UInt, columns: UInt, bound: Double, randomness: Random = Random): OrdinaryMatrix<ComplexNumber<Double>> = this.matrix(rows, columns) { _, _ -> randomness.randomComplexNumberDouble(bound) }
+fun FieldComplexNumberDouble.randomMatrix(rows: UInt, columns: UInt, bound: Double, randomness: Random = Random): AbstractMatrix<ComplexNumber<Double>> = this.matrix(rows, columns) { _, _ -> randomness.randomComplexNumberDouble(bound) }
 
 /**
  * Fast Dice Roller algorithm by Jérémie Lumbroso

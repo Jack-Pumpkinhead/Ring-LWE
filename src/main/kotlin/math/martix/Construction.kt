@@ -6,11 +6,9 @@ import kotlinx.coroutines.coroutineScope
 import math.abstract_structure.Ring
 import math.coding.permutation.Permutation
 import math.martix.concrete.*
-import math.martix.mutable.MutableColumnVector
-import math.martix.mutable.MutableMatrix
-import math.martix.mutable.MutableRowVector
-import math.martix.mutable.MutableSizeMatrix
+import math.martix.mutable.*
 import math.martix.tensor.*
+import util.stdlib.list
 import util.stdlib.mutableList
 
 /**
@@ -73,9 +71,40 @@ suspend fun <A> Ring<A>.rowVectorParallel(columns: UInt, generator: (UInt) -> A)
 fun <A> Ring<A>.columnVector(rows: UInt, generator: (UInt) -> A) = ColumnVector(this, List(rows.toInt()) { i -> generator(i.toUInt()) })
 suspend fun <A> Ring<A>.columnVectorParallel(rows: UInt, generator: (UInt) -> A) = ColumnVector(this, listParallel(rows, generator))
 
-fun <A> Ring<A>.matrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = OrdinaryMatrix(this, rows, columns, nestedLL(rows, columns, generator))
+fun <A> Ring<A>.matrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A): AbstractMatrix<A> {
+    return if (rows == 0u || columns == 0u) {
+        EmptyMatrix(this, rows, columns)
+    } else {
+        if (rows == 1u) {
+            RowVector(this, list(columns) { j -> generator(0u, j) })
+        } else {
+            if (columns == 1u) {
+                ColumnVector(this, list(rows) { i -> generator(i, 0u) })
+            } else {
+                if (rows == columns) {
+                    OrdinarySquareMatrix(this, rows, nestedLL(rows, columns, generator))
+                } else {
+                    OrdinaryMatrix(this, rows, columns, nestedLL(rows, columns, generator))
+                }
+            }
+        }
+    }
+}
+
 fun <A> Ring<A>.squareMatrix(size: UInt, generator: (UInt, UInt) -> A) = OrdinarySquareMatrix(this, size, nestedLL(size, size, generator))
-fun <A> Ring<A>.mutableMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableMatrix(this, rows, columns, nestedLML(rows, columns, generator))
+fun <A> Ring<A>.mutableMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A): AbstractMutableMatrix<A> {
+    return if (rows == 1u) {
+        MutableRowVector(this, mutableList(columns) { j -> generator(0u, j) })
+    } else {
+        if (columns == 1u) {
+            MutableColumnVector(this, mutableList(rows) { i -> generator(i, 0u) })
+        } else {
+            MutableMatrix(this, rows, columns, nestedLML(rows, columns, generator))
+        }
+    }
+
+}
+
 fun <A> Ring<A>.mutableColumnVector(size: UInt, generator: (UInt) -> A) = MutableColumnVector(this, mutableList(size, generator))
 fun <A> Ring<A>.mutableRowVector(size: UInt, generator: (UInt) -> A) = MutableRowVector(this, mutableList(size, generator))
 fun <A> Ring<A>.mutableSizeMatrix(rows: UInt, columns: UInt, generator: (UInt, UInt) -> A) = MutableSizeMatrix(this, rows, columns, nestedMLML(rows, columns, generator))

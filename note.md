@@ -7,6 +7,7 @@
 - kotlin cannot override equals() and hashcode() in interface
 - never use 'open class', use interface instead
 - introduce 'Two' related class introduce complexity, unless make some class open
+- parallel method need to call ordinary method in small case.
 
 ##todo
 - R[x]/f(x) for f monic
