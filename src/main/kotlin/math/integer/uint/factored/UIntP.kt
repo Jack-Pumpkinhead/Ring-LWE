@@ -9,7 +9,7 @@ import util.stdlib.lazyAssert2
  *
  * represent a prime UInt number
  */
-class PrimeUInt(override val value: UInt) : UIntPI {
+class UIntP(override val value: UInt) : UIntPI {
 
     init {
         lazyAssert2 {

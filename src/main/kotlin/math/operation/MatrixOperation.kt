@@ -9,7 +9,6 @@ import math.martix.AbstractMatrix
 import math.martix.matrix
 import math.martix.matrixRowParallel
 import math.martix.mutable.AbstractMutableMatrix
-import math.martix.mutable.MutableMatrix
 import math.martix.zeroMutableMatrix
 import math.roundingErrorDouble
 import util.stdlib.list
@@ -37,7 +36,7 @@ fun <A> Ring<A>.multiplyUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): Ab
             sum = add(sum, multiply(mA.elementAtUnsafe(i, j), mB.elementAtUnsafe(j, k)))
         }
         sum
-    }.downCast()
+    }
 }
 
 fun <A> multiplyToNewMutableMatrix(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMutableMatrix<A> {
@@ -72,7 +71,7 @@ fun <A> Ring<A>.multiplyToUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>, d
 suspend fun <A> multiplyRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMatrix<A> {
     require(mA.ring == mB.ring)
     require(mA.columns == mB.rows)
-    return mA.ring.multiplyRowParallelUnsafe(mA, mB).downCast()
+    return mA.ring.multiplyRowParallelUnsafe(mA, mB)
 }
 
 suspend fun <A> Ring<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMatrix<A> {
@@ -82,7 +81,7 @@ suspend fun <A> Ring<A>.multiplyRowParallelUnsafe(mA: AbstractMatrix<A>, mB: Abs
             sum = add(sum, multiply(mA.elementAtUnsafe(i, j), mB.elementAtUnsafe(j, k)))    //maybe faster by caching matrix[i][j], but improvement on speed may insignificant.
         }
         sum
-    }.downCast()
+    }
 }
 
 suspend fun <A> multiplyToNewMutableMatrixRowParallel(mA: AbstractMatrix<A>, mB: AbstractMatrix<A>): AbstractMutableMatrix<A> {

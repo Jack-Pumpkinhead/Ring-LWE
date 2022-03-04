@@ -35,4 +35,5 @@ object RingLong : Ring<Long> {
     }
     override fun ofInteger(a: Long): Long = a
 
+    override val isExactComputation: Boolean get() = true   //require to be true, no overflow should occur.
 }

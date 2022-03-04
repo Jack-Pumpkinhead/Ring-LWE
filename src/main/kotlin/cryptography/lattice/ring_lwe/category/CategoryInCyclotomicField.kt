@@ -1,7 +1,7 @@
 package cryptography.lattice.ring_lwe.category
 
 import cryptography.lattice.ring_lwe.matrix.LowerTriangularOneMatrix
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.abstract_structure.module.category.ModuleCategories
 import math.abstract_structure.module.freeModule

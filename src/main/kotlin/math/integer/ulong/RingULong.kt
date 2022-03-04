@@ -29,4 +29,5 @@ object RingULong : Ring<ULong> {
     override fun ofInteger(a: ULong): ULong = a
     override fun ofInteger(a: Long): ULong = a.toULong()
 
+    override val isExactComputation: Boolean get() = true
 }

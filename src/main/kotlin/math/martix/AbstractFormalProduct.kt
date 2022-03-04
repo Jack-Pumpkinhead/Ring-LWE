@@ -1,6 +1,5 @@
 package math.martix
 
-import math.martix.concrete.Constant
 import math.martix.mutable.AbstractMutableMatrix
 
 /**
@@ -19,7 +18,7 @@ interface AbstractFormalProduct<A> : AbstractMatrix<A> {
                 x = matrices[i] * x
             }
             x = matrices[0].rowVectorViewAt(row) * x
-            (x.downCast() as Constant<A>).value     //TODO add a function 'multiply to vector' in AbstractMatrix
+            x.elementAtUnsafe(0u, 0u)   //TODO add a function 'multiply to vector' in AbstractMatrix
         }
     }
 

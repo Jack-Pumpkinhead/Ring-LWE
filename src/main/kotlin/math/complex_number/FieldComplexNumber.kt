@@ -1,8 +1,6 @@
-package math.abstract_structure.instance
+package math.complex_number
 
 import math.abstract_structure.Field
-import math.complex_number.ComplexNumber
-import math.complex_number.complexNumber
 
 /**
  * Created by CowardlyLion at 2022/1/25 17:50
@@ -53,4 +51,5 @@ open class FieldComplexNumber<A>(ring: Field<A>) : RingComplexNumber<A>(ring), F
         return ring.hashCode()
     }
 
+    override val isExactComputation: Boolean get() = ring.isExactComputation
 }

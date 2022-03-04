@@ -1,27 +1,23 @@
-package math.abstract_structure.instance
+package math.complex_number
 
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.*
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.PrimeDftMatrixComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPPI
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPPP
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPPPI
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.ProperPrimePowerProductDftMatrix
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixPPIBuilderComplexDouble
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.PrimeDftMatrixComplexDouble
 import cryptography.lattice.ring_lwe.ring.RootUIntP
 import cryptography.lattice.ring_lwe.ring.RootUIntPP
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
-import math.complex_number.ComplexNumber
-import math.complex_number.complexNumber
+import math.abstract_structure.instance.FieldDouble
 import math.integer.uint.factored.*
 import math.pi2
-import kotlin.math.cos
-import kotlin.math.sin
 
 /**
  * Created by CowardlyLion at 2022/1/26 14:37
  */
 object FieldComplexNumberDouble : FieldComplexNumber<Double>(FieldDouble) {
 
-    /**
-     * e^iθ = cos(θ) + i sin(θ)
-     */
-    fun expI(theta: Double): ComplexNumber<Double> = FieldDouble.complexNumber(cos(theta), sin(theta))
 
     /**
      * return e^(i 2π (1/[order]))

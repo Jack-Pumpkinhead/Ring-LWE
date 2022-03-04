@@ -5,6 +5,8 @@
 - no need to implement radix-2 FFt since it is equivalent to prime power case when p=2
 - after making abstract matrix to interface, implement equals method for every class is very tedious
 - kotlin cannot override equals() and hashcode() in interface
+  - a workaround is abandon equals()/hashcode(), write custum equals1() in interface
+  - if sometimes want to use a class that use equals() without totally rewrite the class, can warp object to a class that implement equals() as equals1()
 - never use 'open class', use interface instead
 - introduce 'Two' related class introduce complexity, unless make some class open
 - parallel method need to call ordinary method in small case.

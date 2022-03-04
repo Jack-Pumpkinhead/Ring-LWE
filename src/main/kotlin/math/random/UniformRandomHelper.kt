@@ -1,7 +1,7 @@
 package math.random
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.complex_number.ComplexNumber
 import math.integer.big_integer.ceilLog2

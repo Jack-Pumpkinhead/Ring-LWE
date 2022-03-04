@@ -6,7 +6,7 @@ import cryptography.lattice.ring_lwe.ring.RootUIntPP
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
 import kotlinx.coroutines.runBlocking
 import math.andPrint
-import math.integer.uint.factored.PrimeUInt
+import math.integer.uint.factored.UIntP
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.ModularUInt
 import math.integer.uint.nextTwoPositivePower
@@ -30,7 +30,7 @@ internal class PrimeDftMatrixModularUIntTest {
         val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
 
         for (i in range) {
-            val primeField = PrimeUInt(primeOf(i).toUInt()).primeField
+            val primeField = UIntP(primeOf(i).toUInt()).primeField
             val root = primeField.firstGenerator
             val dft = when (root) {
                 is RootUIntPPP -> PrimeDftMatrixModularUInt(root.primeSubrootAt(root.order.factors.size.toUInt() - 1u))
@@ -166,7 +166,7 @@ internal class PrimeDftMatrixModularUIntTest {
 
         runBlocking {
             for (i in 1u..500u) {
-                val primeField = PrimeUInt(primeOf(i).toUInt()).primeField
+                val primeField = UIntP(primeOf(i).toUInt()).primeField
                 repeat(3) {
                     test(primeField)
                 }

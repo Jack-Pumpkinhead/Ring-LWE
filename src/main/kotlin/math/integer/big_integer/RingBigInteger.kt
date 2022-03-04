@@ -33,4 +33,5 @@ object RingBigInteger : Ring<BigInteger> {
     override fun ofInteger(a: ULong): BigInteger = a.toBigInteger()
     override fun ofInteger(a: Long): BigInteger = a.toBigInteger()
 
+    override val isExactComputation: Boolean get() = true
 }

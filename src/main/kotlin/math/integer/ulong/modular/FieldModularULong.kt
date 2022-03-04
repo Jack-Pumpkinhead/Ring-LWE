@@ -11,4 +11,5 @@ class FieldModularULong(val prime: ULong) : RingModularULong(prime), Field<Modul
 
     override fun hasInverse(a: ModularULong): Boolean = true
 
+    override val isExactComputation: Boolean get() = true
 }

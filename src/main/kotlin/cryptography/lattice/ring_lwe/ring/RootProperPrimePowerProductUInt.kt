@@ -14,7 +14,7 @@ import util.stdlib.lazyAssert2
 /**
  * Created by CowardlyLion at 2022/1/26 17:25
  */
-class RootProperPrimePowerProductUInt<A>(override val ring: Ring<A>, override val root: A, override val order: ProperPrimePowerProductUInt) : RootPrimePowerProductUInt<A> {
+class RootProperPrimePowerProductUInt<A>(override val ring: Ring<A>, override val root: A, override val order: UIntPPP) : RootPrimePowerProductUInt<A> {
 
     /**
      * require suborder divide order
@@ -66,7 +66,7 @@ class RootProperPrimePowerProductUInt<A>(override val ring: Ring<A>, override va
     /**
      * [i] is index of prime power in the factorization of order
      */
-    fun primeSubrootAt(i: UInt): RootPrimeUInt<A> = subrootUnsafe(PrimeUInt(order.factors[i.toInt()].prime))
+    fun primeSubrootAt(i: UInt): RootPrimeUInt<A> = subrootUnsafe(UIntP(order.factors[i.toInt()].prime))
 
 
     /**

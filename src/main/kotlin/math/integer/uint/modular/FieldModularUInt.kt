@@ -40,5 +40,5 @@ class FieldModularUInt(val prime: UInt) : RingModularUInt(prime), Field<ModularU
 
     fun firstFullDftFast(): DftMatrixPPPI<ModularUInt> = DftMatrixPPIBuilderModularUInt.build(firstGenerator)
 
-
+    override val isExactComputation: Boolean get() = true
 }

@@ -2,10 +2,10 @@ package cryptography.lattice.ring_lwe.ring
 
 import math.abstract_structure.Ring
 import math.abstract_structure.algorithm.powerM
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.complex_number.ComplexNumber
 import math.integer.big_integer.modular.RingModularBigInteger
-import math.integer.uint.factored.PrimeUInt
+import math.integer.uint.factored.UIntP
 import math.integer.uint.modUnaryMinus
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.RingModularUInt
@@ -18,7 +18,7 @@ import util.stdlib.lazyAssert2
  *
  * [order] need to be prime
  */
-class RootPrimeUInt<A>(override val ring: Ring<A>, override val root: A, override val order: PrimeUInt) : AbstractRootPrimeUInt<A> {
+class RootPrimeUInt<A>(override val ring: Ring<A>, override val root: A, override val order: UIntP) : AbstractRootPrimeUInt<A> {
 
     override val inverse: RootPrimeUInt<A> by lazy {
         if (ring == FieldComplexNumberDouble) {

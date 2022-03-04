@@ -4,7 +4,7 @@ import cryptography.lattice.ring_lwe.ring.RootUIntP
 import cryptography.lattice.ring_lwe.ring.RootUIntPP
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
 import kotlinx.coroutines.runBlocking
-import math.integer.uint.factored.PrimeUInt
+import math.integer.uint.factored.UIntP
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.ModularUInt
 import math.integer.ulong.primeOf
@@ -22,7 +22,7 @@ internal class DftMatrixPrimeTest {
     suspend fun testBase(range: UIntRange) {
         val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
         for (i in range) {
-            val primeField = PrimeUInt(primeOf(i).toUInt()).primeField
+            val primeField = UIntP(primeOf(i).toUInt()).primeField
             val root = primeField.firstGenerator
             val dft = when (root) {
                 is RootUIntPPP -> DftMatrixP(root.primeSubrootAt(root.order.factors.size.toUInt() - 1u))

@@ -4,9 +4,8 @@ import math.abstract_structure.Ring
 import math.abstract_structure.algorithm.powerM
 import math.integer.big_integer.modular.RingModularBigInteger
 import math.integer.uint.*
-import math.integer.uint.factored.PrimeUInt
-import math.integer.uint.factored.ProperPrimePowerUInt
 import math.integer.uint.factored.UIntP
+import math.integer.uint.factored.UIntPP
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.RingModularUInt
 import math.integer.ulong.modular.FieldModularULong
@@ -16,14 +15,14 @@ import util.stdlib.lazyAssert2
 /**
  * Created by CowardlyLion at 2022/1/26 17:29
  */
-class RootProperPrimePowerUInt<A>(override val ring: Ring<A>, override val root: A, override val order: ProperPrimePowerUInt) : RootPrimePowerUInt<A> {
+class RootProperPrimePowerUInt<A>(override val ring: Ring<A>, override val root: A, override val order: UIntPP) : RootPrimePowerUInt<A> {
 
     /**
      * reduce power by 1
      */
     fun subrootReducePowerOne(): RootPrimePowerUInt<A> =
         if (order.power == 2u) {
-            RootPrimeUInt(ring, ring.powerM(root, order.prime), order.reducePowerByOneToPrimeUnsafe())
+            RootPrimeUInt(ring, ring.powerM(root, order.prime), order.prime())
         } else {
             RootProperPrimePowerUInt(ring, ring.powerM(root, order.prime), order.reducePowerByOneUnsafe())
         }
@@ -38,11 +37,11 @@ class RootProperPrimePowerUInt<A>(override val ring: Ring<A>, override val root:
         return if (power1 == 1u) {
             RootPrimeUInt(ring, ring.powerM(root, dividend), UIntP(order.prime))
         } else {
-            RootProperPrimePowerUInt(ring, ring.powerM(root, dividend), ProperPrimePowerUInt(order.value / dividend, order.prime, power1))
+            RootProperPrimePowerUInt(ring, ring.powerM(root, dividend), UIntPP(order.value / dividend, order.prime, power1))
         }
     }
 
-    fun primeSubroot(): RootPrimeUInt<A> = RootPrimeUInt(ring, ring.powerM(root, order.value / order.prime), PrimeUInt(order.prime))
+    fun primeSubroot(): RootPrimeUInt<A> = RootPrimeUInt(ring, ring.powerM(root, order.value / order.prime), UIntP(order.prime))
 
     override val inverse: RootProperPrimePowerUInt<A> by lazy {
         RootProperPrimePowerUInt(ring, ring.powerM(root, order.value - 1u), order)

@@ -7,18 +7,13 @@ import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftRepeat
 import cryptography.lattice.ring_lwe.ring.RootUIntPI
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.instance.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
-import math.complex_number.ComplexNumber
-import math.complex_number.maxRoundingError
-import math.complex_number.realComplexNumber
-import math.complex_number.roundToLong
+import math.complex_number.*
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.ModularUInt
 import math.integer.uint.nextTwoPositivePower
 import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
-import math.martix.concrete.ColumnVector
 import math.martix.concrete.DiagonalMatrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.zeroMutableMatrix
@@ -50,7 +45,7 @@ class DftMatrixPrimeLowerPartModularUInt(root: RootUIntPI<ModularUInt>) : DftMat
         dftInv = dft.inverse
         val rgInv: List<ComplexNumber<Double>> = list(root.order.value - 1u) { i -> FieldDouble.realComplexNumber(root.cachedPower(g.cachedInversePower(i).residue).residue.toDouble()) }
         val rgInvPadding = DftPaddingZeroColumnVector(FieldComplexNumberDouble, rgInv, twoPower.value)
-        diag_dft_rgInvPadding = DiagonalMatrix(FieldComplexNumberDouble, ((dft * rgInvPadding).downCast() as ColumnVector).vector)  //TODO casting to column vector maybe slow
+        diag_dft_rgInvPadding = DiagonalMatrix(FieldComplexNumberDouble, (dft * rgInvPadding).columnListAt(0u))
     }
 
     override fun timesImpl(matrix: AbstractMatrix<ModularUInt>): AbstractMatrix<ModularUInt> {

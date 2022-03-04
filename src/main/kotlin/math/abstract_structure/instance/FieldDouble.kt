@@ -22,4 +22,5 @@ object FieldDouble : Field<Double> {
     override fun ofInteger(a: ULong): Double = a.toDouble()    //have rounding error
     override fun ofInteger(a: Long): Double = a.toDouble()
 
+    override val isExactComputation: Boolean get() = false
 }

@@ -13,5 +13,6 @@ interface Monoid<A> {
     fun hasInverse(a: A): Boolean
     fun inverse(a: A): A    //throw error if it has no inverse.
 
+    val isExactComputation: Boolean
 
 }

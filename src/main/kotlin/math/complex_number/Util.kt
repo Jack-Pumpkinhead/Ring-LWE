@@ -4,15 +4,33 @@ import math.abstract_structure.Ring
 import math.abstract_structure.instance.FieldDouble
 import math.martix.AbstractColumnVector
 import math.martix.columnVector
+import math.pi2
 import math.roundingErrorDouble
-import kotlin.math.absoluteValue
-import kotlin.math.max
-import kotlin.math.roundToInt
-import kotlin.math.roundToLong
+import kotlin.math.*
 
 /**
  * Created by CowardlyLion at 2022/1/17 17:43
  */
+
+/**
+ * e^iθ = cos(θ) + i sin(θ)
+ */
+fun expI(theta: Double): ComplexNumber<Double> = FieldDouble.complexNumber(cos(theta), sin(theta))
+
+/**
+ * require [power] and [order] coprime, [power] < [order], [order] > 0
+ */
+fun cyclotomicNumberUnsafe(power: UInt, order: UInt) =
+    when (order) {
+        1u   -> FieldComplexNumberDouble.one
+        2u   -> FieldDouble.realComplexNumber(FieldDouble.negate(FieldDouble.one))
+        4u   -> if (power == 1u) {
+            FieldDouble.imaginaryComplexNumber(FieldDouble.one)
+        } else {
+            FieldDouble.imaginaryComplexNumber(FieldDouble.negate(FieldDouble.one))
+        }
+        else -> expI((pi2 * power.toDouble()) / order.toDouble())
+    }
 
 fun <A> Ring<A>.complexNumber(real: A, imaginary: A) = ComplexNumber(this, real, imaginary)
 fun <A> Ring<A>.realComplexNumber(real: A) = RealComplexNumber(this, real)

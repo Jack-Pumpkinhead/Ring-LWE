@@ -6,7 +6,7 @@ import cryptography.lattice.ring_lwe.ring.RootUIntPP
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
 import cryptography.lattice.ring_lwe.ring.RootUIntPPPI
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.andPrint
 import math.complex_number.ComplexNumber
 import math.complex_number.maxRoundingError

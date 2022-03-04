@@ -20,4 +20,5 @@ object FieldBigDecimal : Field<BigDecimal> {
     override fun ofInteger(a: ULong): BigDecimal = BigDecimal.fromULong(a)
     override fun ofInteger(a: Long): BigDecimal = BigDecimal.fromLong(a)
 
+    override val isExactComputation: Boolean get() = false
 }

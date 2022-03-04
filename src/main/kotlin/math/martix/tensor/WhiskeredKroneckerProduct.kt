@@ -40,13 +40,13 @@ class WhiskeredKroneckerProduct<A>(override val ring: Ring<A>, override val rows
     override fun timesImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
         val dest = ring.zeroMutableMatrix(this.rows, matrix.columns)
         multiplyToImpl(matrix, dest)
-        return dest.downCast()
+        return dest
     }
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<A>): AbstractMatrix<A> {
         val dest = ring.zeroMutableMatrix(this.rows, matrix.columns)
         multiplyToRowParallelImpl(matrix, dest)
-        return dest.downCast()
+        return dest
     }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<A>, dest: AbstractMutableMatrix<A>) {

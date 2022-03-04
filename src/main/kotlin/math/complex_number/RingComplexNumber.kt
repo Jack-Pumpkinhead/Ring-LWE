@@ -1,9 +1,6 @@
-package math.abstract_structure.instance
+package math.complex_number
 
 import math.abstract_structure.Ring
-import math.complex_number.ComplexNumber
-import math.complex_number.complexNumber
-import math.complex_number.realComplexNumber
 
 /**
  * Created by CowardlyLion at 2022/1/25 17:42
@@ -62,4 +59,5 @@ open class RingComplexNumber<A>(val ring: Ring<A>) : Ring<ComplexNumber<A>> {
     override fun ofInteger(a: ULong): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
     override fun ofInteger(a: Long): ComplexNumber<A> = ring.realComplexNumber(ring.ofInteger(a))
 
+    override val isExactComputation: Boolean get() = ring.isExactComputation
 }

@@ -7,12 +7,11 @@ import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftRepeat
 import cryptography.lattice.ring_lwe.ring.RootUIntPI
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import math.abstract_structure.instance.FieldComplexNumberDouble
 import math.complex_number.ComplexNumber
+import math.complex_number.FieldComplexNumberDouble
 import math.integer.uint.nextTwoPositivePower
 import math.martix.AbstractMatrix
 import math.martix.AbstractSquareMatrix
-import math.martix.concrete.ColumnVector
 import math.martix.concrete.DiagonalMatrix
 import math.martix.mutable.AbstractMutableMatrix
 import math.martix.zeroMutableMatrix
@@ -44,7 +43,7 @@ class DftMatrixPrimeLowerPartComplexDouble(root: RootUIntPI<ComplexNumber<Double
         dftInv = dft.inverse
         val rgInv: List<ComplexNumber<Double>> = list(root.order.value - 1u) { i -> root.cachedPower(g.cachedInversePower(i).residue) }
         val rgInvPadding = DftPaddingZeroColumnVector(ring, rgInv, twoPower.value)
-        diag_dft_rgInvPadding = DiagonalMatrix(ring, ((dft * rgInvPadding).downCast() as ColumnVector).vector)  //TODO casting to column vector maybe slow
+        diag_dft_rgInvPadding = DiagonalMatrix(ring, (dft * rgInvPadding).columnListAt(0u))
     }
 
     override fun timesImpl(matrix: AbstractMatrix<ComplexNumber<Double>>): AbstractMatrix<ComplexNumber<Double>> {

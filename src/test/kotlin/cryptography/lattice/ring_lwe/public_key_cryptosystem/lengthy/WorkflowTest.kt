@@ -1,7 +1,6 @@
 package cryptography.lattice.ring_lwe.public_key_cryptosystem.lengthy
 
 import kotlinx.coroutines.runBlocking
-import math.integer.uint.factored.UIntP
 import math.integer.uint.factored.UIntPP
 import math.integer.uint.factored.primeFactorization
 import math.integer.uint.modular.FieldModularUInt

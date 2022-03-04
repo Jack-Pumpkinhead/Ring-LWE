@@ -80,4 +80,5 @@ open class RingModularULong(val modulus: ULong) : Ring<ModularULong> {
             ModularULong(modulus, modulus - (-a).toULong())
         }
 
+    override val isExactComputation: Boolean get() = true
 }

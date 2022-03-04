@@ -4,7 +4,7 @@ import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrix
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.RowSummationMatrix
 import cryptography.lattice.ring_lwe.ring.RootUIntPI
 import math.abstract_structure.Ring
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.complex_number.ComplexNumber
 import math.integer.uint.modTimes
 import math.martix.*

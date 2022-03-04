@@ -21,4 +21,5 @@ object FieldFloat : Field<Float> {
     override fun ofInteger(a: ULong): Float = a.toFloat()
     override fun ofInteger(a: Long): Float = a.toFloat()
 
+    override val isExactComputation: Boolean get() = false
 }

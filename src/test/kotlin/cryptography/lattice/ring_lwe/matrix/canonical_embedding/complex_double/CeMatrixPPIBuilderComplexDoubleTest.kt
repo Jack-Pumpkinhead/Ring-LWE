@@ -3,7 +3,7 @@ package cryptography.lattice.ring_lwe.matrix.canonical_embedding.complex_double
 import cryptography.lattice.ring_lwe.ring.RootUIntPPI
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.integer.uint.factored.primeFactorization
 import math.integer.ulong.primeOf
 import math.operation.maxAbsoluteDistance

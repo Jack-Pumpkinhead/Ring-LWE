@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import math.abstract_structure.algorithm.power
 import math.abstract_structure.algorithm.powerM
 import math.abstract_structure.algorithm.powerS
+import math.complex_number.FieldComplexNumberDouble
 import math.integer.uint.factored.primeFactorization
 import org.junit.jupiter.api.Test
 

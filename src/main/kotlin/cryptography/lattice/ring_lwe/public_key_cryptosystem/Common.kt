@@ -4,7 +4,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import cryptography.lattice.ring_lwe.matrix.canonical_embedding.conjugate_transpose.CeCTMatrixPPIBuilderComplexDouble
 import cryptography.lattice.ring_lwe.randomlySelectNearZero
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.complex_number.ComplexNumber
 import math.complex_number.realComplexNumber

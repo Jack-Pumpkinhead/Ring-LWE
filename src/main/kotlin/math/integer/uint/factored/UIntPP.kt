@@ -13,7 +13,7 @@ import util.stdlib.lazyAssert2
  *
  * represent a proper power of prime with power > 1
  */
-class ProperPrimePowerUInt(override val value: UInt, override val prime: UInt, override val power: UInt) : UIntPPI {
+class UIntPP(override val value: UInt, override val prime: UInt, override val power: UInt) : UIntPPI {
 
     init {
         lazyAssert2 {
@@ -28,21 +28,18 @@ class ProperPrimePowerUInt(override val value: UInt, override val prime: UInt, o
     fun reducePowerByOne(): UIntPPI {
         require(power > 1u)
         return if (power == 2u) {
-            PrimeUInt(prime)
+            UIntP(prime)
         } else {
-            ProperPrimePowerUInt(value / prime, prime, power - 1u)
+            UIntPP(value / prime, prime, power - 1u)
         }
     }
 
     /**
      * require [power] > 2u
      */
-    fun reducePowerByOneUnsafe(): ProperPrimePowerUInt = ProperPrimePowerUInt(value / prime, prime, power - 1u)
+    fun reducePowerByOneUnsafe(): UIntPP = UIntPP(value / prime, prime, power - 1u)
 
-    /**
-     * require [power] = 2u
-     */
-    fun reducePowerByOneToPrimeUnsafe(): PrimeUInt = PrimeUInt(prime)
+    fun prime(): UIntP = UIntP(prime)
 
     override val eulerTotient: UInt by lazy {
         (value / prime) * (prime - 1u)

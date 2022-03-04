@@ -47,5 +47,5 @@ class RingModularBigInteger(val modulus: BigInteger) : Ring<ModularBigInteger> {
     override fun ofInteger(a: ULong): ModularBigInteger = a.toBigInteger().mod(modulus).toModularBigInteger(modulus)
     override fun ofInteger(a: Long): ModularBigInteger = a.toBigInteger().mod(modulus).toModularBigInteger(modulus)
 
-
+    override val isExactComputation: Boolean get() = true
 }

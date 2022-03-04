@@ -4,7 +4,7 @@ import cryptography.lattice.ring_lwe.ring.RootUIntP
 import cryptography.lattice.ring_lwe.ring.RootUIntPP
 import cryptography.lattice.ring_lwe.ring.RootUIntPPP
 import kotlinx.coroutines.runBlocking
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.integer.uint.factored.primeFactorization
 import math.integer.ulong.primeOf
 import math.operation.maxAbsoluteDistance

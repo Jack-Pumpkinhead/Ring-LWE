@@ -14,8 +14,8 @@ fun twoPower(power: UInt) = twoPowers[power.toInt()]    //TODO decide if cached 
 private val factoredTwoPowers = list(32u) { i ->
     when (i) {
         0u   -> null
-        1u   -> PrimeUInt(2u)
-        else -> ProperPrimePowerUInt(twoPower(i), 2u, i)
+        1u   -> UIntP(2u)
+        else -> UIntPP(twoPower(i), 2u, i)
     }
 }
 

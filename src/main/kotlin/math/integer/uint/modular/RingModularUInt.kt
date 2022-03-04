@@ -79,4 +79,5 @@ open class RingModularUInt(val modulus: UInt) : Ring<ModularUInt> {
             ModularUInt(modulus, a.mod(modulus.toLong()).toUInt())
         }
 
+    override val isExactComputation: Boolean get() = true
 }

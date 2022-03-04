@@ -10,16 +10,12 @@ import kotlin.math.sqrt
  * Created by CowardlyLion at 2022/2/12 21:26
  */
 
-typealias UIntP = PrimeUInt
-typealias UIntPP = ProperPrimePowerUInt
-typealias UIntPPP = ProperPrimePowerProductUInt
-
 fun ofPrimePower(prime: UInt, power: UInt, value: UInt = prime.powerM(power)): UIntPPI {
     require(power > 0u)
     return if (power > 1u) {
-        ProperPrimePowerUInt(value, prime, power)
+        UIntPP(value, prime, power)
     } else {
-        PrimeUInt(prime)
+        UIntP(prime)
     }
 }
 
@@ -36,7 +32,7 @@ fun ofPrimePowers(factors: List<UIntPPI>, value: UInt = RingUInt.product(factors
 suspend fun UInt.primeFactorization(): UIntPPPI {
     val factors = this.primeFactorizationImpl()
     return if (factors.size > 1) {
-        ProperPrimePowerProductUInt(this, factors)
+        UIntPPP(this, factors)
     } else factors[0]
 }
 
@@ -44,8 +40,8 @@ suspend fun UInt.primeFactorizationImpl(): List<UIntPPI> {
     require(this > 1u) { "no need to factored" }
     return when (this) {
         1u   -> emptyList()
-        2u   -> listOf(PrimeUInt(2u))
-        3u   -> listOf(PrimeUInt(3u))
+        2u   -> listOf(UIntP(2u))
+        3u   -> listOf(UIntP(3u))
         else -> {
             val list = mutableListOf<UIntPPI>()
             var x = this
@@ -63,16 +59,16 @@ suspend fun UInt.primeFactorizationImpl(): List<UIntPPI> {
                         x /= prime
                     }
                     list += if (power == 1u) {
-                        PrimeUInt(prime)
+                        UIntP(prime)
                     } else {
-                        ProperPrimePowerUInt(primePower, prime, power)
+                        UIntPP(primePower, prime, power)
                     }
                     if (x == 1u) return list
                 }
                 i++
                 prime = primeOf(i).toUInt()
             }
-            list += PrimeUInt(x)
+            list += UIntP(x)
             list
         }
     }

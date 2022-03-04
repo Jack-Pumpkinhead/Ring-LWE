@@ -1,7 +1,7 @@
 package cryptography.lattice.ring_lwe.public_key_cryptosystem
 
 import math.abstract_structure.Ring
-import math.abstract_structure.instance.FieldComplexNumberDouble
+import math.complex_number.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.complex_number.ComplexNumber
 import math.complex_number.complexNumber
