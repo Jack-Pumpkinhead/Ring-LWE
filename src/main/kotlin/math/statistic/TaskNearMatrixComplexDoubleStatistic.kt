@@ -18,6 +18,7 @@ class TaskNearMatrixComplexDoubleStatistic<Condition>(timing: TaskTiming<Conditi
         var maxDistance = 0.0
         for (i in results.indices) {
             val a = results[i]
+//            println("result[$i]: ${matrixToString(a.result)}")
             for (j in i + 1 until results.size) {
                 val b = results[j]
                 val d = maxAbsoluteDistance(a.result, b.result)

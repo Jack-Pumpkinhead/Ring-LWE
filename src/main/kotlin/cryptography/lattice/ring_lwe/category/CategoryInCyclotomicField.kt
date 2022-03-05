@@ -1,6 +1,7 @@
 package cryptography.lattice.ring_lwe.category
 
 import cryptography.lattice.ring_lwe.matrix.LowerTriangularOneMatrix
+import cryptography.lattice.ring_lwe.ring.root.RootCalculatorUnsafeComplexNumber
 import math.complex_number.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.abstract_structure.module.category.ModuleCategories
@@ -71,7 +72,7 @@ class CategoryInCyclotomicField(val order: UIntPPI, val q: FieldModularUInt) {
         complexModule.registerBase(extendedCyclotomicFieldPowerBasis)
         complexModule.registerBase(standardBasis)
 
-        val root = FieldComplexNumberDouble.root(order)
+        val root = RootCalculatorUnsafeComplexNumber.compute(1u, order)
 //        complexModule.registerArrow(extendedCyclotomicFieldPowerBasis, standardBasis, ChineseRemainderTransformMatrixPrimePower(root, ChineseRemainderTransformMatrixPrime(root.primeSubroot())))
     }
 

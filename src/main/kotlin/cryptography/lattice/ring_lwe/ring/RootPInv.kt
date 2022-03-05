@@ -1,5 +1,6 @@
 package cryptography.lattice.ring_lwe.ring
 
+import math.abstract_structure.Ring
 import math.integer.uint.factored.UIntP
 
 /**
@@ -8,6 +9,8 @@ import math.integer.uint.factored.UIntP
 class RootPInv<A>(override val inverse: RootP<A>) : RootP<A> {
 
     override val order: UIntP get() = inverse.order
+
+    override val ring: Ring<A> get() = inverse.ring
 
     override val root get() = inverse.root.inverse
 
@@ -21,5 +24,7 @@ class RootPInv<A>(override val inverse: RootP<A>) : RootP<A> {
     override fun hashCode(): Int {
         return root.hashCode()
     }
+
+    override fun toString(): String = root.toString()
 
 }

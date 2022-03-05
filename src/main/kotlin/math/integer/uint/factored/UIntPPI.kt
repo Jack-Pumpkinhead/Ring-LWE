@@ -18,4 +18,6 @@ interface UIntPPI : UIntPPPI {
 
     override fun coprimeNumberAtUnsafe(i: UInt): UInt = (i / (prime - 1u)) + i + 1u
 
+    fun prime(): UIntP = UIntP(prime)
+
 }

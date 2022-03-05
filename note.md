@@ -10,6 +10,7 @@
 - never use 'open class', use interface instead
 - introduce 'Two' related class introduce complexity, unless make some class open
 - parallel method need to call ordinary method in small case.
+- Cannot check for instance of erased type (so there is no Generic BatchMapper)
 
 ##todo
 - R[x]/f(x) for f monic

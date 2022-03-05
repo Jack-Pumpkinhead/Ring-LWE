@@ -1,5 +1,6 @@
 package cryptography.lattice.ring_lwe.ring
 
+import math.abstract_structure.Ring
 import math.integer.uint.factored.UIntPPP
 
 /**
@@ -8,6 +9,8 @@ import math.integer.uint.factored.UIntPPP
 class RootPPPInv<A>(override val inverse: RootPPP<A>) : RootPPP<A> {
 
     override val order: UIntPPP get() = inverse.order
+
+    override val ring: Ring<A> get() = inverse.ring
 
     override val root get() = inverse.root.inverse
 
@@ -21,5 +24,7 @@ class RootPPPInv<A>(override val inverse: RootPPP<A>) : RootPPP<A> {
     override fun hashCode(): Int {
         return root.hashCode()
     }
+
+    override fun toString(): String = root.toString()
 
 }

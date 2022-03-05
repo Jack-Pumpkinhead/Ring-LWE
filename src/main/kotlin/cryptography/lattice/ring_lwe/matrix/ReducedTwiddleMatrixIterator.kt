@@ -10,7 +10,7 @@ class ReducedTwiddleMatrixIterator(ladderIndex: LadderIndex) : MultiIndexIterato
 
     var power = 0u
 
-    override fun returnCode(): IndexAndPower = IndexAndPower(index - 1u, power)
+    override fun returnCode(): IndexAndPower = IndexAndPower(index - 1u, power)   //it happened that 'i' is start from 1
 
     override fun atIncrease(i: Int) {
         if (i == 1) {

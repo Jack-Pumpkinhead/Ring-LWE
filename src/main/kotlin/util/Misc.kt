@@ -17,3 +17,7 @@ fun BigDecimal.differenceFromCeilInteger(): BigDecimal = this.roundToDigitPositi
 
 fun UInt.toUIntModular(modulus: UInt): ModularUInt = ModularUInt(modulus, this.mod(modulus))
 fun ULong.toULongModular(modulus: ULong): ModularULong = ModularULong(modulus, this.mod(modulus))
+
+fun errorUnknownObject(a: Any): Nothing {
+    error("unknown $a, class: ${a::class}")
+}

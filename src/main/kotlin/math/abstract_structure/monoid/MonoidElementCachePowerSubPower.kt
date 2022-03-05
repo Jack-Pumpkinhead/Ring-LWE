@@ -46,4 +46,9 @@ class MonoidElementCachePowerSubPower<A>(val parent: MonoidElementCachePower<A>,
         return result
     }
 
+    override fun toString(): String {
+        return "MonoidElementCachePowerSubPower(monoid=$monoid, order=$order, value=$value)"
+    }
+
+
 }

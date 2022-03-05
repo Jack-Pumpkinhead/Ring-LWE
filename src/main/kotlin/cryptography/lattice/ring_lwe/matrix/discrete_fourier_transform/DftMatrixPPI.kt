@@ -1,6 +1,6 @@
 package cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform
 
-import cryptography.lattice.ring_lwe.ring.RootUIntPPI
+import cryptography.lattice.ring_lwe.ring.RootPPI
 
 /**
  * Created by CowardlyLion at 2022/2/13 13:31
@@ -9,6 +9,6 @@ import cryptography.lattice.ring_lwe.ring.RootUIntPPI
  */
 interface DftMatrixPPI<A> : DftMatrixPPPI<A> {
 
-    override val root: RootUIntPPI<A>
+    override val root: RootPPI<A>
 
 }

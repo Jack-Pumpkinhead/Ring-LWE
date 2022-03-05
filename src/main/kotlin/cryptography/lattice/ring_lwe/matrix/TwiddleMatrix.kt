@@ -1,6 +1,6 @@
 package cryptography.lattice.ring_lwe.matrix
 
-import cryptography.lattice.ring_lwe.ring.RootProperPrimePowerUInt
+import cryptography.lattice.ring_lwe.ring.RootPPPI
 import math.abstract_structure.Ring
 import math.coding.LadderIndex
 import math.martix.*
@@ -14,7 +14,7 @@ import util.stdlib.list
  *
  * r^(b0*b1) = 1
  */
-class TwiddleMatrix<A>(override val ring: Ring<A>, override val size: UInt, val b0: UInt, val b1: UInt, val root: RootProperPrimePowerUInt<A>) : AbstractDiagonalMatrix<A> {
+class TwiddleMatrix<A>(override val ring: Ring<A>, override val size: UInt, val b0: UInt, val b1: UInt, val root: RootPPPI<A>) : AbstractDiagonalMatrix<A> {
 
     val ladderIndex = LadderIndex(listOf(b0, b1), size)
 
@@ -27,7 +27,7 @@ class TwiddleMatrix<A>(override val ring: Ring<A>, override val size: UInt, val 
 
     override fun vectorElementAtUnsafe(index: UInt): A {
         val a = ladderIndex.decode(index)
-        return root.cachedPower(a[0] * a[1])  //use cached power
+        return root.root.cachedPower(a[0] * a[1])  //use cached power
 //        return ring.powerM(root, a[0] * a[1])
     }
 
@@ -42,7 +42,7 @@ class TwiddleMatrix<A>(override val ring: Ring<A>, override val size: UInt, val 
 //            println("indexBound: ${ladderIndex.indexBound}, bounds: ${ladderIndex.bounds}")
             for ((i, power) in TwiddleMatrixIterator(ladderIndex)) {   //it happened that 'i' is increased by 1 per step.
 //                println("i: $i, power: $power")
-                matrix1 += list(matrix.columns) { j -> ring.multiply(root.cachedPower(power), matrix.elementAtUnsafe(i, j)) }
+                matrix1 += list(matrix.columns) { j -> ring.multiply(root.root.cachedPower(power), matrix.elementAtUnsafe(i, j)) }
             }
             OrdinaryMatrix(ring, this.rows, matrix.columns, matrix1)
         }
@@ -56,7 +56,7 @@ class TwiddleMatrix<A>(override val ring: Ring<A>, override val size: UInt, val 
             is ZeroMatrix<A>     -> dest.set { _, _ -> ring.zero }
             else                 -> {
                 for ((i, power) in TwiddleMatrixIterator(ladderIndex)) {
-                    dest.setRowUnsafe(i) { j -> ring.multiply(root.cachedPower(power), matrix.elementAtUnsafe(i, j)) }
+                    dest.setRowUnsafe(i) { j -> ring.multiply(root.root.cachedPower(power), matrix.elementAtUnsafe(i, j)) }
                 }
             }
         }

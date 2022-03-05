@@ -4,7 +4,8 @@ import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrix
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPrimeLowerPart
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftPaddingZeroColumnVector
 import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftRepeatRowMatrix
-import cryptography.lattice.ring_lwe.ring.RootUIntPI
+import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.complex_double.DftMatrixCreatorComplexDouble
+import cryptography.lattice.ring_lwe.ring.RootP
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import math.abstract_structure.instance.FieldDouble
@@ -23,11 +24,11 @@ import util.stdlib.list
 /**
  * Created by CowardlyLion at 2022/2/5 12:25
  */
-class DftMatrixPrimeLowerPartModularUInt(root: RootUIntPI<ModularUInt>) : DftMatrixPrimeLowerPart<ModularUInt>(root) {
+class DftMatrixPrimeLowerPartModularUInt(override val root: RootP<ModularUInt>) : DftMatrixPrimeLowerPart<ModularUInt> {
 
     init {
         lazyAssert2 {
-            assert(2uL * rows.toULong() - 1u <= Int.MAX_VALUE.toUInt())
+            assert(2uL * rows.toULong() - 1u <= Int.MAX_VALUE.toULong())
             assert(root.ring is FieldModularUInt)
         }
     }
@@ -41,37 +42,37 @@ class DftMatrixPrimeLowerPartModularUInt(root: RootUIntPI<ModularUInt>) : DftMat
     val twoPower = nextTwoPositivePower(2u * rows - 1u)     //speedup when size is already 2^k, or leave it alone to prevent so-called 'timing-attack'?     //situations that p = 2^k+1 is very few.
 
     init {
-        dft = FieldComplexNumberDouble.dft(twoPower)
+        dft = DftMatrixCreatorComplexDouble.compute(1u, twoPower)
         dftInv = dft.inverse
-        val rgInv: List<ComplexNumber<Double>> = list(root.order.value - 1u) { i -> FieldDouble.realComplexNumber(root.cachedPower(g.cachedInversePower(i).residue).residue.toDouble()) }
+        val rgInv: List<ComplexNumber<Double>> = list(root.order.value - 1u) { i -> FieldDouble.realComplexNumber(root.root.cachedPower(g.root.cachedInversePower(i).residue).residue.toDouble()) }
         val rgInvPadding = DftPaddingZeroColumnVector(FieldComplexNumberDouble, rgInv, twoPower.value)
         diag_dft_rgInvPadding = DiagonalMatrix(FieldComplexNumberDouble, (dft * rgInvPadding).columnListAt(0u))
     }
 
     override fun timesImpl(matrix: AbstractMatrix<ModularUInt>): AbstractMatrix<ModularUInt> {
-        val mgList = list(rows) { i -> matrix.rowListAt(g.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
+        val mgList = list(rows) { i -> matrix.rowListAt(g.root.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
         val mgListRepeat = DftRepeatRowMatrix(FieldComplexNumberDouble, mgList, twoPower.value, matrix.columns)
         val convolution = dftInv.times(diag_dft_rgInvPadding.times(dft.times(mgListRepeat)))
         val result = ring.zeroMutableMatrix(rows, matrix.columns)
         maxRoundingError = 0.0
         for (i in 0u until rows) {
-            val row = g.cachedInversePower(i).residue - 1u
+            val row = g.root.cachedInversePower(i).residue - 1u
             for (j in 0u until matrix.columns) {
                 result.setElementAtUnsafe(row, j, ring.add(matrix.elementAtUnsafe(0u, j), ring.ofInteger(convolution.elementAtUnsafe(i, j).roundToLong())))
             }
         }
-//        println("maxRoundingError: $maxRoundingError")  //why not printed? In whiskered kronecker product every matrix multiplication is calling to subsequent multiplyTo() method
+//        println("maxRoundingError: $maxRoundingError")  //why not printed? //In whiskered kronecker product every matrix multiplication is calling to subsequent multiplyTo() method
         return result
     }
 
     override suspend fun timesRowParallelImpl(matrix: AbstractMatrix<ModularUInt>): AbstractMatrix<ModularUInt> = coroutineScope {
-        val mgList = list(rows) { i -> matrix.rowListAt(g.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
+        val mgList = list(rows) { i -> matrix.rowListAt(g.root.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
         val mgListRepeat = DftRepeatRowMatrix(FieldComplexNumberDouble, mgList, twoPower.value, matrix.columns)
         val convolution = dftInv.timesRowParallel(diag_dft_rgInvPadding.timesRowParallel(dft.timesRowParallel(mgListRepeat)))
         val result = ring.zeroMutableMatrix(rows, matrix.columns)
         for (i in 0u until rows) {
             launch {
-                val row = g.cachedInversePower(i).residue - 1u
+                val row = g.root.cachedInversePower(i).residue - 1u
                 for (j in 0u until matrix.columns) {
                     result.setElementAtUnsafe(row, j, ring.add(matrix.elementAtUnsafe(0u, j), ring.ofInteger(convolution.elementAtUnsafe(i, j).roundToLong())))
                 }
@@ -81,7 +82,7 @@ class DftMatrixPrimeLowerPartModularUInt(root: RootUIntPI<ModularUInt>) : DftMat
     }
 
     override fun multiplyToImpl(matrix: AbstractMatrix<ModularUInt>, dest: AbstractMutableMatrix<ModularUInt>) {
-        val mgList = list(rows) { i -> matrix.rowListAt(g.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
+        val mgList = list(rows) { i -> matrix.rowListAt(g.root.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
         val mgListRepeat = DftRepeatRowMatrix(FieldComplexNumberDouble, mgList, twoPower.value, matrix.columns)
         val convolution = dftInv.times(diag_dft_rgInvPadding.times(dft.times(mgListRepeat)))
         //        println(dft.times(mgListRepeat))
@@ -95,7 +96,7 @@ class DftMatrixPrimeLowerPartModularUInt(root: RootUIntPI<ModularUInt>) : DftMat
 
 //        maxRoundingError = 0.0
         for (i in 0u until rows) {
-            val row = g.cachedInversePower(i).residue - 1u
+            val row = g.root.cachedInversePower(i).residue - 1u
             for (j in 0u until matrix.columns) {
 //                println("c($i,$j) : ${convolution.elementAtUnsafe(i, j)}")
                 dest.setElementAtUnsafe(row, j, ring.add(matrix.elementAtUnsafe(0u, j), ring.ofInteger(convolution.elementAtUnsafe(i, j).roundToLong())))
@@ -105,12 +106,12 @@ class DftMatrixPrimeLowerPartModularUInt(root: RootUIntPI<ModularUInt>) : DftMat
     }
 
     override suspend fun multiplyToRowParallelImpl(matrix: AbstractMatrix<ModularUInt>, dest: AbstractMutableMatrix<ModularUInt>) = coroutineScope {
-        val mgList = list(rows) { i -> matrix.rowListAt(g.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
+        val mgList = list(rows) { i -> matrix.rowListAt(g.root.cachedPower(i).residue).map { FieldDouble.realComplexNumber(it.residue.toDouble()) } }
         val mgListRepeat = DftRepeatRowMatrix(FieldComplexNumberDouble, mgList, twoPower.value, matrix.columns)
         val convolution = dftInv.timesRowParallel(diag_dft_rgInvPadding.timesRowParallel(dft.timesRowParallel(mgListRepeat)))
         for (i in 0u until rows) {
             launch {
-                val row = g.cachedInversePower(i).residue - 1u
+                val row = g.root.cachedInversePower(i).residue - 1u
                 for (j in 0u until matrix.columns) {
                     dest.setElementAtUnsafe(row, j, ring.add(matrix.elementAtUnsafe(0u, j), ring.ofInteger(convolution.elementAtUnsafe(i, j).roundToLong())))
                 }

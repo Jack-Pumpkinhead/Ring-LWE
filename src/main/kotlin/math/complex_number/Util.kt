@@ -18,6 +18,8 @@ import kotlin.math.*
 fun expI(theta: Double): ComplexNumber<Double> = FieldDouble.complexNumber(cos(theta), sin(theta))
 
 /**
+ * represent a complex number e^(2πi*(power/order))
+ *
  * require [power] and [order] coprime, [power] < [order], [order] > 0
  */
 fun cyclotomicNumberUnsafe(power: UInt, order: UInt) =

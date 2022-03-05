@@ -1,13 +1,12 @@
 package math.integer.uint.modular
 
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.DftMatrixPPPI
-import cryptography.lattice.ring_lwe.matrix.discrete_fourier_transform.modular_uint.DftMatrixPPIBuilderModularUInt
-import cryptography.lattice.ring_lwe.ring.RootUIntP
-import cryptography.lattice.ring_lwe.ring.RootUIntPP
-import cryptography.lattice.ring_lwe.ring.RootUIntPPP
-import cryptography.lattice.ring_lwe.ring.RootUIntPPPI
+import cryptography.lattice.ring_lwe.ring.RootPImpl
+import cryptography.lattice.ring_lwe.ring.RootPPImpl
+import cryptography.lattice.ring_lwe.ring.RootPPPI
+import cryptography.lattice.ring_lwe.ring.RootPPPImpl
 import kotlinx.coroutines.runBlocking
 import math.abstract_structure.Field
+import math.abstract_structure.monoid.MonoidElementCachePowerImpl
 import math.integer.uint.factored.*
 import math.integer.uint.firstMultiplicativeGeneratorOfPrimeFieldUnsafe
 
@@ -28,17 +27,16 @@ class FieldModularUInt(val prime: UInt) : RingModularUInt(prime), Field<ModularU
         }
     }
 
-    val firstGenerator: RootUIntPPPI<ModularUInt> by lazy {
+    val firstGenerator: RootPPPI<ModularUInt> by lazy {
         val g = firstMultiplicativeGeneratorOfPrimeFieldUnsafe(prime, primeMinusOne)
+        val g1 = MonoidElementCachePowerImpl(this, g, primeMinusOne.value)
         when (val order = primeMinusOne) {
-            is UIntPPP -> RootUIntPPP(this, g, order)
-            is UIntPP  -> RootUIntPP(this, g, order)
-            is UIntP   -> RootUIntP(this, g, order)
+            is UIntPPP -> RootPPPImpl(this, g1, order)
+            is UIntPP  -> RootPPImpl(this, g1, order)
+            is UIntP   -> RootPImpl(this, g1, order)
             else       -> error("unknown type of order $order, class: ${order::class}")
         }
     }
-
-    fun firstFullDftFast(): DftMatrixPPPI<ModularUInt> = DftMatrixPPIBuilderModularUInt.build(firstGenerator)
 
     override val isExactComputation: Boolean get() = true
 }

@@ -2,18 +2,14 @@ package cryptography.lattice.ring_lwe.public_key_cryptosystem.lengthy
 
 import cryptography.lattice.ring_lwe.integerCenteredRounding
 import cryptography.lattice.ring_lwe.matrix.LowerTriangularOneMatrix
-import cryptography.lattice.ring_lwe.matrix.canonical_embedding.modular_uint.CeMatrixPPIBuilderModularUInt
+import cryptography.lattice.ring_lwe.matrix.canonical_embedding.modular_uint.CeMatrixBuilderModularUInt
 import cryptography.lattice.ring_lwe.public_key_cryptosystem.approximatelySamplingDiscreteGaussianOnOriginToPowerBasis
 import cryptography.lattice.ring_lwe.public_key_cryptosystem.randomlyNearestElement1
 import cryptography.lattice.ring_lwe.public_key_cryptosystem.samplingContinuousGaussianToDecodingBasis
-import cryptography.lattice.ring_lwe.ring.RootUIntP
-import cryptography.lattice.ring_lwe.ring.RootUIntPP
-import math.abstract_structure.algorithm.powerM
+import cryptography.lattice.ring_lwe.ring.subroot.SubrootCalculatorUnsafeModularUInt
 import math.abstract_structure.instance.FieldDouble
 import math.complex_number.roundToReal
 import math.integer.long.RingLong
-import math.integer.uint.factored.UIntP
-import math.integer.uint.factored.UIntPP
 import math.integer.uint.factored.UIntPPI
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.ModularUInt
@@ -52,17 +48,9 @@ class Workflow(
         return columnVector(dimension) { i -> q.multiply(a.vectorElementAtUnsafe(i), b.vectorElementAtUnsafe(i)) }
     }
 
-    val root = when (order) {   //TODO rewrite PPP resolution
-        is UIntP  -> {
-            RootUIntP(q, q.powerM(q.firstGenerator.root, q.firstGenerator.order.value / order.value), order)
-        }
-        is UIntPP -> {
-            RootUIntPP(q, q.powerM(q.firstGenerator.root, q.firstGenerator.order.value / order.value), order)
-        }
-        else      -> error("unknown type of order $order, class: ${order::class}")
-    }
+    val root = SubrootCalculatorUnsafeModularUInt.compute(q.firstGenerator, order)
 
-    val ce = CeMatrixPPIBuilderModularUInt.build(root)
+    val ce = CeMatrixBuilderModularUInt.compute(root)
 
     fun AbstractColumnVector<ModularUInt>.toCe() = (ce * this).columnVectorViewAt(0u)   //TODO remove columnVectorViewAt(0u)
     fun AbstractColumnVector<ModularUInt>.ceInv() = (ce.inverse * this).columnVectorViewAt(0u)

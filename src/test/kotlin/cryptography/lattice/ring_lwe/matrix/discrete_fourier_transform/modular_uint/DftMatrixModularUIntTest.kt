@@ -11,6 +11,7 @@ import math.timing.EqualTwoMatrixMultiplicationTiming
 import math.timing.TwoMatrix
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import util.test.FullPrimeFieldDftTestBase
 
 /**
  * Created by CowardlyLion at 2022/2/5 13:09
@@ -18,70 +19,55 @@ import org.junit.jupiter.api.assertThrows
 internal class DftMatrixModularUIntTest {
 
     //outperform ordinary method now.
-    // *  : average 2.04940ms, deviation 2.52790ms
-    // *p : average 2.17355ms, deviation 2.46768ms
-    // * t: average 1.96047ms, deviation 2.55947ms
-    // *pt: average 3.49734ms, deviation 2.79450ms
-    //d*  : average 17.41303ms, deviation 16.83532ms
-    //samples: 200, total time: 5.418757900s
+    // *  : average 2.04583ms, deviation 2.64566ms
+    // *p : average 2.18913ms, deviation 2.47556ms
+    // * t: average 2.01559ms, deviation 2.48556ms
+    // *pt: average 3.48090ms, deviation 2.88131ms
+    //d*  : average 17.78645ms, deviation 17.31681ms
+    //samples: 200, total time: 5.503582700s
     //range: 1..200
     @Test
-    fun multiplication() {
-        runBlocking {
-            val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
-            val range = 1u..200u
-            for (i in range) {
-                val primeField = FieldModularUInt(primeOf(i).toUInt())
-                val dft = primeField.firstFullDftFast()
-                val x = primeField.randomMatrix(dft.columns, 2u)
-                statistic.go(TwoMatrix(dft, x))
-            }
-            statistic.printAverageAndStandardDeviation()
-            println("range: $range")
-        }
+    fun multiplication() = runBlocking {
+        FullPrimeFieldDftTestBase(DftMatrixBuilderModularUInt).test(1u..200u)
     }
 
     //outperform ordinary method now.
-    // *  : average 54.33816ms, deviation 66.72178ms
-    // *p : average 43.60698ms, deviation 44.07210ms
-    // * t: average 41.37795ms, deviation 44.65537ms
-    // *pt: average 52.01183ms, deviation 44.30465ms
-    //d*  : average 358.72960ms, deviation 33.35449ms
-    //samples: 11, total time: 6.050709800s
+    // *  : average 58.24326ms, deviation 79.74854ms
+    // *p : average 43.99034ms, deviation 45.89975ms
+    // * t: average 40.98181ms, deviation 46.95661ms
+    // *pt: average 53.65272ms, deviation 46.42971ms
+    //d*  : average 351.32254ms, deviation 22.61505ms
+    //samples: 11, total time: 6.030097400s
     //range: 410..420
     @Test
-    fun largeMultiplication() {
-        runBlocking {
-            val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
-            val range = 410u..420u
-            for (i in range) {
-                val prime = primeOf(i)
-                val primeField = FieldModularUInt(prime.toUInt())
-                println("prime: $prime")
-                val dft = primeField.firstFullDftFast()
-                val x = primeField.randomMatrix(dft.columns, 2u)
-                statistic.go(TwoMatrix(dft, x))
-            }
-            statistic.printAverageAndStandardDeviation()
-            println("range: $range")
-        }
+    fun largeMultiplication() = runBlocking {
+        FullPrimeFieldDftTestBase(DftMatrixBuilderModularUInt).test(410u..420u)
     }
 
 
-    //ends at i:485,  prime: 3467,  err: 0.3245372772216797
-    //i: 901,  prime: 7013,  err: -0.3325347900390625   //may significantly larger than 1
-    //i: 1000,  prime: 7927,  err: 0.3326225280761719
+    //it's significantly exact now
+    //i: 2000,  prime: 17393, p-1: (17392 = [2^4, 1087])
+    //maxRoundingError: 0.0
+    //i: 2001,  prime: 17401, p-1: (17400 = [2^3, 3, 5^2, 29])
+    //maxRoundingError: 0.0
+    //i: 2002,  prime: 17417, p-1: (17416 = [2^3, 7, 311])
+    //maxRoundingError: 0.0
+    //i: 2003,  prime: 17419, p-1: (17418 = [2, 3, 2903])
+    //maxRoundingError: 0.0
+    //i: 2004,  prime: 17431, p-1: (17430 = [2, 3, 5, 7, 83])
+    //maxRoundingError: 0.0
     @Test
     fun largeMultiplication1() {
         runBlocking {
             val exception = assertThrows<IllegalArgumentException> {
                 val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
 //                for (i in 1u..901u) {
-                for (i in 745u..9001u) {    //TODO test maximal acceptable DFT
+//                for (i in 805u..9001u) {    //TODO test maximal acceptable DFT
+                for (i in 2000u..9001u) {    //TODO test maximal acceptable DFT
                     val prime = primeOf(i)
                     val primeField = FieldModularUInt(prime.toUInt())
                     println("i: $i,  prime: $prime, p-1: ${primeField.primeMinusOne}")
-                    val dft = primeField.firstFullDftFast()
+                    val dft = DftMatrixBuilderModularUInt.compute(primeField.firstGenerator)
                     val x = primeField.randomMatrix(dft.columns, 2u)
 
                     maxRoundingError = 0.0

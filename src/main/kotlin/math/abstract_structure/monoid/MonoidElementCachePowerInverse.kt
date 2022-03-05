@@ -31,4 +31,9 @@ class MonoidElementCachePowerInverse<A>(override val inverse: MonoidElementCache
         return result
     }
 
+    override fun toString(): String {
+        return "MonoidElementCachePowerInverse(monoid=$monoid, order=$order, value=$value)"
+    }
+
+
 }

@@ -11,14 +11,4 @@ interface RootPP<A> : RootPPI<A> {
 
     override val inverse: RootPP<A>
 
-    fun subrootReducePowerOne() =
-        if (order.power == 2u) {
-            RootPImpl(root.power(order.prime), order.prime())
-        } else {
-            RootPPImpl(root.power(order.prime), order.reducePowerByOneUnsafe())
-        }
-
-    fun subrootPrime() = RootPImpl(root.power(order.value / order.prime), order.prime())
-
-
 }

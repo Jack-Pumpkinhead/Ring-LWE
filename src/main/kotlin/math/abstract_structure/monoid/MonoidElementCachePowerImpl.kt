@@ -45,6 +45,8 @@ class MonoidElementCachePowerImpl<A>(override val monoid: Monoid<A>, override va
         MonoidElementCachePowerInverse(this)
     }
 
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is MonoidElement<*>) return false
@@ -57,6 +59,10 @@ class MonoidElementCachePowerImpl<A>(override val monoid: Monoid<A>, override va
         var result = monoid.hashCode()
         result = 31 * result + (value?.hashCode() ?: 0)
         return result
+    }
+
+    override fun toString(): String {
+        return "MonoidElementCachePowerImpl(monoid=$monoid, order=$order, value=$value)"
     }
 
 }

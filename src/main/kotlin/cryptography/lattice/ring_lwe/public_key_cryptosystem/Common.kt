@@ -2,11 +2,11 @@ package cryptography.lattice.ring_lwe.public_key_cryptosystem
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
-import cryptography.lattice.ring_lwe.matrix.canonical_embedding.conjugate_transpose.CeCTMatrixPPIBuilderComplexDouble
+import cryptography.lattice.ring_lwe.matrix.canonical_embedding_conjugate_transpose.complex_double.CeCTMatrixCreatorComplexDouble
 import cryptography.lattice.ring_lwe.randomlySelectNearZero
-import math.complex_number.FieldComplexNumberDouble
 import math.abstract_structure.instance.FieldDouble
 import math.complex_number.ComplexNumber
+import math.complex_number.FieldComplexNumberDouble
 import math.complex_number.realComplexNumber
 import math.integer.long.RingLong
 import math.integer.uint.factored.UIntP
@@ -31,7 +31,7 @@ fun Random.samplingContinuousGaussianToDecodingBasis(order: UIntP, mean: Double,
     return if (order.value == 2u) {
         x
     } else {
-        val ce_ct = CeCTMatrixPPIBuilderComplexDouble.build(FieldComplexNumberDouble.root(order))
+        val ce_ct = CeCTMatrixCreatorComplexDouble.compute(1u, order)
         val cm = ConjugateMirrorMatrixComplexDouble(order.eulerTotient)
         (ce_ct * (cm * x)).columnVectorViewAt(0u)
     }
@@ -43,7 +43,7 @@ fun Random.samplingContinuousGaussianToDecodingBasis(order: UIntPP, mean: Double
     return if (order.prime == 2u) {
         x
     } else {
-        val ce_ct = CeCTMatrixPPIBuilderComplexDouble.build(FieldComplexNumberDouble.root(UIntP(order.prime)))
+        val ce_ct = CeCTMatrixCreatorComplexDouble.compute(1u, order.prime())
         val cm = ConjugateMirrorMatrixComplexDouble(order.prime - 1u)
         val matrix = FieldComplexNumberDouble.whiskered(
             order.eulerTotient,

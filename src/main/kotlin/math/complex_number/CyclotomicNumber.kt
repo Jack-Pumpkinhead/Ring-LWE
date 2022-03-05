@@ -32,16 +32,46 @@ class CyclotomicNumber(val power: UInt, override val order: UInt) : MonoidElemen
         return CyclotomicNumber(exp / gcd, order / gcd)
     }
 
-    override val cacheComputed: Boolean = true
+    override var cacheComputed: Boolean = false
 
-    override fun cachedPower(exponent: UInt): ComplexNumber<Double> {
-        val exp = modTimes(power, exponent, order)
-        val gcd = gcd(exp, order)
-        return cyclotomicNumberUnsafe(exp / gcd, order / gcd)
+    private val powers: List<ComplexNumber<Double>> by lazy {
+        cacheComputed = true
+        if (order == 1u) listOf(monoid.one)
+        else {
+            val list = mutableListOf(monoid.one, value)
+            for (i in 2u until order) {
+                val exp = modTimes(power, i, order)
+                val gcd = gcd(exp, order)
+                list += cyclotomicNumberUnsafe(exp / gcd, order / gcd)
+            }
+            list
+        }
     }
+
+    override fun cachedPower(exponent: UInt): ComplexNumber<Double> = powers[exponent.toInt()]
 
     override val inverse: MonoidElementCachePower<ComplexNumber<Double>> by lazy {
         CyclotomicNumber(modUnaryMinusUnsafe(power, order), order)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CyclotomicNumber) return false
+
+        if (power != other.power) return false
+        if (order != other.order) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = power.hashCode()
+        result = 31 * result + order.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "e^(2πi($power/$order)) = $value"
     }
 
 }

@@ -39,8 +39,6 @@ class UIntPP(override val value: UInt, override val prime: UInt, override val po
      */
     fun reducePowerByOneUnsafe(): UIntPP = UIntPP(value / prime, prime, power - 1u)
 
-    fun prime(): UIntP = UIntP(prime)
-
     override val eulerTotient: UInt by lazy {
         (value / prime) * (prime - 1u)
     }
