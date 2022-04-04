@@ -29,12 +29,18 @@ fun ofPrimePowers(factors: List<UIntPPI>, value: UInt = RingUInt.product(factors
     }
 
 
-suspend fun UInt.primeFactorization(): UIntPPPI {
-    val factors = this.primeFactorizationImpl()
-    return if (factors.size > 1) {
-        UIntPPP(this, factors)
-    } else factors[0]
-}
+suspend fun UInt.primeFactorization(): UIntPPPI =
+    when (this) {
+        0u   -> error("cannot factored")
+        1u   -> One
+        else -> {
+            val factors = this.primeFactorizationImpl()
+            if (factors.size > 1) {
+                UIntPPP(this, factors)
+            } else factors[0]
+        }
+    }
+
 
 suspend fun UInt.primeFactorizationImpl(): List<UIntPPI> {
     require(this > 1u) { "no need to factored" }

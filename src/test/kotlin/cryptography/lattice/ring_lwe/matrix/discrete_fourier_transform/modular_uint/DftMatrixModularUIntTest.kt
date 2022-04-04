@@ -56,14 +56,26 @@ internal class DftMatrixModularUIntTest {
     //maxRoundingError: 0.0
     //i: 2004,  prime: 17431, p-1: (17430 = [2, 3, 5, 7, 83])
     //maxRoundingError: 0.0
+
+    //i: 8000,  prime: 81817, p-1: (81816 = [2^3, 3, 7, 487])
+    //maxRoundingError: 0.0
+    //i: 8001,  prime: 81839, p-1: (81838 = [2, 17, 29, 83])
+    //maxRoundingError: 0.0
+    //i: 8002,  prime: 81847, p-1: (81846 = [2, 3^2, 4547])
+    //maxRoundingError: 0.001953125
+    //i: 8003,  prime: 81853, p-1: (81852 = [2^2, 3, 19, 359])
+    //maxRoundingError: 0.0
+    //i: 8004,  prime: 81869, p-1: (81868 = [2^2, 97, 211])
+    //maxRoundingError: 0.0
+    //i: 8005,  prime: 81883, p-1: (81882 = [2, 3^2, 4549])
     @Test
     fun largeMultiplication1() {
         runBlocking {
             val exception = assertThrows<IllegalArgumentException> {
                 val statistic = TaskTimingStatistic(EqualTwoMatrixMultiplicationTiming<ModularUInt>())
 //                for (i in 1u..901u) {
-//                for (i in 805u..9001u) {    //TODO test maximal acceptable DFT
-                for (i in 2000u..9001u) {    //TODO test maximal acceptable DFT
+//                for (i in 1578u..9001u) {    //TODO test maximal acceptable DFT
+                for (i in 8000u..9001u) {    //TODO test maximal acceptable DFT
                     val prime = primeOf(i)
                     val primeField = FieldModularUInt(prime.toUInt())
                     println("i: $i,  prime: $prime, p-1: ${primeField.primeMinusOne}")

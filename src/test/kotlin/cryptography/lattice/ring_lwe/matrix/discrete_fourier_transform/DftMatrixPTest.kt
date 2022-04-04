@@ -8,7 +8,7 @@ import util.test.PrimeFieldDftPTestBase
 /**
  * Created by CowardlyLion at 2022/1/19 23:13
  */
-internal class DftMatrixPrimeTest {
+internal class DftMatrixPTest {
 
     //significantly faster and time-stable (because it simply uses direct method of multiplication)
     // *  : average 4.21447ms, deviation 14.78655ms

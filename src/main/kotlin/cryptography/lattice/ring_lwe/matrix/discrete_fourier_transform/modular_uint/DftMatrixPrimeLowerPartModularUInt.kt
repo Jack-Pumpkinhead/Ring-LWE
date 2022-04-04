@@ -54,7 +54,7 @@ class DftMatrixPrimeLowerPartModularUInt(override val root: RootP<ModularUInt>) 
         val mgListRepeat = DftRepeatRowMatrix(FieldComplexNumberDouble, mgList, twoPower.value, matrix.columns)
         val convolution = dftInv.times(diag_dft_rgInvPadding.times(dft.times(mgListRepeat)))
         val result = ring.zeroMutableMatrix(rows, matrix.columns)
-        maxRoundingError = 0.0
+//        maxRoundingError = 0.0
         for (i in 0u until rows) {
             val row = g.root.cachedInversePower(i).residue - 1u
             for (j in 0u until matrix.columns) {

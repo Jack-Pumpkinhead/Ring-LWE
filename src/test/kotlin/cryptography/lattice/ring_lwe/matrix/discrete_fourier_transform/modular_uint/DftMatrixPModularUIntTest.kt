@@ -7,7 +7,9 @@ import cryptography.lattice.ring_lwe.ring.RootPPP
 import cryptography.lattice.ring_lwe.ring.subroot.SubrootCalculatorUnsafeModularUInt
 import kotlinx.coroutines.runBlocking
 import math.andPrint
+import math.complex_number.maxRoundingError
 import math.integer.uint.factored.UIntP
+import math.integer.uint.factored.primeFactorization
 import math.integer.uint.modular.FieldModularUInt
 import math.integer.uint.modular.ModularUInt
 import math.integer.uint.nextTwoPositivePower
@@ -115,6 +117,7 @@ internal class DftMatrixPModularUIntTest {
                         val dftDefault = builderDefault.compute(primeRoot)
                         val dftFast = builderFast.compute(primeRoot)
                         val statistic = getStatistic(primeRoot.order.value)
+                        maxRoundingError = 0.0
                         repeat(2) {
                             val x = primeField.randomMatrix(dftFast.columns, 2u)
 //                            println("o: ")
@@ -126,6 +129,9 @@ internal class DftMatrixPModularUIntTest {
 
                             statistic.go(TwoDftAndX(dftDefault, dftFast, x))
                         }
+                        if (maxRoundingError > 0.0) {
+                            println("prime: $primeRoot, maxRoundingError: $maxRoundingError")
+                        }
                     }
                 }
                 is RootPP  -> {
@@ -133,18 +139,26 @@ internal class DftMatrixPModularUIntTest {
                     val dftDefault = builderDefault.compute(primeRoot)
                     val dftFast = builderFast.compute(primeRoot)
                     val statistic = getStatistic(primeRoot.order.prime)
+                    maxRoundingError = 0.0
                     repeat(2) {
                         val x = primeField.randomMatrix(dftFast.columns, 2u)
                         statistic.go(TwoDftAndX(dftDefault, dftFast, x))
+                    }
+                    if (maxRoundingError > 0.0) {
+                        println("prime: $primeRoot, maxRoundingError: $maxRoundingError")
                     }
                 }
                 is RootP   -> {
                     val dftDefault = builderDefault.compute(root)
                     val dftFast = builderFast.compute(root)
                     val statistic = getStatistic(root.order.prime)
+                    maxRoundingError = 0.0
                     repeat(2) {
                         val x = primeField.randomMatrix(dftFast.columns, 2u)
                         statistic.go(TwoDftAndX(dftDefault, dftFast, x))
+                    }
+                    if (maxRoundingError > 0.0) {
+                        println("prime: $root, maxRoundingError: $maxRoundingError")
                     }
                 }
                 else       -> errorUnknownObject(root)
@@ -160,7 +174,7 @@ internal class DftMatrixPModularUIntTest {
             }
 
             for ((key, statistic) in map.entries.sortedBy { it.key }) {
-                println("prime: $key")
+                println("prime: $key, primeDec: ${(key-1u).primeFactorization()}")
                 statistic.printAverageAndStandardDeviation()
                 println()
             }

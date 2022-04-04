@@ -58,11 +58,20 @@ internal class WorkflowTest {
     }
 
     @Test
+    fun aa() {
+        runBlocking {
+            val prime = 12289u
+            val primeDec = (prime - 1u).primeFactorization()
+            println("prime: $prime, primeDec: $primeDec")
+        }
+    }
+
+    @Test
     fun successRate() {
         runBlocking {
 
-            val order = (9u).primeFactorization() as UIntPP
-            val prime = FieldModularUInt(19u)
+            val order = (512u).primeFactorization() as UIntPP
+            val prime = FieldModularUInt(12289u)
 
             var sigma = 0.00
             while (sigma < 1.0) {
