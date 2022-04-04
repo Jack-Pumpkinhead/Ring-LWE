@@ -106,6 +106,41 @@ fun Random.randomlyNearestElement1(x: AbstractColumnVector<Double>, c: AbstractC
 }
 
 /**
+ * find a maybe-nearest-to-x element on [p]ℤ^n
+ */
+fun Random.randomlyNearestInteger(x: AbstractColumnVector<Double>, p: UInt): AbstractColumnVector<Long> {
+    return RingLong.columnVector(x.size) { i ->
+        val xi = x.vectorElementAtUnsafe(i)
+        val a = (-xi) / p.toDouble()
+        val a1 = floor(a)
+        val r = a - a1
+        if (nextDouble() < r) {
+            -(p.toLong() * (a1.toLong() + 1L))
+        } else {
+            -(p.toLong() * a1.toLong())
+        }
+    }
+}
+
+/**
+ * find a maybe-nearest-to-x element on ℤ^n
+ */
+fun Random.randomlyNearestInteger(x: AbstractColumnVector<Double>): AbstractColumnVector<Long> {
+    return RingLong.columnVector(x.size) { i ->
+        val xi = x.vectorElementAtUnsafe(i)
+        val a = -xi
+        val a1 = floor(a)
+        val r = a - a1
+        if (nextDouble() < r) {
+            -(a1.toLong() + 1L)
+        } else {
+            -a1.toLong()
+        }
+    }
+}
+
+
+/**
  * fastest general implementation, but O(n^2), don't use this.
  */
 fun Random.approximatelySamplingDiscreteGaussianOnOriginToBasis(size: UInt, sigma: Double, baseJ: AbstractDiagonalMatrix<Double>, baseR: AbstractSquareMatrix<Double>): MutableList<Long> {

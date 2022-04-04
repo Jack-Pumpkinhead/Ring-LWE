@@ -14,6 +14,7 @@ import util.stdlib.lazyAssert2
 class SquareFormalKroneckerProduct<A>(override val ring: Ring<A>, override val size: UInt, override val elements: List<AbstractSquareMatrix<A>>) : AbstractSquareFormalProduct<A>, AbstractSquareFormalKroneckerProduct<A> {
 
     //there are (matrices.size)! ways (permutations) of decomposition, use one that compute m0 first.
+    //for sequential composition!
     override val matrices: List<AbstractSquareMatrix<A>> =
         when (elements.size) {
             1    -> elements
@@ -22,9 +23,12 @@ class SquareFormalKroneckerProduct<A>(override val ring: Ring<A>, override val s
                 var r = 1u
 
                 val result = mutableListOf<AbstractSquareMatrix<A>>()
+//                println("elements: ${elements.map { it.size }}")
                 for (i in elements.size - 1 downTo 0) {
                     val m = elements[i]
                     l /= m.rows
+//                    println("i: $i, m.rows: ${m.rows}")
+//                    println("l: $l, m: ${m.size}, r: $r, lmr: ${l * m.size * r}, size:$size")
                     result += SquareWhiskeredKroneckerProduct(ring, size, l, m, r)
                     r *= m.columns
                 }
@@ -55,7 +59,8 @@ class SquareFormalKroneckerProduct<A>(override val ring: Ring<A>, override val s
     override fun hasInverse(): Boolean = elements.all { it.hasInverse() }
 
     override val inverse: AbstractSquareMatrix<A> by lazy {
-        SquareFormalKroneckerProduct(ring, size, matrices.map { it.inverse })
+//        println("size: $size, sizes: ${matrices.map { it.size }}")
+        SquareFormalKroneckerProduct(ring, size, elements.map { it.inverse })
     }
 
     override fun determinant(): A {
