@@ -1,4 +1,4 @@
-##misc
+## misc
 - 先实现immutable内容的计算  
 - if a sort of object have regular (usually combination of) properties/constructions, use encoded (short) name  
 - extend BoundedMultiIndex to support BigInteger index currently useless, because index of Array in Java/Kotlin is restricted to int, but restrict implementation for UInt needs a tedious overflow-checking (costly and error-prone).
@@ -12,17 +12,17 @@
 - parallel method need to call ordinary method in small case.
 - Cannot check for instance of erased type (so there is no Generic BatchMapper)
 
-##todo
+## todo
 - R[x]/f(x) for f monic
 - floating point sqrt() validity
     
 
-##debug  
+## debug  
 - test 的命名空间与 main相同，避免重名
 - make sure variables captured by launch{} is val (e.g. in a for() loop)
 - if 0 containers and 2 tests were Method or class mismatch, try gradle clean (reload gradle project / restart IDEA not work) 
 
-##references
+## references
 - (2013) [Optimal Discrete Uniform Generation from Coin Flips, and Applications --Jérémie Lumbroso](https://arxiv.org/abs/1304.1916)
 - (2000, 2003) [Generating Random Factored Numbers, Easily --Adam Kalai](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.135.8031&rep=rep1&type=pdf)
 - (2013, 2014, 2016) [Sampling exactly from the normal distribution --Charles F. F. Karney](https://arxiv.org/abs/1303.6257)
@@ -33,14 +33,14 @@
 
 - (2014) [Relationship between the Inverses of a Matrix and a Submatrix --E. Juárez-Ruiz, R. Cortés-Maldonado, F. Pérez-Rodríguez](http://www.scielo.org.mx/scielo.php?script=sci_arttext&pid=S1405-55462016000200251)
 
-##symbols
+## symbols
 - ℕ
 - ℤ
 - ℝ
 - ℚ
 - ℂ
 
-##data structure
+## data structure
 - ULong 64-bit
 - Int.MAX_VALUE = 2147483647 = 2^31 -1
 - UInt.MAX_VALUE = 4294967295 = 2^32 -1 < 64 * Int.MAX_VALUE < ULong.MAX_VALUE = 2^64 -1
