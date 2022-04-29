@@ -21,3 +21,6 @@ fun ULong.toULongModular(modulus: ULong): ModularULong = ModularULong(modulus, t
 fun errorUnknownObject(a: Any): Nothing {
     error("unknown $a, class: ${a::class}")
 }
+
+fun UInt.divides(a: UInt) = a.mod(this) == 0u
+fun UInt.divides(a: ULong) = a.mod(this) == 0u

@@ -8,6 +8,7 @@ import math.integer.uint.modular.RingModularUInt
 import math.integer.ulong.primeOf
 import math.random.randomColumnVector
 import org.junit.jupiter.api.Test
+import util.divides
 import util.stdlib.toString
 import kotlin.random.Random
 
@@ -19,12 +20,28 @@ internal class WorkflowTest {
     @Test
     fun findQ() {
         runBlocking {
-            for (i in 1u..200u) {
+            for (i in 1u..10000u) {
                 val prime = primeOf(i)
                 val primeDec = (prime.toUInt() - 1u).primeFactorization()
                 println("prime: $prime, primeDec: $primeDec")
             }
         }
+    }
+
+    suspend fun findPrime(order: UInt) {
+        for (i in 1u..10000u) {
+            val prime = primeOf(i)
+            val primeDec = prime.toUInt() - 1u
+            if (order.divides(primeDec)) {
+                println("prime: $prime, primeDec: ${primeDec.primeFactorization()}, order: ${order.primeFactorization()}")
+                return
+            }
+        }
+    }
+
+    @Test
+    fun findPrime1() = runBlocking {
+        findPrime(2048u)
     }
 
     //why so many encrypted key is [0, 0, ...]?

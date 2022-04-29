@@ -55,7 +55,7 @@ class UIntPPP(override val value: UInt, override val factors: List<UIntPPI>) : U
     override fun coprimeNumberAtUnsafe(i: UInt): UInt = coprimeNumbers[i.toInt()]
 
     override fun toString(): String {
-        return "($value = $factors)"
+        return "$value = ${factors.joinToString(", ", "[", "]") { it.primePowerString() }}"
     }
 
     override fun equals(other: Any?): Boolean {

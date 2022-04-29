@@ -20,4 +20,6 @@ interface UIntPPI : UIntPPPI {
 
     fun prime(): UIntP = UIntP(prime)
 
+    fun primePowerString() = "$prime^$power"
+
 }

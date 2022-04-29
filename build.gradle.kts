@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     implementation("com.ionspin.kotlin:bignum:0.3.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 
     implementation("com.github.microsoft:TSS.Java:0.3.0")

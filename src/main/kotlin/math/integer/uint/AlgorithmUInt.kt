@@ -288,3 +288,4 @@ fun nextTwoPositivePower(n: UInt): UIntPPI {
     require(n <= Int.MAX_VALUE.toUInt())
     return factoredTwoPowerUnsafe(n.ceilLog2())
 }
+

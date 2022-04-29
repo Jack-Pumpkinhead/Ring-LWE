@@ -44,7 +44,7 @@ class UIntPP(override val value: UInt, override val prime: UInt, override val po
     }
 
     override fun toString(): String {
-        return "$prime^$power"
+        return "$value = [$prime^$power]"
     }
 
     override fun equals(other: Any?): Boolean {

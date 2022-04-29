@@ -1,5 +1,6 @@
-package cryptography.lattice.ring_lwe.public_key_cryptosystem.compact
+package cryptography.lattice.ring_lwe.public_key_cryptosystem.compact.test
 
+import cryptography.lattice.ring_lwe.public_key_cryptosystem.compact.*
 import cryptography.lattice.ring_lwe.public_key_cryptosystem.randomlyNearestInteger
 import math.abstract_structure.instance.FieldDouble
 import math.coding.LadderIndex
@@ -21,11 +22,9 @@ import util.errorUnknownObject
 import kotlin.random.Random
 
 /**
- * Created by CowardlyLion at 2022/4/4 20:49
- *
- * assume prime of factors of [order] in increasing order.
+ * Created by CowardlyLion at 2022/4/27 18:19
  */
-class Cryptosystem(
+class CryptosystemWithTiming(
     val random: Random,
     val order: UIntPPPI,
     val q: FieldModularUInt,
@@ -139,7 +138,7 @@ class Cryptosystem(
     fun AbstractColumnVector<ModularUInt>.pGPowerToDecode() = (pGPowerToDecode * this).columnVectorViewAt(0u)
 
 
-    fun generateKeys(): Pair<PublicKey, SecretKey> {
+    fun generateKeys(): Pair<PublicKeyWithTiming, SecretKeyWithTiming> {
         val a = q.randomColumnVector(dimension) //ce basis
         val x0 = random.samplingContinuousGaussianToDecodingBasis(order, 0.0, sigmaSecretKey).map(FieldDouble) { it.roundToReal() }
         val x_discrete = random.randomlyNearestInteger(x0)
@@ -156,7 +155,7 @@ class Cryptosystem(
         val b = qMultiplyInCe(g, ax_e)  //not affect successfulness if g set to 1, but change one g only lower success rate.
 //        val b = ax_e
 
-        return PublicKey(this, a, b) to SecretKey(this, x)
+        return PublicKeyWithTiming(this, a, b) to SecretKeyWithTiming(this, x)
     }
 
 

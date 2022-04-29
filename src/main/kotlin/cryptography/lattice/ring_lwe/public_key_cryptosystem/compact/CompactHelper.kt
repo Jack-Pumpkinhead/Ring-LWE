@@ -48,7 +48,6 @@ fun Random.samplingContinuousGaussianToDecodingBasis(order: UIntPPP, mean: Doubl
         }
     }
     return (FieldComplexNumberDouble.formalKroneckerProduct(order.eulerTotient, matrices) * x).columnVectorViewAt(0u)
-
 }
 
 fun Random.samplingContinuousGaussianToDecodingBasis(order: UIntPPPI, mean: Double, sigma: Double): AbstractColumnVector<ComplexNumber<Double>> =
